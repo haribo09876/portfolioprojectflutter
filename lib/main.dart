@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+void main() async {
+  await dotenv.load(fileName: ".env");
   runApp(MyApp());
 }
 
@@ -18,8 +20,7 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatelessWidget {
   // HTTP POST 요청을 보내는 함수
   Future<void> makePostRequest() async {
-    var url = Uri.parse(
-        'https://kc7a81mlbk.execute-api.ap-northeast-2.amazonaws.com/purchaseFunc');
+    var url = Uri.parse(dotenv.env['API_URL_PURCHASEFUNC']!);
     var data = {
       "action": "create",
       "userId": "80ed128b-195e-4560-a108-2827a1bc2f48",
@@ -56,7 +57,7 @@ class MyHomePage extends StatelessWidget {
         child: Text('Press the button to make a POST request'),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: makePostRequest, // 버튼을 누를 때 함수 호출
+        onPressed: makePostRequest,
         tooltip: 'Send POST Request',
         child: Icon(Icons.send),
       ),
