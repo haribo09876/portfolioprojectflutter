@@ -11,10 +11,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String _city = 'Loading...';
   List _days = [];
-  String _currentWeather = '';
+  String _currentWeather = 'Loading...';
   double _currentTemp = 0;
   bool _locationPermission = false;
   bool _locationSaved = false;
+  bool _isLoading = true;
 
   final WeatherService _weatherService = WeatherService();
 
@@ -45,6 +46,7 @@ class _HomePageState extends State<HomePage> {
         _currentTemp = weatherData['currentTemp'];
         _locationSaved = true;
         _locationPermission = true;
+        _isLoading = false;
       });
     } catch (error) {
       _handleLocationError("Can't find location");
@@ -57,113 +59,8 @@ class _HomePageState extends State<HomePage> {
       _currentWeather = '';
       _currentTemp = 0;
       _locationSaved = false;
+      _isLoading = false;
     });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFF8A9DF9),
-      body: Column(
-        children: [
-          Expanded(
-            flex: 2,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    _city,
-                    style: TextStyle(
-                      fontSize: 47,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Icon(
-                    _getWeatherIcon(_currentWeather),
-                    size: 150,
-                    color: Colors.white,
-                  ),
-                  Text(
-                    _currentWeather,
-                    style: TextStyle(
-                      fontSize: 35,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Text(
-                    '${(_currentTemp - 273.15).toStringAsFixed(1)} °C',
-                    style: TextStyle(
-                      fontSize: 35,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 3,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: _days.length,
-              itemBuilder: (context, index) {
-                final day = _days[index];
-                return Container(
-                  width: MediaQuery.of(context).size.width / 4,
-                  alignment: Alignment.center,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        _getWeatherIcon(day['weather'][0]['main']),
-                        size: 58,
-                        color: Colors.white,
-                      ),
-                      Text(
-                        day['weather'][0]['main'],
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Text(
-                        '${(day['main']['temp'] - 273.15).toStringAsFixed(1)} °C',
-                        style: TextStyle(
-                          fontSize: 19,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Text(
-                        '${day['dt_txt'].substring(5, 7)}/${day['dt_txt'].substring(8, 10)}',
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      Text(
-                        '${DateTime.parse(day['dt_txt']).hour} 시',
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   IconData _getWeatherIcon(String weather) {
@@ -185,5 +82,118 @@ class _HomePageState extends State<HomePage> {
       default:
         return WeatherIcons.na;
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(0xFF8A9DF9),
+      body: SafeArea(
+        child: _isLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            _city,
+                            style: TextStyle(
+                              fontSize: 40,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Icon(
+                            _getWeatherIcon(_currentWeather),
+                            size: 120,
+                            color: Colors.white,
+                          ),
+                          Text(
+                            _currentWeather,
+                            style: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Text(
+                            '${(_currentTemp - 273.15).toStringAsFixed(1)} °C',
+                            style: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: 180,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _days.length,
+                        itemBuilder: (context, index) {
+                          final day = _days[index];
+                          return Container(
+                            width: MediaQuery.of(context).size.width / 4,
+                            alignment: Alignment.center,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  _getWeatherIcon(day['weather'][0]['main']),
+                                  size: 50,
+                                  color: Colors.white,
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  day['weather'][0]['main'],
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Text(
+                                  '${(day['main']['temp'] - 273.15).toStringAsFixed(1)} °C',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Text(
+                                  '${day['dt_txt'].substring(5, 7)}/${day['dt_txt'].substring(8, 10)}',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                Text(
+                                  '${DateTime.parse(day['dt_txt']).hour} 시',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+      ),
+    );
   }
 }
