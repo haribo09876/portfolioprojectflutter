@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/vpn.dart';
 import '../services/weather.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:weather_icons/weather_icons.dart';
@@ -9,6 +10,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final VPNService _vpnService = VPNService();
+  bool _vpnConnected = false;
+
   String _city = 'Loading...';
   List _days = [];
   String _currentWeather = 'Loading...';
@@ -84,6 +88,17 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void _toggleVPN() async {
+    if (_vpnConnected) {
+      _vpnService.disconnect();
+    } else {
+      await _vpnService.connect();
+    }
+    setState(() {
+      _vpnConnected = !_vpnConnected;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,6 +129,7 @@ class _HomePageState extends State<HomePage> {
                             size: 120,
                             color: Colors.white,
                           ),
+                          SizedBox(height: 15),
                           Text(
                             _currentWeather,
                             style: TextStyle(
@@ -188,6 +204,23 @@ class _HomePageState extends State<HomePage> {
                             ),
                           );
                         },
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Text(
+                            'VPN Status: ${_vpnConnected ? "Connected" : "Disconnected"}',
+                            style: TextStyle(fontSize: 20, color: Colors.white),
+                          ),
+                          ElevatedButton(
+                            onPressed: _toggleVPN,
+                            child: Text(_vpnConnected
+                                ? 'Disconnect VPN'
+                                : 'Connect VPN'),
+                          ),
+                        ],
                       ),
                     ),
                   ],
