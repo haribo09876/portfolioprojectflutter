@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../services/vpn.dart';
-import '../services/weather.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:weather_icons/weather_icons.dart';
+import '../services/weather.dart';
+import '../services/vpn.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -95,7 +95,6 @@ class _HomePageState extends State<HomePage> {
       await _vpnService.connect();
     }
 
-    // Update VPN connection status
     final vpnStatus = await _vpnService.getStatus();
     setState(() {
       _vpnConnected = vpnStatus == VpnStatus.connected;
