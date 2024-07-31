@@ -94,8 +94,11 @@ class _HomePageState extends State<HomePage> {
     } else {
       await _vpnService.connect();
     }
+
+    // Update VPN connection status
+    final vpnStatus = await _vpnService.getStatus();
     setState(() {
-      _vpnConnected = !_vpnConnected;
+      _vpnConnected = vpnStatus == VpnStatus.connected;
     });
   }
 

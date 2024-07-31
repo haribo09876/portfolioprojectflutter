@@ -36,7 +36,7 @@ class VPNService {
   Future<void> connect() async {
     await engine.connect(
       _config,
-      "JPN",
+      "JP",
       username: _defaultVpnUsername,
       password: _defaultVpnPassword,
       certIsRequired: true,
@@ -49,6 +49,10 @@ class VPNService {
 
   Future<void> requestPermission() async {
     await engine.requestPermissionAndroid();
+  }
+
+  Future<VpnStatus?> getStatus() async {
+    return status;
   }
 }
 
@@ -102,7 +106,6 @@ mRGunUHBcnWEvgJBQl9nJEiU0Zsnvgc/ubhPgXRR4Xq37Z0j4r7g1SgEEzwxA57d
 emyPxgcYxn/eR44/KJ4EBs+lVDR3veyJm+kXQ99b21/+jh5Xos1AnX5iItreGCc=
 -----END CERTIFICATE-----
 </ca>
-
 <cert>
 -----BEGIN CERTIFICATE-----
 MIICxjCCAa4CAQAwDQYJKoZIhvcNAQEFBQAwKTEaMBgGA1UEAxMRVlBOR2F0ZUNs
@@ -122,7 +125,6 @@ Fku7dGavURO5SVxMn/sL6En5D+oSeXkadHpDs+Airym2YHh15h0+jPSOoR6yiVp/
 6zZeZkrN43kuS73KpKDFjfFPh8t4r1gOIjttkNcQqBccusnplQ7HJpsk
 -----END CERTIFICATE-----
 </cert>
-
 <key>
 -----BEGIN RSA PRIVATE KEY-----
 MIIEpAIBAAKCAQEA5h2lgQQYUjwoKYJbzVZA5VcIGd5otPc/qZRMt0KItCFA0s9R
