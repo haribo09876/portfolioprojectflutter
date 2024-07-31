@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:weather_icons/weather_icons.dart';
-import '../services/weather.dart';
 import '../services/vpn.dart';
+import '../services/weather.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -212,10 +212,6 @@ class _HomePageState extends State<HomePage> {
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         children: [
-                          Text(
-                            'VPN Status: ${_vpnConnected ? "Connected" : "Disconnected"}',
-                            style: TextStyle(fontSize: 20, color: Colors.white),
-                          ),
                           ElevatedButton(
                             onPressed: _toggleVPN,
                             child: Text(_vpnConnected
