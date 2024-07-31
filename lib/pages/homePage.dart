@@ -89,16 +89,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _toggleVPN() async {
-    if (_vpnConnected) {
-      _vpnService.disconnect();
-    } else {
-      await _vpnService.connect();
-    }
-
-    final vpnStatus = await _vpnService.getStatus();
     setState(() {
-      _vpnConnected = vpnStatus == VpnStatus.connected;
+      _vpnConnected = !_vpnConnected;
     });
+    if (_vpnConnected) {
+      await _vpnService.connect();
+    } else {
+      _vpnService.disconnect();
+    }
   }
 
   @override
@@ -126,6 +124,7 @@ class _HomePageState extends State<HomePage> {
                               color: Colors.white,
                             ),
                           ),
+                          SizedBox(height: 20),
                           Icon(
                             _getWeatherIcon(_currentWeather),
                             size: 120,
@@ -208,15 +207,27 @@ class _HomePageState extends State<HomePage> {
                         },
                       ),
                     ),
+                    SizedBox(height: 15),
                     Container(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         children: [
                           ElevatedButton(
                             onPressed: _toggleVPN,
-                            child: Text(_vpnConnected
-                                ? 'Disconnect VPN'
-                                : 'Connect VPN'),
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: Size(350, 60),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 15),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                            ),
+                            child: Text(
+                              'VPN',
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
                           ),
                         ],
                       ),

@@ -36,7 +36,7 @@ class VPNService {
   Future<void> connect() async {
     await engine.connect(
       _config,
-      "JP",
+      "VPN",
       username: _defaultVpnUsername,
       password: _defaultVpnPassword,
       certIsRequired: true,
