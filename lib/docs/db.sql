@@ -6,6 +6,7 @@ CREATE TABLE Users (
     userName VARCHAR(100) NOT NULL,
     userGender ENUM('Male', 'Female') NOT NULL,
     userAge INT NOT NULL,
+    userImgURL VARCHAR(255),
     userMoney INT NOT NULL,
     userSpend INT NOT NULL,
     createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
