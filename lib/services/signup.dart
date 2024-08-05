@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 class SignupService {
   final String signupUrl = dotenv.env['USER_FUNC_URL']!;
 
-  Future<Map<String, dynamic>> checkUser(
+  Future<Map<String, dynamic>?> checkUser(
       String userEmail, String userName) async {
     final response = await http.post(
       Uri.parse(signupUrl),
