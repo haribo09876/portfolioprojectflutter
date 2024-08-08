@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../services/login.dart';
 import '../routes.dart';
 
 class LoginPage extends StatefulWidget {
@@ -9,13 +11,30 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
+  String? _errorMessage;
 
-  void _handleLogin() {
-    Navigator.pushNamed(context, AppRoutes.main);
-  }
+  void _handleLogin() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
 
-  void _handleGoogleLogin() {
-    Navigator.pushNamed(context, AppRoutes.main);
+    final loginService = Provider.of<LoginService>(context, listen: false);
+    final result = await loginService.loginUser(
+        _emailController.text, _passwordController.text);
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (result['success']) {
+      Navigator.pushNamed(context, AppRoutes.main);
+    } else {
+      setState(() {
+        _errorMessage = result['error'];
+      });
+    }
   }
 
   @override
@@ -52,9 +71,17 @@ class _LoginPageState extends State<LoginPage> {
                 hintText: '비밀번호',
                 obscureText: true,
               ),
-              _buildButton('로그인', _handleLogin),
-              _buildButton('Google로 로그인', _handleGoogleLogin,
-                  color: Color(0xff74b9ff)),
+              if (_errorMessage != null) ...[
+                SizedBox(height: 20),
+                Text(
+                  _errorMessage!,
+                  style: TextStyle(color: Colors.red),
+                ),
+              ],
+              SizedBox(height: 20),
+              _isLoading
+                  ? CircularProgressIndicator()
+                  : _buildButton('로그인', _handleLogin),
               _buildButton('회원가입', () {
                 Navigator.pushNamed(context, AppRoutes.signup);
               }, color: Color(0xff2ecc71)),

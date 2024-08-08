@@ -32,6 +32,6 @@ class AppRoutes {
     insta: (BuildContext context) => InstaPage(),
     shop: (BuildContext context) => ShopPage(),
     user: (BuildContext context) => UserPage(),
-    dashboard: (BuildContext context) => Dashboardpage(),
+    dashboard: (BuildContext context) => DashboardPage(),
   };
 }

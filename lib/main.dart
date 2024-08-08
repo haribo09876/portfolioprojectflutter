@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
+import 'services/login.dart';
 import 'routes.dart';
 
 void main() async {
@@ -12,9 +14,14 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      initialRoute: AppRoutes.intro,
-      routes: AppRoutes.routes,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => LoginService()),
+      ],
+      child: MaterialApp(
+        initialRoute: AppRoutes.intro,
+        routes: AppRoutes.routes,
+      ),
     );
   }
 }

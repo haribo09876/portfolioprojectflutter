@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Dashboardpage extends StatelessWidget {
+class DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
