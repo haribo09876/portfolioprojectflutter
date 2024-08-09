@@ -10,6 +10,8 @@ import 'shopPage.dart';
 class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final loginService = Provider.of<LoginService>(context);
+
     return DefaultTabController(
       length: 4,
       child: Scaffold(
@@ -70,8 +72,6 @@ class MainPage extends StatelessWidget {
 
                 if (shouldLogout) {
                   // Perform logout
-                  final loginService =
-                      Provider.of<LoginService>(context, listen: false);
                   await loginService.logoutUser();
                   Navigator.pushReplacementNamed(context, AppRoutes.login);
                 }

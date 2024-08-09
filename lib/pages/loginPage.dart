@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../services/login.dart';
 import '../routes.dart';
+import '../services/login.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -29,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     if (result['success']) {
-      Navigator.pushNamed(context, AppRoutes.main);
+      Navigator.pushReplacementNamed(context, AppRoutes.main);
     } else {
       setState(() {
         _errorMessage = result['error'];

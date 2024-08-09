@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 class LoginService extends ChangeNotifier {
@@ -23,6 +24,7 @@ class LoginService extends ChangeNotifier {
       final Map<String, dynamic> data = jsonDecode(response.body);
       _isLoggedIn = true;
       _userEmail = data['user']['userEmail'];
+      await _saveUserData(email, password);
       return {'success': true, 'data': data};
     } else {
       final Map<String, dynamic> errorData = jsonDecode(response.body);
@@ -33,6 +35,25 @@ class LoginService extends ChangeNotifier {
   Future<void> logoutUser() async {
     _isLoggedIn = false;
     _userEmail = null;
+    await _clearUserData();
+    notifyListeners();
+  }
+
+  Future<void> _saveUserData(String email, String password) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('userEmail', email);
+    await prefs.setString('userPassword', password);
+  }
+
+  Future<void> _clearUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('userEmail');
+    await prefs.remove('userPassword');
+  }
+
+  void setUserData(String email) {
+    _isLoggedIn = true;
+    _userEmail = email;
     notifyListeners();
   }
 }
