@@ -7,9 +7,11 @@ import 'dart:convert';
 class LoginService extends ChangeNotifier {
   bool _isLoggedIn = false;
   String? _userEmail;
+  Map<String, dynamic>? _userInfo;
 
   bool get isLoggedIn => _isLoggedIn;
   String? get userEmail => _userEmail;
+  Map<String, dynamic>? get userInfo => _userInfo;
 
   Future<Map<String, dynamic>> loginUser(String email, String password) async {
     final url = dotenv.env['USER_FUNC_URL'];
@@ -24,6 +26,17 @@ class LoginService extends ChangeNotifier {
       final Map<String, dynamic> data = jsonDecode(response.body);
       _isLoggedIn = true;
       _userEmail = data['user']['userEmail'];
+      _userInfo = {
+        'id': data['user']['userId'],
+        'email': data['user']['userEmail'],
+        'password': data['user']['userPassword'],
+        'name': data['user']['userName'],
+        'gender': data['user']['userGender'],
+        'age': data['user']['userAge'],
+        'imgURL': data['user']['userImgURL'],
+        'money': data['user']['userMoney'],
+        'spend': data['user']['userSpend'],
+      };
       await _saveUserData(email, password);
       return {'success': true, 'data': data};
     } else {
@@ -35,6 +48,7 @@ class LoginService extends ChangeNotifier {
   Future<void> logoutUser() async {
     _isLoggedIn = false;
     _userEmail = null;
+    _userInfo = null;
     await _clearUserData();
     notifyListeners();
   }

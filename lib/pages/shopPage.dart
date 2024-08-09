@@ -13,9 +13,21 @@ class ShopPage extends StatelessWidget {
       ),
       body: Center(
         child: loginService.isLoggedIn
-            ? Text('환영합니다, ${loginService.userEmail}님!',
-                style: TextStyle(fontSize: 24))
-            : Text('로그인 후에 쇼핑할 수 있습니다.', style: TextStyle(fontSize: 24)),
+            ? Text(
+                '환영합니다, ${loginService.userInfo?['name']}님!\n'
+                '이메일: ${loginService.userInfo?['email']}\n'
+                '비밀번호: ${loginService.userInfo?['password']}\n'
+                '성별: ${loginService.userInfo?['gender']}\n'
+                '연령: ${loginService.userInfo?['age']}\n'
+                '소지금: ${loginService.userInfo?['money']}\n'
+                '소비액: ${loginService.userInfo?['spend']}\n'
+                'URL: ${loginService.userInfo?['imgURL']}',
+                style: TextStyle(fontSize: 20),
+              )
+            : Text(
+                '로그인 후에 쇼핑할 수 있습니다.',
+                style: TextStyle(fontSize: 20),
+              ),
       ),
     );
   }
