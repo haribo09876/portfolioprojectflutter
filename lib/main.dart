@@ -4,12 +4,13 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'routes.dart';
 import 'services/login.dart';
+import 'services/weather.dart';
+import 'services/vpn.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
 
-  // 자동 로그인 처리
   final prefs = await SharedPreferences.getInstance();
   final userEmail = prefs.getString('userEmail');
   final userPassword = prefs.getString('userPassword');
@@ -22,19 +23,32 @@ void main() async {
     }
   }
 
-  runApp(App(loginService: loginService));
+  runApp(App(
+    loginService: loginService,
+    weatherService: WeatherService(),
+    vpnService: VPNService(),
+  ));
 }
 
 class App extends StatelessWidget {
   final LoginService loginService;
+  final WeatherService weatherService;
+  final VPNService vpnService;
 
-  const App({Key? key, required this.loginService}) : super(key: key);
+  const App({
+    Key? key,
+    required this.loginService,
+    required this.weatherService,
+    required this.vpnService,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: loginService),
+        ChangeNotifierProvider.value(value: weatherService),
+        ChangeNotifierProvider.value(value: vpnService),
       ],
       child: MaterialApp(
         initialRoute:

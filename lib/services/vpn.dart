@@ -2,57 +2,63 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:openvpn_flutter/openvpn_flutter.dart';
 
-class VPNService {
-  late OpenVPN engine;
-  VpnStatus? status;
-  String? stage;
+class VPNService with ChangeNotifier {
+  late OpenVPN _engine;
+  VpnStatus? _status;
+  String? _stage;
+  bool _isConnected = false;
 
   VPNService() {
-    engine = OpenVPN(
+    _engine = OpenVPN(
       onVpnStatusChanged: (data) {
-        status = data;
+        _status = data;
         print("VPN Status: $data");
+        notifyListeners();
       },
       onVpnStageChanged: (data, raw) {
-        stage = raw;
+        _stage = raw;
         print("VPN Stage: $raw");
+        notifyListeners();
       },
     );
 
-    engine.initialize(
+    _engine.initialize(
       groupIdentifier: "group.com.laskarmedia.vpn",
       providerBundleIdentifier:
           "id.laskarmedia.openvpnFlutterExample.VPNExtension",
       localizedDescription: "VPN by Nizwar",
       lastStage: (stage) {
-        this.stage = stage.name;
+        _stage = stage.name;
       },
       lastStatus: (status) {
-        this.status = status;
+        _status = status;
       },
     );
   }
 
+  bool get isConnected => _isConnected;
+  VpnStatus? get status => _status;
+
   Future<void> connect() async {
-    await engine.connect(
+    await _engine.connect(
       _config,
       "VPN",
       username: _defaultVpnUsername,
       password: _defaultVpnPassword,
       certIsRequired: true,
     );
+    _isConnected = true;
+    notifyListeners();
   }
 
   void disconnect() {
-    engine.disconnect();
+    _engine.disconnect();
+    _isConnected = false;
+    notifyListeners();
   }
 
   Future<void> requestPermission() async {
-    await engine.requestPermissionAndroid();
-  }
-
-  Future<VpnStatus?> getStatus() async {
-    return status;
+    await _engine.requestPermissionAndroid();
   }
 }
 

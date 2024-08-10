@@ -1,110 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
 import 'package:weather_icons/weather_icons.dart';
-import '../services/vpn.dart';
 import '../services/weather.dart';
+import '../services/vpn.dart';
 
-class HomePage extends StatefulWidget {
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  final VPNService _vpnService = VPNService();
-  bool _vpnConnected = false;
-
-  String _city = 'Loading...';
-  List _days = [];
-  String _currentWeather = 'Loading...';
-  double _currentTemp = 0;
-  bool _locationPermission = false;
-  bool _locationSaved = false;
-  bool _isLoading = true;
-
-  final WeatherService _weatherService = WeatherService();
-
-  @override
-  void initState() {
-    super.initState();
-    _initializeWeatherData();
-  }
-
-  Future<void> _initializeWeatherData() async {
-    try {
-      Position? position = await _weatherService.getCurrentPosition();
-      if (position == null) {
-        _handleLocationError("Can't find location");
-        return;
-      }
-
-      final latitude = position.latitude;
-      final longitude = position.longitude;
-
-      final weatherData =
-          await _weatherService.fetchWeather(latitude, longitude);
-
-      setState(() {
-        _city = weatherData['city'];
-        _days = weatherData['days'];
-        _currentWeather = weatherData['currentWeather'];
-        _currentTemp = weatherData['currentTemp'];
-        _locationSaved = true;
-        _locationPermission = true;
-        _isLoading = false;
-      });
-    } catch (error) {
-      _handleLocationError("Can't find location");
-    }
-  }
-
-  void _handleLocationError(String errorMessage) {
-    setState(() {
-      _city = errorMessage;
-      _currentWeather = '';
-      _currentTemp = 0;
-      _locationSaved = false;
-      _isLoading = false;
-    });
-  }
-
-  IconData _getWeatherIcon(String weather) {
-    switch (weather) {
-      case 'Clouds':
-        return WeatherIcons.cloudy;
-      case 'Clear':
-        return WeatherIcons.day_sunny;
-      case 'Atmosphere':
-        return WeatherIcons.fog;
-      case 'Snow':
-        return WeatherIcons.snow;
-      case 'Rain':
-        return WeatherIcons.rain;
-      case 'Drizzle':
-        return WeatherIcons.showers;
-      case 'Thunderstorm':
-        return WeatherIcons.thunderstorm;
-      default:
-        return WeatherIcons.na;
-    }
-  }
-
-  void _toggleVPN() async {
-    setState(() {
-      _vpnConnected = !_vpnConnected;
-    });
-    if (_vpnConnected) {
-      await _vpnService.connect();
-    } else {
-      _vpnService.disconnect();
-    }
-  }
-
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final weatherService = Provider.of<WeatherService>(context);
+    final vpnService = Provider.of<VPNService>(context);
+
     return Scaffold(
       backgroundColor: Color(0xFF8A9DF9),
       body: SafeArea(
-        child: _isLoading
+        child: weatherService.isLoading
             ? Center(
                 child: CircularProgressIndicator(),
               )
@@ -117,7 +26,7 @@ class _HomePageState extends State<HomePage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            _city,
+                            weatherService.city,
                             style: TextStyle(
                               fontSize: 40,
                               fontWeight: FontWeight.w500,
@@ -126,13 +35,13 @@ class _HomePageState extends State<HomePage> {
                           ),
                           SizedBox(height: 20),
                           Icon(
-                            _getWeatherIcon(_currentWeather),
+                            _getWeatherIcon(weatherService.currentWeather),
                             size: 120,
                             color: Colors.white,
                           ),
                           SizedBox(height: 15),
                           Text(
-                            _currentWeather,
+                            weatherService.currentWeather,
                             style: TextStyle(
                               fontSize: 30,
                               fontWeight: FontWeight.w500,
@@ -140,7 +49,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           Text(
-                            '${(_currentTemp - 273.15).toStringAsFixed(1)} °C',
+                            '${(weatherService.currentTemp - 273.15).toStringAsFixed(1)} °C',
                             style: TextStyle(
                               fontSize: 30,
                               fontWeight: FontWeight.w500,
@@ -154,9 +63,9 @@ class _HomePageState extends State<HomePage> {
                       height: 180,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount: _days.length,
+                        itemCount: weatherService.days.length,
                         itemBuilder: (context, index) {
-                          final day = _days[index];
+                          final day = weatherService.days[index];
                           return Container(
                             width: MediaQuery.of(context).size.width / 4,
                             alignment: Alignment.center,
@@ -213,7 +122,13 @@ class _HomePageState extends State<HomePage> {
                       child: Column(
                         children: [
                           ElevatedButton(
-                            onPressed: _toggleVPN,
+                            onPressed: () async {
+                              if (vpnService.isConnected) {
+                                vpnService.disconnect();
+                              } else {
+                                await vpnService.connect();
+                              }
+                            },
                             style: ElevatedButton.styleFrom(
                               minimumSize: Size(350, 60),
                               padding: EdgeInsets.symmetric(
@@ -223,7 +138,9 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             child: Text(
-                              'VPN',
+                              vpnService.isConnected
+                                  ? 'Disconnect VPN'
+                                  : 'Connect VPN',
                               style: TextStyle(
                                 fontSize: 20,
                               ),
@@ -237,5 +154,26 @@ class _HomePageState extends State<HomePage> {
               ),
       ),
     );
+  }
+
+  IconData _getWeatherIcon(String weather) {
+    switch (weather) {
+      case 'Clouds':
+        return WeatherIcons.cloudy;
+      case 'Clear':
+        return WeatherIcons.day_sunny;
+      case 'Atmosphere':
+        return WeatherIcons.fog;
+      case 'Snow':
+        return WeatherIcons.snow;
+      case 'Rain':
+        return WeatherIcons.rain;
+      case 'Drizzle':
+        return WeatherIcons.showers;
+      case 'Thunderstorm':
+        return WeatherIcons.thunderstorm;
+      default:
+        return WeatherIcons.na;
+    }
   }
 }
