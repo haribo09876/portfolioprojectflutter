@@ -119,30 +119,53 @@ class HomePage extends StatelessWidget {
                     SizedBox(height: 15),
                     Container(
                       padding: const EdgeInsets.all(8.0),
-                      child: Column(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          ElevatedButton(
-                            onPressed: () async {
-                              if (vpnService.isConnected) {
-                                vpnService.disconnect();
-                              } else {
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () async {
                                 await vpnService.connect();
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              minimumSize: Size(350, 60),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 15),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0),
+                              },
+                              style: ElevatedButton.styleFrom(
+                                padding: EdgeInsets.symmetric(vertical: 10),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                ),
+                                backgroundColor: Colors.blueAccent,
+                                elevation: 5,
+                              ),
+                              child: Text(
+                                'VPN 연결',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
-                            child: Text(
-                              vpnService.isConnected
-                                  ? 'Disconnect VPN'
-                                  : 'Connect VPN',
-                              style: TextStyle(
-                                fontSize: 20,
+                          ),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                vpnService.disconnect();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                padding: EdgeInsets.symmetric(vertical: 10),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                ),
+                                backgroundColor: Colors.redAccent,
+                                elevation: 5,
+                              ),
+                              child: Text(
+                                'VPN 연결해제',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
