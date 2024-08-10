@@ -15,6 +15,7 @@ class ShopPage extends StatelessWidget {
         child: loginService.isLoggedIn
             ? Text(
                 '- 환영합니다, ${loginService.userInfo?['name']}님!\n'
+                '- 아이디: ${loginService.userInfo?['id']}\n'
                 '- 이메일: ${loginService.userInfo?['email']}\n'
                 '- 비밀번호: ${loginService.userInfo?['password']}\n'
                 '- 성별: ${loginService.userInfo?['gender']}\n'
