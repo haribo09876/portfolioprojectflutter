@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:openvpn_flutter/openvpn_flutter.dart';
+import 'package:get_ip_address/get_ip_address.dart';
 
 class VPNService with ChangeNotifier {
   late OpenVPN _engine;

@@ -18,15 +18,16 @@ CREATE TABLE Locations (
     locationId VARCHAR(36) PRIMARY KEY,
     userId VARCHAR(36) NOT NULL,
     locationTitle VARCHAR(255) NOT NULL,
-    latitude DECIMAL(10, 8) NOT NULL,
-    longitude DECIMAL(10, 8) NOT NULL,
+    latitude DECIMAL(9, 6) NOT NULL,
+    longitude DECIMAL(9, 6) NOT NULL,
     createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (userId) REFERENCES Users(userId)
 );
 
 -- Ips 테이블 생성
 CREATE TABLE Ips (
-    currentIp VARCHAR(36) PRIMARY KEY,
+    ipId VARCHAR(36) PRIMARY KEY,
+    currentIp VARCHAR(36) NOT NULL,
     modifiedIp VARCHAR(36) NULL,
     userId VARCHAR(36) NOT NULL,
     createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

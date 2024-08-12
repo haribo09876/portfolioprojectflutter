@@ -25,7 +25,7 @@ void main() async {
 
   runApp(App(
     loginService: loginService,
-    weatherService: WeatherService(),
+    weatherService: WeatherService(loginService),
     vpnService: VPNService(),
   ));
 }

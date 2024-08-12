@@ -103,7 +103,7 @@ class HomePage extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  '${DateTime.parse(day['dt_txt']).hour} 시',
+                                  '${DateTime.parse(day['dt_txt']).hour + 9} 시',
                                   style: TextStyle(
                                     fontSize: 18,
                                     color: Colors.white,
