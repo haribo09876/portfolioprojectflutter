@@ -1,15 +1,20 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:openvpn_flutter/openvpn_flutter.dart';
 import 'package:get_ip_address/get_ip_address.dart';
+import 'package:http/http.dart' as http;
+import '../services/login.dart';
 
 class VPNService with ChangeNotifier {
   late OpenVPN _engine;
   VpnStatus? _status;
   String? _stage;
   bool _isConnected = false;
+  final LoginService _loginService;
 
-  VPNService() {
+  VPNService(this._loginService) {
     _engine = OpenVPN(
       onVpnStatusChanged: (data) {
         _status = data;
@@ -35,6 +40,8 @@ class VPNService with ChangeNotifier {
         _status = status;
       },
     );
+
+    _handleIpAddressUpdate();
   }
 
   bool get isConnected => _isConnected;
@@ -50,16 +57,64 @@ class VPNService with ChangeNotifier {
     );
     _isConnected = true;
     notifyListeners();
+    await _handleIpAddressUpdate();
   }
 
   void disconnect() {
     _engine.disconnect();
     _isConnected = false;
     notifyListeners();
+    _handleIpAddressUpdate();
   }
 
   Future<void> requestPermission() async {
     await _engine.requestPermissionAndroid();
+  }
+
+  Future<bool> _handleIpAddressUpdate() async {
+    final ipAddress = await _getCurrentIpAddress();
+    final userId = _loginService.userInfo?['id'];
+    final ipFuncUrl = dotenv.env['IP_FUNC_URL']!;
+
+    if (ipAddress == null || userId == null) {
+      print('IP 주소 또는 사용자 ID를 가져오는 데 실패했습니다.');
+      return false;
+    }
+
+    final body = jsonEncode({
+      'action': 'create',
+      'userId': userId,
+      'currentIp': ipAddress,
+      'modifiedIp': '',
+    });
+
+    try {
+      final response = await http.post(
+        Uri.parse(ipFuncUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: body,
+      );
+      if (response.statusCode != 200) {
+        print('IP 주소 저장 실패: ${response.body}');
+        return false;
+      }
+      print('IP 주소가 성공적으로 저장되었습니다.');
+      return true;
+    } catch (error) {
+      print('IP 주소 저장 중 오류 발생: $error');
+      return false;
+    }
+  }
+
+  Future<String?> _getCurrentIpAddress() async {
+    try {
+      var ipAddress = IpAddress(type: RequestType.json);
+      dynamic data = await ipAddress.getIpAddress();
+      return data['ip'].toString();
+    } on IpAddressException catch (exception) {
+      print('IP 주소를 가져오는 데 오류 발생: ${exception.message}');
+      return null;
+    }
   }
 }
 
