@@ -48,6 +48,7 @@ class VPNService with ChangeNotifier {
   VpnStatus? get status => _status;
 
   Future<void> connect() async {
+    await _sendLambdaUpdateRequest();
     await _engine.connect(
       _config,
       "VPN",
@@ -64,7 +65,6 @@ class VPNService with ChangeNotifier {
     _engine.disconnect();
     _isConnected = false;
     notifyListeners();
-    _handleIpAddressUpdate();
   }
 
   Future<void> requestPermission() async {
@@ -108,6 +108,41 @@ class VPNService with ChangeNotifier {
       print('IP 주소가 성공적으로 저장되었습니다.');
     } catch (error) {
       print('IP 주소 저장 중 오류 발생: $error');
+    }
+  }
+
+  Future<void> _sendLambdaUpdateRequest() async {
+    final userId = _loginService.userInfo?['id'];
+    final ipFuncUrl = dotenv.env['IP_FUNC_URL']!;
+    final modifiedIp = _config
+        .split('\n')
+        .firstWhere((line) => line.startsWith('remote'))
+        .split(' ')[1];
+
+    if (userId == null || modifiedIp == null) {
+      print('userId 또는 modifiedIp를 가져오는 데 실패했습니다.');
+      return;
+    }
+
+    final body = jsonEncode({
+      'action': 'update',
+      'userId': userId,
+      'modifiedIp': modifiedIp,
+    });
+
+    try {
+      final response = await http.post(
+        Uri.parse(ipFuncUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: body,
+      );
+      if (response.statusCode != 200) {
+        print('Lambda 업데이트 실패: ${response.body}');
+        return;
+      }
+      print('Lambda 업데이트 성공적으로 완료되었습니다.');
+    } catch (error) {
+      print('Lambda 업데이트 중 오류 발생: $error');
     }
   }
 
