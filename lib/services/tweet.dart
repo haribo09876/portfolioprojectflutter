@@ -1,9 +1,9 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class Tweet extends StatefulWidget {
   final String username;
@@ -27,30 +27,32 @@ class Tweet extends StatefulWidget {
 }
 
 class _TweetState extends State<Tweet> {
-  final User? currentUser = FirebaseAuth.instance.currentUser;
-  bool modalVisible = false;
+  final String apiUrl = dotenv.env['TWEET_FUNC_URL']!;
+  final ImagePicker _picker = ImagePicker();
+  final TextEditingController _tweetController = TextEditingController();
   bool editModalVisible = false;
-  String newTweet = '';
   String? newPhoto;
-  String? imageUri;
+  File? _imageFile;
 
   @override
   void initState() {
     super.initState();
-    newTweet = widget.tweet;
-    newPhoto = widget.photo;
+    _tweetController.text = widget.tweet;
   }
 
   Future<void> deleteTweet() async {
     try {
-      await FirebaseFirestore.instance
-          .collection('tweets')
-          .doc(widget.id)
-          .delete();
-      if (widget.photo != null) {
-        final storageRef = FirebaseStorage.instance.refFromURL(widget.photo!);
-        await storageRef.delete();
-      }
+      final response = await http.post(
+        Uri.parse('$apiUrl'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'action': 'delete',
+          'tweetId': widget.id,
+          'userId': widget.userId,
+        }),
+      );
+      if (response.statusCode == 200) {
+      } else {}
     } catch (error) {
       print('Error deleting tweet: $error');
     }
@@ -58,38 +60,52 @@ class _TweetState extends State<Tweet> {
 
   Future<void> editTweet() async {
     try {
-      String? updatedPhoto = newPhoto;
-      if (imageUri != null) {
-        final reference = FirebaseStorage.instance
-            .ref('/tweets/${currentUser!.uid}/${widget.id}');
-        await reference.putFile(File(imageUri!));
-        updatedPhoto = await reference.getDownloadURL();
+      String? updatedPhoto = widget.photo;
+      if (_imageFile != null) {
+        final request = http.MultipartRequest('POST', Uri.parse('$apiUrl'))
+          ..fields['action'] = 'update'
+          ..fields['tweetId'] = widget.id
+          ..fields['tweetContents'] = _tweetController.text
+          ..files.add(await http.MultipartFile.fromPath(
+              'fileContent', _imageFile!.path));
+        final response = await request.send();
+        if (response.statusCode == 200) {
+          final responseBody = await response.stream.bytesToString();
+          final responseJson = json.decode(responseBody);
+          updatedPhoto = responseJson['fileUrl'];
+        } else {
+          // Handle error
+        }
       }
 
-      await FirebaseFirestore.instance
-          .collection('tweets')
-          .doc(widget.id)
-          .update({
-        'tweet': newTweet,
-        'photo': updatedPhoto,
-        'modifiedAt': FieldValue.serverTimestamp(),
-      });
-
-      setState(() {
-        editModalVisible = false;
-        modalVisible = false;
-      });
+      final response = await http.post(
+        Uri.parse('$apiUrl'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'action': 'update',
+          'tweetId': widget.id,
+          'tweetContents': _tweetController.text,
+          'fileContent': updatedPhoto,
+          'userId': widget.userId,
+        }),
+      );
+      if (response.statusCode == 200) {
+        setState(() {
+          editModalVisible = false;
+        });
+      } else {
+        // Handle error
+      }
     } catch (error) {
       print('Error updating tweet: $error');
     }
   }
 
-  Future<void> onFileChange() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+  Future<void> pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
-        imageUri = pickedFile.path;
+        _imageFile = File(pickedFile.path);
       });
     }
   }
@@ -97,7 +113,10 @@ class _TweetState extends State<Tweet> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => setState(() => modalVisible = true),
+      onTap: () => showDialog(
+        context: context,
+        builder: (BuildContext context) => buildTweetDialog(),
+      ),
       child: Container(
         padding: EdgeInsets.all(15),
         decoration: BoxDecoration(
@@ -132,122 +151,67 @@ class _TweetState extends State<Tweet> {
     );
   }
 
-  Widget buildModal() {
-    return Modal(
-      context: context,
-      builder: (BuildContext context) {
-        return GestureDetector(
-          onTap: () => setState(() => modalVisible = false),
-          child: Container(
-            color: Colors.black54,
-            child: Center(
-              child: GestureDetector(
-                onTap: () {},
-                child: Container(
-                  padding: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
+  Widget buildTweetDialog() {
+    return AlertDialog(
+      title: Text(widget.username),
+      content: SingleChildScrollView(
+        child: Column(
+          children: [
+            if (widget.photo != null)
+              Image.network(widget.photo!, height: 200, fit: BoxFit.cover),
+            Text(widget.tweet,
+                style: TextStyle(fontSize: 16, color: Color(0xFF666666))),
+            if (widget.userId == 'currentUserId')
+              Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.delete, color: Colors.red),
+                    onPressed: deleteTweet,
                   ),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Icon(Icons.account_circle, size: 50),
-                        Text(widget.username,
-                            style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF333333))),
-                        if (widget.photo != null)
-                          Image.network(widget.photo!,
-                              height: 200, fit: BoxFit.cover),
-                        Text(widget.tweet,
-                            style: TextStyle(
-                                fontSize: 16, color: Color(0xFF666666))),
-                        if (currentUser != null &&
-                            (currentUser!.uid == widget.userId ||
-                                currentUser!.email == 'admin@gmail.com'))
-                          Column(
-                            children: [
-                              IconButton(
-                                icon: Icon(Icons.delete),
-                                onPressed: deleteTweet,
-                                color: Colors.red,
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.edit),
-                                onPressed: () =>
-                                    setState(() => editModalVisible = true),
-                                color: Colors.blue,
-                              ),
-                            ],
-                          ),
-                      ],
+                  IconButton(
+                    icon: Icon(Icons.edit, color: Colors.blue),
+                    onPressed: () => showDialog(
+                      context: context,
+                      builder: (BuildContext context) => buildEditTweetDialog(),
                     ),
                   ),
-                ),
+                ],
               ),
-            ),
-          ),
-        );
-      },
+          ],
+        ),
+      ),
     );
   }
 
-  Widget buildEditModal() {
-    return Modal(
-      context: context,
-      builder: (BuildContext context) {
-        return GestureDetector(
-          onTap: () => setState(() => editModalVisible = false),
-          child: Container(
-            color: Colors.black54,
-            child: Center(
-              child: GestureDetector(
-                onTap: () {},
-                child: Container(
-                  padding: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Text(widget.username,
-                            style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF333333))),
-                        if (imageUri != null)
-                          Image.file(File(imageUri!),
-                              height: 200, fit: BoxFit.cover),
-                        TextField(
-                          controller: TextEditingController(text: newTweet),
-                          onChanged: (value) => newTweet = value,
-                          maxLines: null,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: 'Edit your tweet',
-                          ),
-                        ),
-                        ElevatedButton(
-                          onPressed: onFileChange,
-                          child: Text('Change Photo'),
-                        ),
-                        ElevatedButton(
-                          onPressed: editTweet,
-                          child: Text('Save'),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+  Widget buildEditTweetDialog() {
+    return AlertDialog(
+      title: Text('Edit Tweet'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: _tweetController,
+            decoration: InputDecoration(
+              hintText: 'Edit your tweet',
             ),
+            maxLines: null,
           ),
-        );
-      },
+          if (_imageFile != null)
+            Image.file(_imageFile!, height: 200, fit: BoxFit.cover),
+          Row(
+            children: [
+              ElevatedButton(
+                onPressed: pickImage,
+                child: Text('Change Photo'),
+              ),
+              ElevatedButton(
+                onPressed: editTweet,
+                child: Text('Save'),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -258,30 +222,35 @@ class TweetTimeline extends StatefulWidget {
 }
 
 class _TweetTimelineState extends State<TweetTimeline> {
-  final List<Map<String, dynamic>> tweets = [];
+  final String apiUrl = dotenv.env['TWEET_FUNC_URL']!;
+  List<Map<String, dynamic>> tweets = [];
 
   @override
   void initState() {
     super.initState();
-    FirebaseFirestore.instance
-        .collection('tweets')
-        .orderBy('createdAt', descending: true)
-        .snapshots()
-        .listen((querySnapshot) {
-      setState(() {
-        tweets.clear();
-        for (var doc in querySnapshot.docs) {
-          tweets.add({
-            'id': doc.id,
-            'username': doc['username'],
-            'tweet': doc['tweet'],
-            'photo': doc['photo'],
-            'userId': doc['userId'],
-            'createdAt': doc['createdAt']?.toDate(),
-          });
-        }
-      });
-    });
+    fetchTweets();
+  }
+
+  Future<void> fetchTweets() async {
+    try {
+      final response = await http.get(Uri.parse('$apiUrl?action=read'));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body) as List;
+        setState(() {
+          tweets = data
+              .map((tweet) => {
+                    'id': tweet['tweetId'],
+                    'username': tweet['userId'],
+                    'tweet': tweet['tweetContents'],
+                    'photo': tweet['tweetImgURL'],
+                    'userId': tweet['userId'],
+                  })
+              .toList();
+        });
+      } else {}
+    } catch (error) {
+      print('Error fetching tweets: $error');
+    }
   }
 
   @override

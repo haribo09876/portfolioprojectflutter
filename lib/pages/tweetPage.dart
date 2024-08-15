@@ -1,6 +1,9 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class TweetPage extends StatefulWidget {
   @override
@@ -12,6 +15,7 @@ class _TweetPageState extends State<TweetPage> {
   String tweet = '';
   File? file;
   final ImagePicker _picker = ImagePicker();
+  final String apiUrl = dotenv.env['TWEET_FUNC_URL'] ?? '';
 
   void onChange(String text) {
     setState(() {
@@ -29,33 +33,29 @@ class _TweetPageState extends State<TweetPage> {
           actions: [
             TextButton(
               onPressed: () async {
-                Navigator.of(context).pop();
-                final pickedFile = await _picker.pickImage(
-                    source: ImageSource.camera,
-                    imageQuality: 50,
-                    maxWidth: 600);
+                final pickedFile =
+                    await _picker.pickImage(source: ImageSource.camera);
                 if (pickedFile != null) {
                   setState(() {
                     file = File(pickedFile.path);
                   });
                 }
+                Navigator.of(context).pop();
               },
-              child: Text('Take Photo'),
+              child: Text('Camera'),
             ),
             TextButton(
               onPressed: () async {
-                Navigator.of(context).pop();
-                final pickedFile = await _picker.pickImage(
-                    source: ImageSource.gallery,
-                    imageQuality: 50,
-                    maxWidth: 600);
+                final pickedFile =
+                    await _picker.pickImage(source: ImageSource.gallery);
                 if (pickedFile != null) {
                   setState(() {
                     file = File(pickedFile.path);
                   });
                 }
+                Navigator.of(context).pop();
               },
-              child: Text('Choose from Library'),
+              child: Text('Gallery'),
             ),
           ],
         );
@@ -63,96 +63,66 @@ class _TweetPageState extends State<TweetPage> {
     );
   }
 
-  void clearFile() {
-    setState(() {
-      file = null;
-    });
-  }
-
-  void onSubmit() {
-    if (tweet.isEmpty || isLoading || tweet.length > 180) {
-      return;
-    }
-
+  Future<void> postTweet() async {
     setState(() {
       isLoading = true;
     });
 
+    final requestPayload = {
+      'action': 'create',
+      'tweetContents': tweet,
+    };
+
+    if (file != null) {
+      final imageBytes = await file!.readAsBytes();
+      requestPayload['fileContent'] = base64Encode(imageBytes);
+    }
+
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(requestPayload),
+    );
+
     setState(() {
-      tweet = '';
-      file = null;
       isLoading = false;
     });
 
-    Navigator.of(context).pop();
+    if (response.statusCode == 200) {
+      // Handle success
+      Navigator.pop(context);
+    } else {
+      print('Error posting tweet: ${response.body}');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tweet Page'),
+        title: Text('Create Tweet'),
       ),
-      body: Center(
+      body: Padding(
+        padding: EdgeInsets.all(10),
         child: Column(
           children: [
+            TextField(
+              onChanged: onChange,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'What\'s on your mind?',
+              ),
+            ),
+            SizedBox(height: 10),
+            if (file != null) Image.file(file!, height: 200, fit: BoxFit.cover),
             ElevatedButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return Dialog(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            TextField(
-                              maxLength: 180,
-                              maxLines: 5,
-                              onChanged: onChange,
-                              decoration: InputDecoration(
-                                hintText: '내용을 입력하세요',
-                                border: OutlineInputBorder(),
-                              ),
-                            ),
-                            if (file != null)
-                              Column(
-                                children: [
-                                  Image.file(file!),
-                                  TextButton(
-                                    onPressed: clearFile,
-                                    child: Text('Remove Image'),
-                                  ),
-                                ],
-                              ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                ElevatedButton(
-                                  onPressed: onFileChange,
-                                  child: Text('Add photo'),
-                                ),
-                                ElevatedButton(
-                                  onPressed: onSubmit,
-                                  child: isLoading
-                                      ? CircularProgressIndicator(
-                                          valueColor:
-                                              AlwaysStoppedAnimation<Color>(
-                                                  Colors.white),
-                                        )
-                                      : Text('Post Tweet'),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-              child: Text('새 Tweet 추가'),
+              onPressed: onFileChange,
+              child: Text('Select Image'),
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: postTweet,
+              child: isLoading ? CircularProgressIndicator() : Text('Post'),
             ),
           ],
         ),
