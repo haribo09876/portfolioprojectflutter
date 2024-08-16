@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
+import './login.dart';
 
 class Tweet extends StatefulWidget {
   final String username;
@@ -42,13 +44,14 @@ class _TweetState extends State<Tweet> {
 
   Future<void> deleteTweet() async {
     try {
+      final loginService = Provider.of<LoginService>(context, listen: false);
       final response = await http.post(
         Uri.parse('$apiUrl'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
           'action': 'delete',
           'tweetId': widget.id,
-          'userId': widget.userId,
+          'userId': loginService.userInfo?['id'],
         }),
       );
       if (response.statusCode == 200) {
@@ -60,6 +63,7 @@ class _TweetState extends State<Tweet> {
 
   Future<void> editTweet() async {
     try {
+      final loginService = Provider.of<LoginService>(context, listen: false);
       String? updatedPhoto = widget.photo;
       if (_imageFile != null) {
         final request = http.MultipartRequest('POST', Uri.parse('$apiUrl'))
@@ -73,9 +77,7 @@ class _TweetState extends State<Tweet> {
           final responseBody = await response.stream.bytesToString();
           final responseJson = json.decode(responseBody);
           updatedPhoto = responseJson['fileUrl'];
-        } else {
-          // Handle error
-        }
+        } else {}
       }
 
       final response = await http.post(
@@ -86,16 +88,14 @@ class _TweetState extends State<Tweet> {
           'tweetId': widget.id,
           'tweetContents': _tweetController.text,
           'fileContent': updatedPhoto,
-          'userId': widget.userId,
+          'userId': loginService.userInfo?['id'],
         }),
       );
       if (response.statusCode == 200) {
         setState(() {
           editModalVisible = false;
         });
-      } else {
-        // Handle error
-      }
+      } else {}
     } catch (error) {
       print('Error updating tweet: $error');
     }
@@ -152,6 +152,7 @@ class _TweetState extends State<Tweet> {
   }
 
   Widget buildTweetDialog() {
+    final loginService = Provider.of<LoginService>(context);
     return AlertDialog(
       title: Text(widget.username),
       content: SingleChildScrollView(
@@ -161,7 +162,7 @@ class _TweetState extends State<Tweet> {
               Image.network(widget.photo!, height: 200, fit: BoxFit.cover),
             Text(widget.tweet,
                 style: TextStyle(fontSize: 16, color: Color(0xFF666666))),
-            if (widget.userId == 'currentUserId')
+            if (widget.userId == loginService.userInfo?['id'])
               Row(
                 children: [
                   IconButton(

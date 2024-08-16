@@ -1,9 +1,6 @@
 import 'dart:io';
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class TweetPage extends StatefulWidget {
   @override
@@ -11,51 +8,137 @@ class TweetPage extends StatefulWidget {
 }
 
 class _TweetPageState extends State<TweetPage> {
-  bool isLoading = false;
-  String tweet = '';
-  File? file;
+  bool _isLoading = false;
+  final TextEditingController _tweetController = TextEditingController();
+  XFile? _file;
   final ImagePicker _picker = ImagePicker();
-  final String apiUrl = dotenv.env['TWEET_FUNC_URL'] ?? '';
 
-  void onChange(String text) {
-    setState(() {
-      tweet = text;
-    });
+  @override
+  void dispose() {
+    _tweetController.dispose();
+    super.dispose();
   }
 
-  Future<void> onFileChange() async {
-    showDialog(
+  Future<void> _onFileChange() async {
+    final ImageSource? source = await showDialog<ImageSource>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Select Image Source'),
-          content: Text('Choose an option'),
-          actions: [
+          content: Text('Choose how you want to add a photo.'),
+          actions: <Widget>[
             TextButton(
-              onPressed: () async {
-                final pickedFile =
-                    await _picker.pickImage(source: ImageSource.camera);
-                if (pickedFile != null) {
-                  setState(() {
-                    file = File(pickedFile.path);
-                  });
-                }
-                Navigator.of(context).pop();
-              },
-              child: Text('Camera'),
+              child: Text('Take Photo'),
+              onPressed: () => Navigator.pop(context, ImageSource.camera),
             ),
             TextButton(
-              onPressed: () async {
-                final pickedFile =
-                    await _picker.pickImage(source: ImageSource.gallery);
-                if (pickedFile != null) {
-                  setState(() {
-                    file = File(pickedFile.path);
-                  });
-                }
-                Navigator.of(context).pop();
-              },
-              child: Text('Gallery'),
+              child: Text('Choose from Library'),
+              onPressed: () => Navigator.pop(context, ImageSource.gallery),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (source != null) {
+      final XFile? selectedImage = await _picker.pickImage(source: source);
+      if (selectedImage != null) {
+        setState(() {
+          _file = selectedImage;
+        });
+      }
+    }
+  }
+
+  void _clearFile() {
+    setState(() {
+      _file = null;
+    });
+  }
+
+  void _onSubmit() async {
+    final tweet = _tweetController.text;
+
+    if (tweet.isEmpty || tweet.length > 180) {
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    setState(() {
+      _tweetController.clear();
+      _file = null;
+      _isLoading = false;
+    });
+
+    Navigator.of(context).pop();
+  }
+
+  void _showTweetDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: EdgeInsets.all(16),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Add Tweet'),
+              IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextField(
+                controller: _tweetController,
+                maxLength: 180,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'What’s happening?',
+                  counterText: '',
+                ),
+                maxLines: 5,
+              ),
+              if (_file != null) ...[
+                SizedBox(height: 16),
+                Image.file(
+                  File(_file!.path),
+                  height: 200,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+                TextButton(
+                  onPressed: _clearFile,
+                  child:
+                      Text('Remove Image', style: TextStyle(color: Colors.red)),
+                ),
+              ],
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: _onFileChange,
+              child: Text('Add photo', style: TextStyle(color: Colors.blue)),
+            ),
+            ElevatedButton(
+              onPressed: _isLoading ? null : _onSubmit,
+              child: Text(
+                _isLoading ? 'Posting...' : 'Post Tweet',
+                style: TextStyle(color: Colors.white),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
             ),
           ],
         );
@@ -63,69 +146,15 @@ class _TweetPageState extends State<TweetPage> {
     );
   }
 
-  Future<void> postTweet() async {
-    setState(() {
-      isLoading = true;
-    });
-
-    final requestPayload = {
-      'action': 'create',
-      'tweetContents': tweet,
-    };
-
-    if (file != null) {
-      final imageBytes = await file!.readAsBytes();
-      requestPayload['fileContent'] = base64Encode(imageBytes);
-    }
-
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(requestPayload),
-    );
-
-    setState(() {
-      isLoading = false;
-    });
-
-    if (response.statusCode == 200) {
-      // Handle success
-      Navigator.pop(context);
-    } else {
-      print('Error posting tweet: ${response.body}');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Create Tweet'),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(10),
-        child: Column(
-          children: [
-            TextField(
-              onChanged: onChange,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'What\'s on your mind?',
-              ),
-            ),
-            SizedBox(height: 10),
-            if (file != null) Image.file(file!, height: 200, fit: BoxFit.cover),
-            ElevatedButton(
-              onPressed: onFileChange,
-              child: Text('Select Image'),
-            ),
-            SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: postTweet,
-              child: isLoading ? CircularProgressIndicator() : Text('Post'),
-            ),
-          ],
-        ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _showTweetDialog,
+        child: Icon(Icons.add, color: Colors.white),
+        backgroundColor: Colors.blue,
+        tooltip: 'Add Tweet',
+        elevation: 6.0,
       ),
     );
   }
