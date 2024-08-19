@@ -61,6 +61,8 @@ class _TweetPageState extends State<TweetPage> {
       setState(() {
         _imageFile = File(pickedFile.path);
       });
+      Navigator.of(context).pop();
+      _showTweetDialog();
     }
   }
 
@@ -93,71 +95,77 @@ class _TweetPageState extends State<TweetPage> {
                   ),
                 ],
               ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    controller: _tweetController,
-                    decoration: InputDecoration(
-                      hintText: 'What’s happening?',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+              content: SizedBox(
+                width: double.maxFinite,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: _tweetController,
+                      decoration: InputDecoration(
+                        hintText: 'What’s happening?',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                       ),
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                      maxLines: 3,
+                      keyboardType: TextInputType.multiline,
                     ),
-                    maxLines: 3,
-                    keyboardType: TextInputType.multiline,
-                  ),
-                  SizedBox(height: 10),
-                  _imageFile == null
-                      ? Container()
-                      : Stack(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: Image.file(
-                                _imageFile!,
-                                height: 200,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                              ),
+                    SizedBox(height: 10),
+                    if (_imageFile != null)
+                      Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.file(
+                              _imageFile!,
+                              height: 200,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
                             ),
-                            Positioned(
-                              right: 0,
-                              top: 0,
-                              child: IconButton(
-                                icon: Icon(Icons.cancel,
-                                    color: Colors.red, size: 30),
-                                onPressed: _cancelImageAttachment,
-                              ),
-                            ),
-                          ],
-                        ),
-                  SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.photo, color: Colors.blue),
-                        onPressed: _pickImage,
-                      ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
                           ),
-                        ),
-                        onPressed: () {
-                          _postTweet();
-                          Navigator.of(context).pop();
-                        },
-                        child: Text('Tweet'),
+                          Positioned(
+                            right: 0,
+                            top: 0,
+                            child: IconButton(
+                              icon: Icon(Icons.cancel,
+                                  color: Colors.red, size: 30),
+                              onPressed: () {
+                                _cancelImageAttachment();
+                                Navigator.of(context).pop();
+                                _showTweetDialog();
+                              },
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ],
+                    SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.photo, color: Colors.blue),
+                          onPressed: _pickImage,
+                        ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          onPressed: () {
+                            _postTweet();
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('Tweet'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             );
           },
