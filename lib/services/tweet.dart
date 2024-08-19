@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -39,7 +38,11 @@ class TweetService {
 
   Future<List<Map<String, dynamic>>> tweetRead() async {
     try {
-      final response = await http.get(Uri.parse('$apiUrl?action=read'));
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({'action': 'read'}),
+      );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return (data as List)

@@ -77,12 +77,16 @@ class _TweetPageState extends State<TweetPage> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Post a Tweet'),
+                  Text('Tweet',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   IconButton(
-                    icon: Icon(Icons.close),
+                    icon: Icon(Icons.close, color: Colors.grey),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -95,48 +99,56 @@ class _TweetPageState extends State<TweetPage> {
                   TextField(
                     controller: _tweetController,
                     decoration: InputDecoration(
-                      hintText: 'What\'s happening?',
+                      hintText: 'What’s happening?',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                     ),
                     maxLines: 3,
+                    keyboardType: TextInputType.multiline,
                   ),
                   SizedBox(height: 10),
                   _imageFile == null
                       ? Container()
                       : Stack(
                           children: [
-                            Image.file(
-                              _imageFile!,
-                              height: 200,
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Image.file(
+                                _imageFile!,
+                                height: 200,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                             Positioned(
                               right: 0,
+                              top: 0,
                               child: IconButton(
-                                icon: Icon(Icons.cancel, color: Colors.red),
-                                onPressed: () {
-                                  setState(() {
-                                    _cancelImageAttachment();
-                                  });
-                                },
+                                icon: Icon(Icons.cancel,
+                                    color: Colors.red, size: 30),
+                                onPressed: _cancelImageAttachment,
                               ),
                             ),
                           ],
                         ),
+                  SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.photo),
-                        onPressed: () async {
-                          final pickedFile = await _picker.pickImage(
-                              source: ImageSource.gallery);
-                          if (pickedFile != null) {
-                            setState(() {
-                              _imageFile = File(pickedFile.path);
-                            });
-                          }
-                        },
+                        icon: Icon(Icons.photo, color: Colors.blue),
+                        onPressed: _pickImage,
                       ),
                       ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
                         onPressed: () {
                           _postTweet();
                           Navigator.of(context).pop();
@@ -158,39 +170,57 @@ class _TweetPageState extends State<TweetPage> {
   Widget build(BuildContext context) {
     final loginService = Provider.of<LoginService>(context);
     return Scaffold(
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ElevatedButton(
-                  onPressed: _showTweetDialog,
-                  child: Text('Tweet'),
+      body: RefreshIndicator(
+        onRefresh: fetchTweets,
+        child: ListView.builder(
+          itemCount: tweets.length,
+          itemBuilder: (context, index) {
+            final tweet = tweets[index];
+            return Card(
+              margin: EdgeInsets.all(8.0),
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+              child: ListTile(
+                contentPadding: EdgeInsets.all(16.0),
+                leading: CircleAvatar(
+                  backgroundImage: NetworkImage(tweet['userProfilePic'] ??
+                      'https://via.placeholder.com/150'),
+                  radius: 25,
                 ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: tweets.length,
-              itemBuilder: (context, index) {
-                final tweet = tweets[index];
-                return ListTile(
-                  title: Text(tweet['tweet']),
-                  subtitle: Text(tweet['username']),
-                  trailing: tweet['photo'] != null
-                      ? Image.network(tweet['photo'])
-                      : null,
-                  onTap: () {
-                    // 트윗 수정 또는 삭제 코드 추가 가능
-                  },
-                );
-              },
-            ),
-          ),
-        ],
+                title: Text(tweet['username'],
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 4),
+                    Text(tweet['tweet']),
+                    if (tweet['photo'] != null) SizedBox(height: 10),
+                    if (tweet['photo'] != null)
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.network(tweet['photo'],
+                            width: double.infinity,
+                            height: 150,
+                            fit: BoxFit.cover),
+                      ),
+                    SizedBox(height: 6),
+                    Text(
+                      tweet['timestamp'] ?? '',
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                  ],
+                ),
+                isThreeLine: true,
+              ),
+            );
+          },
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _showTweetDialog,
+        backgroundColor: Colors.blue,
+        child: Icon(Icons.add, color: Colors.white),
       ),
     );
   }
