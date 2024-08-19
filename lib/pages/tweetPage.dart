@@ -174,9 +174,42 @@ class _TweetPageState extends State<TweetPage> {
     );
   }
 
+  Future<void> _editTweet(String tweetId, String tweetContents) async {
+    final loginService = Provider.of<LoginService>(context, listen: false);
+    final userId = loginService.userInfo?['id'] ?? '';
+
+    try {
+      await TweetService().tweetUpdate(
+        tweetId,
+        userId,
+        tweetContents,
+        _imageFile != null ? XFile(_imageFile!.path) : null,
+      );
+      print('Tweet updated successfully');
+      fetchTweets();
+    } catch (error) {
+      print('Error updating tweet: $error');
+    }
+  }
+
+  Future<void> _deleteTweet(String tweetId) async {
+    final loginService = Provider.of<LoginService>(context, listen: false);
+    final userId = loginService.userInfo?['id'] ?? '';
+
+    try {
+      await TweetService().tweetDelete(tweetId, userId);
+      print('Tweet deleted successfully');
+      fetchTweets();
+    } catch (error) {
+      print('Error deleting tweet: $error');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final loginService = Provider.of<LoginService>(context);
+    final currentUserId = loginService.userInfo?['id'] ?? '';
+
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: fetchTweets,
@@ -184,6 +217,8 @@ class _TweetPageState extends State<TweetPage> {
           itemCount: tweets.length,
           itemBuilder: (context, index) {
             final tweet = tweets[index];
+            final isOwnTweet = tweet['userId'] == currentUserId;
+
             return Card(
               margin: EdgeInsets.all(8.0),
               elevation: 4,
@@ -220,6 +255,80 @@ class _TweetPageState extends State<TweetPage> {
                   ],
                 ),
                 isThreeLine: true,
+                trailing: isOwnTweet
+                    ? Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.edit, color: Colors.blue),
+                            onPressed: () {
+                              // 트윗 수정 다이얼로그를 띄웁니다.
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text('Edit Tweet'),
+                                    content: TextField(
+                                      controller: TextEditingController(
+                                          text: tweet['tweet']),
+                                      decoration: InputDecoration(
+                                          hintText: 'Update your tweet'),
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text('Cancel'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () async {
+                                          await _editTweet(
+                                              tweet['id'], tweet['tweet']);
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text('Update'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.delete, color: Colors.red),
+                            onPressed: () {
+                              // 트윗 삭제 확인 다이얼로그를 띄웁니다.
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text('Delete Tweet'),
+                                    content: Text(
+                                        'Are you sure you want to delete this tweet?'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text('Cancel'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () async {
+                                          await _deleteTweet(tweet['id']);
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text('Delete'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        ],
+                      )
+                    : null,
               ),
             );
           },
