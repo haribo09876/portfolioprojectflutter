@@ -262,7 +262,6 @@ class _TweetPageState extends State<TweetPage> {
                           IconButton(
                             icon: Icon(Icons.edit, color: Colors.blue),
                             onPressed: () {
-                              // 트윗 수정 다이얼로그를 띄웁니다.
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
@@ -298,7 +297,6 @@ class _TweetPageState extends State<TweetPage> {
                           IconButton(
                             icon: Icon(Icons.delete, color: Colors.red),
                             onPressed: () {
-                              // 트윗 삭제 확인 다이얼로그를 띄웁니다.
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
