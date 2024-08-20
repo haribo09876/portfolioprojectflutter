@@ -48,9 +48,10 @@ class TweetService {
         return (data as List)
             .map((tweet) => {
                   'id': tweet['tweetId'],
-                  'username': tweet['userId'],
+                  'username': tweet['userName'],
                   'tweet': tweet['tweetContents'],
                   'photo': tweet['tweetImgURL'],
+                  'userImgURL': tweet['userImgURL'],
                   'userId': tweet['userId'],
                 })
             .toList();

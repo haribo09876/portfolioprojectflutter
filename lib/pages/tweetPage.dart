@@ -76,99 +76,98 @@ class _TweetPageState extends State<TweetPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            return AlertDialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16)),
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Tweet',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  IconButton(
-                    icon: Icon(Icons.close, color: Colors.grey),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Tweet',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+              IconButton(
+                icon: Icon(Icons.close, color: Colors.black54),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
               ),
-              content: SizedBox(
-                width: double.maxFinite,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextField(
-                      controller: _tweetController,
-                      decoration: InputDecoration(
-                        hintText: 'What’s happening?',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                      ),
-                      maxLines: 3,
-                      keyboardType: TextInputType.multiline,
+            ],
+          ),
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.9,
+            height: MediaQuery.of(context).size.height * 0.5,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: _tweetController,
+                  decoration: InputDecoration(
+                    hintText: 'What’s happening?',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    SizedBox(height: 10),
-                    if (_imageFile != null)
-                      Stack(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image.file(
-                              _imageFile!,
-                              height: 200,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Positioned(
-                            right: 0,
-                            top: 0,
-                            child: IconButton(
-                              icon: Icon(Icons.cancel,
-                                  color: Colors.red, size: 30),
-                              onPressed: () {
-                                _cancelImageAttachment();
-                                Navigator.of(context).pop();
-                                _showTweetDialog();
-                              },
-                            ),
-                          ),
-                        ],
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 12, horizontal: 15),
+                  ),
+                  maxLines: 11,
+                  keyboardType: TextInputType.multiline,
+                ),
+                SizedBox(height: 10),
+                if (_imageFile != null)
+                  Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.file(
+                          _imageFile!,
+                          height: 200,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                    SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.photo, color: Colors.blue),
-                          onPressed: _pickImage,
-                        ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                          ),
+                      Positioned(
+                        right: 10,
+                        top: 10,
+                        child: IconButton(
+                          icon: Icon(Icons.cancel, color: Colors.red, size: 30),
                           onPressed: () {
-                            _postTweet();
+                            _cancelImageAttachment();
                             Navigator.of(context).pop();
+                            _showTweetDialog();
                           },
-                          child: Text('Tweet'),
                         ),
-                      ],
+                      ),
+                    ],
+                  ),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.photo, color: Colors.blue),
+                      onPressed: _pickImage,
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      onPressed: () {
+                        _postTweet();
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                        'Tweet',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ],
                 ),
-              ),
-            );
-          },
+              ],
+            ),
+          ),
         );
       },
     );
@@ -205,6 +204,170 @@ class _TweetPageState extends State<TweetPage> {
     }
   }
 
+  void _showTweetDetailDialog(Map<String, dynamic> tweet) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                tweet['username'],
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
+              ),
+              IconButton(
+                icon: Icon(Icons.close, color: Colors.black54),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.9,
+            height: MediaQuery.of(context).size.height * 0.6,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (tweet['photo'] != null)
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(
+                      tweet['photo'],
+                      width: double.infinity,
+                      height: 150,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                SizedBox(height: 30),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    tweet['tweet'],
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  tweet['timestamp'] ?? '',
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+                SizedBox(height: 20),
+                if (tweet['userId'] ==
+                    Provider.of<LoginService>(context, listen: false)
+                        .userInfo?['id'])
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.edit_outlined, color: Colors.blue),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          _showEditTweetDialog(tweet);
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete_outline, color: Colors.red),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          _showDeleteConfirmationDialog(tweet['id']);
+                        },
+                      ),
+                    ],
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showEditTweetDialog(Map<String, dynamic> tweet) {
+    final controller = TextEditingController(text: tweet['tweet']);
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Text('Edit Tweet', style: TextStyle(fontSize: 22)),
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.9,
+            height: MediaQuery.of(context).size.height * 0.4,
+            child: TextField(
+              controller: controller,
+              decoration: InputDecoration(
+                hintText: 'Update your tweet',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              maxLines: 3,
+              keyboardType: TextInputType.multiline,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel', style: TextStyle(color: Colors.black54)),
+            ),
+            TextButton(
+              onPressed: () async {
+                await _editTweet(tweet['id'], controller.text);
+                Navigator.of(context).pop();
+              },
+              child: Text('Update', style: TextStyle(color: Colors.blue)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showDeleteConfirmationDialog(String tweetId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Text('Delete Tweet', style: TextStyle(fontSize: 22)),
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.9,
+            height: MediaQuery.of(context).size.height * 0.3,
+            child: Center(
+              child: Text('Are you sure you want to delete this tweet?'),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel', style: TextStyle(color: Colors.black54)),
+            ),
+            TextButton(
+              onPressed: () async {
+                await _deleteTweet(tweetId);
+                Navigator.of(context).pop();
+              },
+              child: Text('Delete', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final loginService = Provider.of<LoginService>(context);
@@ -219,114 +382,55 @@ class _TweetPageState extends State<TweetPage> {
             final tweet = tweets[index];
             final isOwnTweet = tweet['userId'] == currentUserId;
 
-            return Card(
-              margin: EdgeInsets.all(8.0),
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
-              child: ListTile(
-                contentPadding: EdgeInsets.all(16.0),
-                leading: CircleAvatar(
-                  backgroundImage: NetworkImage(tweet['userProfilePic'] ??
-                      'https://via.placeholder.com/150'),
-                  radius: 25,
-                ),
-                title: Text(tweet['username'],
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 4),
-                    Text(tweet['tweet']),
-                    if (tweet['photo'] != null) SizedBox(height: 10),
-                    if (tweet['photo'] != null)
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.network(tweet['photo'],
-                            width: double.infinity,
-                            height: 150,
-                            fit: BoxFit.cover),
+            return GestureDetector(
+              onTap: () => _showTweetDetailDialog(tweet),
+              child: Card(
+                margin: EdgeInsets.all(8.0),
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                child: ListTile(
+                  contentPadding: EdgeInsets.all(16.0),
+                  leading: tweet['userImgURL'] != null &&
+                          tweet['userImgURL'] != ''
+                      ? CircleAvatar(
+                          backgroundImage: NetworkImage(tweet['userImgURL']!),
+                          radius: 25,
+                        )
+                      : CircleAvatar(
+                          child: Icon(Icons.account_circle_outlined,
+                              color: Colors.grey, size: 30),
+                          radius: 25,
+                        ),
+                  title: Text(tweet['username'],
+                      style:
+                          TextStyle(fontSize: 25, fontWeight: FontWeight.w400)),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 5),
+                      Text(
+                        tweet['tweet'],
+                        style: TextStyle(fontSize: 18),
                       ),
-                    SizedBox(height: 6),
-                    Text(
-                      tweet['timestamp'] ?? '',
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                  ],
+                      if (tweet['photo'] != null) SizedBox(height: 10),
+                      if (tweet['photo'] != null)
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.network(tweet['photo'],
+                              width: double.infinity,
+                              height: 150,
+                              fit: BoxFit.cover),
+                        ),
+                      SizedBox(height: 6),
+                      Text(
+                        tweet['timestamp'] ?? '',
+                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                  isThreeLine: true,
                 ),
-                isThreeLine: true,
-                trailing: isOwnTweet
-                    ? Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.edit, color: Colors.blue),
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text('Edit Tweet'),
-                                    content: TextField(
-                                      controller: TextEditingController(
-                                          text: tweet['tweet']),
-                                      decoration: InputDecoration(
-                                          hintText: 'Update your tweet'),
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Text('Cancel'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () async {
-                                          await _editTweet(
-                                              tweet['id'], tweet['tweet']);
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Text('Update'),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            },
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.delete, color: Colors.red),
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text('Delete Tweet'),
-                                    content: Text(
-                                        'Are you sure you want to delete this tweet?'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Text('Cancel'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () async {
-                                          await _deleteTweet(tweet['id']);
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Text('Delete'),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            },
-                          ),
-                        ],
-                      )
-                    : null,
               ),
             );
           },
