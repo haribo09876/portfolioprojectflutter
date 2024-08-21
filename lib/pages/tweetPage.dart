@@ -115,7 +115,7 @@ class _TweetPageState extends State<TweetPage> {
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 12, horizontal: 15),
                   ),
-                  maxLines: 5,
+                  maxLines: null,
                   keyboardType: TextInputType.multiline,
                 ),
                 SizedBox(height: 10),
@@ -329,7 +329,7 @@ class _TweetPageState extends State<TweetPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  maxLines: 5,
+                  maxLines: null,
                   keyboardType: TextInputType.multiline,
                 ),
                 SizedBox(height: 10),
