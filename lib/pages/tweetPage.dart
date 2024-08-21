@@ -109,7 +109,7 @@ class _TweetPageState extends State<TweetPage> {
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 12, horizontal: 15),
                   ),
-                  maxLines: 10,
+                  maxLines: 5,
                   keyboardType: TextInputType.multiline,
                 ),
                 SizedBox(height: 10),
@@ -289,6 +289,18 @@ class _TweetPageState extends State<TweetPage> {
 
   void _showEditTweetDialog(Map<String, dynamic> tweet) {
     final controller = TextEditingController(text: tweet['tweet']);
+    File? _newImageFile = null;
+    String? existingImageUrl = tweet['photo'];
+
+    void _pickImage() async {
+      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        setState(() {
+          _newImageFile = File(pickedFile.path);
+        });
+      }
+    }
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -299,34 +311,103 @@ class _TweetPageState extends State<TweetPage> {
           title: Text('Edit Tweet', style: TextStyle(fontSize: 22)),
           content: SizedBox(
             width: MediaQuery.of(context).size.width * 0.9,
-            height: MediaQuery.of(context).size.height * 0.4,
-            child: TextField(
-              controller: controller,
-              decoration: InputDecoration(
-                hintText: 'Update your tweet',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+            height: MediaQuery.of(context).size.height * 0.6,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: controller,
+                  decoration: InputDecoration(
+                    hintText: 'Update your tweet',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  maxLines: 5,
+                  keyboardType: TextInputType.multiline,
                 ),
-              ),
-              maxLines: 3,
-              keyboardType: TextInputType.multiline,
+                SizedBox(height: 10),
+                if (_newImageFile != null || existingImageUrl != null)
+                  Stack(
+                    children: [
+                      if (_newImageFile != null)
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.file(
+                            _newImageFile!,
+                            height: 200,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      else if (existingImageUrl != null)
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.network(
+                            existingImageUrl!,
+                            height: 200,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      Positioned(
+                        right: 10,
+                        top: 10,
+                        child: IconButton(
+                          icon: Icon(Icons.cancel, color: Colors.red, size: 30),
+                          onPressed: () {
+                            setState(() {
+                              _newImageFile = null;
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.photo, color: Colors.blue),
+                      onPressed: _pickImage,
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      onPressed: () async {
+                        final tweetService = TweetService();
+                        final userId =
+                            Provider.of<LoginService>(context, listen: false)
+                                    .userInfo?['id'] ??
+                                '';
+                        String? imageUrl =
+                            _newImageFile != null ? null : existingImageUrl;
+                        await tweetService.tweetUpdate(
+                          tweet['id'],
+                          userId,
+                          controller.text,
+                          _newImageFile != null
+                              ? XFile(_newImageFile!.path)
+                              : null,
+                        );
+                        Navigator.of(context).pop();
+                        fetchTweets();
+                      },
+                      child: Text(
+                        'Update',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancel', style: TextStyle(color: Colors.black54)),
-            ),
-            TextButton(
-              onPressed: () async {
-                await _editTweet(tweet['id'], controller.text);
-                Navigator.of(context).pop();
-              },
-              child: Text('Update', style: TextStyle(color: Colors.blue)),
-            ),
-          ],
         );
       },
     );
