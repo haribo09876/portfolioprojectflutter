@@ -462,7 +462,7 @@ class _TweetPageState extends State<TweetPage> {
 
     return Scaffold(
       body: loading
-          ? Center(child: CircularProgressIndicator()) // 로딩 중일 때 보여줄 위젯
+          ? Center(child: CircularProgressIndicator())
           : RefreshIndicator(
               onRefresh: fetchTweets,
               child: ListView.builder(
