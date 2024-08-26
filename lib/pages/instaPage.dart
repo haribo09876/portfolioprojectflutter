@@ -135,7 +135,14 @@ class _InstaPageState extends State<InstaPage> {
     );
   }
 
+  void _showEditInstaDialog(Map<String, dynamic> insta) {}
+
+  void _showDeleteConfirmationDialog(String instaId) {}
+
   void _showInstaPostDialog(Map<String, dynamic> insta) {
+    final loginService = Provider.of<LoginService>(context, listen: false);
+    final userId = loginService.userInfo?['id'] ?? '';
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -168,6 +175,27 @@ class _InstaPageState extends State<InstaPage> {
                 insta['instaContents'],
                 textAlign: TextAlign.left,
               ),
+              SizedBox(height: 20),
+              if (insta['userId'] == userId)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.edit_outlined, color: Colors.blue),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        _showEditInstaDialog(insta);
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.delete_outline, color: Colors.red),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        _showDeleteConfirmationDialog(insta['id']);
+                      },
+                    ),
+                  ],
+                ),
             ],
           ),
         );

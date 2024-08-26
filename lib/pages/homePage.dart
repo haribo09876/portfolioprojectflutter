@@ -185,6 +185,8 @@ class HomePage extends StatelessWidget {
         return WeatherIcons.cloudy;
       case 'Clear':
         return WeatherIcons.day_sunny;
+      case 'Mist':
+        return WeatherIcons.sprinkle;
       case 'Atmosphere':
         return WeatherIcons.fog;
       case 'Snow':
