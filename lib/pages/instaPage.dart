@@ -67,15 +67,7 @@ class _InstaPageState extends State<InstaPage> {
       setState(() {
         _imageFile = File(pickedFile.path);
       });
-      Navigator.of(context).pop();
-      _showInstaDialog();
     }
-  }
-
-  void _cancelImageAttachment() {
-    setState(() {
-      _imageFile = null;
-    });
   }
 
   void _showInstaDialog() {
@@ -101,11 +93,25 @@ class _InstaPageState extends State<InstaPage> {
                   padding: EdgeInsets.symmetric(vertical: 10),
                   child: Image.file(_imageFile!),
                 ),
+              TextButton(
+                onPressed: () async {
+                  await _pickImage();
+                  Navigator.of(context).pop();
+                  _showInstaDialog();
+                },
+                child: Text('Pick Image'),
+              ),
             ],
           ),
           actions: [
             TextButton(
-              onPressed: _cancelImageAttachment,
+              onPressed: () {
+                setState(() {
+                  _imageFile = null;
+                });
+                Navigator.of(context).pop();
+                _showInstaDialog();
+              },
               child: Text('Remove Image'),
             ),
             TextButton(
