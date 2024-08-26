@@ -38,26 +38,43 @@ class InstaService {
     }
   }
 
-  Future<List<Map<String, dynamic>>> instaRead() async {
+  Future<List<Map<String, dynamic>>> instaRead({String? instaId}) async {
     try {
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: {'Content-Type': 'application/json'},
-        body: json.encode({'action': 'read_all'}),
+        body: json.encode({
+          'action': 'read',
+          'instaId': instaId,
+        }),
       );
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body) as List;
-        return data
-            .map((insta) => {
-                  'id': insta['instaId'],
-                  'username': insta['userName'],
-                  'instaContents': insta['instaContents'],
-                  'photo': insta['instaImgURL'],
-                  'userImgURL': insta['userImgURL'],
-                  'userId': insta['userId'],
-                })
-            .toList();
+        final data = json.decode(response.body);
+        if (instaId != null) {
+          final insta = data['insta'];
+          return [
+            {
+              'id': insta['instaId'],
+              'username': insta['userName'],
+              'instaContents': insta['instaContents'],
+              'photo': insta['instaImgURL'],
+              'userImgURL': insta['userImgURL'],
+              'userId': insta['userId'],
+            }
+          ];
+        } else {
+          return (data as List)
+              .map((insta) => {
+                    'id': insta['instaId'],
+                    'username': insta['userName'],
+                    'instaContents': insta['instaContents'],
+                    'photo': insta['instaImgURL'],
+                    'userImgURL': insta['userImgURL'],
+                    'userId': insta['userId'],
+                  })
+              .toList();
+        }
       } else {
         print('Error response: ${response.statusCode}');
         throw Exception('Failed to fetch instas');

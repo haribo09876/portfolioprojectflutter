@@ -135,8 +135,6 @@ class _InstaPageState extends State<InstaPage> {
           : GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
               ),
               itemCount: instas.length,
               itemBuilder: (context, index) {
