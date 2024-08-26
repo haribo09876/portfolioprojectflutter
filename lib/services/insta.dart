@@ -1,153 +1,119 @@
-import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-class InstaPost extends StatefulWidget {
-  final String username;
-  final String avatar;
-  final String insta;
-  final String photo;
-  final String id;
-  final String userId;
+class InstaService {
+  final String apiUrl = dotenv.env['INSTA_FUNC_URL']!;
+  final ImagePicker _picker = ImagePicker();
 
-  InstaPost(
-      {required this.username,
-      required this.avatar,
-      required this.insta,
-      required this.photo,
-      required this.id,
-      required this.userId});
-
-  @override
-  _InstaPostState createState() => _InstaPostState();
-}
-
-class _InstaPostState extends State<InstaPost> {
-  User? currentUser = FirebaseAuth.instance.currentUser;
-  bool _modalVisible = false;
-  bool _editModalVisible = false;
-  String? _newInsta;
-  String? _newPhoto;
-  File? _imageFile;
-
-  @override
-  void initState() {
-    super.initState();
-    _newInsta = widget.insta;
-    _newPhoto = widget.photo;
-  }
-
-  Future<void> deleteInsta() async {
+  Future<void> instaCreate(
+      String userId, String instaContents, XFile? imageFile) async {
     try {
-      await FirebaseFirestore.instance
-          .collection('instas')
-          .doc(widget.id)
-          .delete();
-      if (widget.photo.isNotEmpty) {
-        await FirebaseStorage.instance.refFromURL(widget.photo).delete();
+      String? base64Image;
+      if (imageFile != null) {
+        final imageBytes = await imageFile.readAsBytes();
+        base64Image = base64Encode(imageBytes);
+      }
+
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'action': 'create',
+          'userId': userId,
+          'instaContents': instaContents,
+          'fileContent': base64Image ?? '',
+        }),
+      );
+
+      if (response.statusCode != 200) {
+        print('Error response: ${response.statusCode}');
+        throw Exception('Failed to create insta');
       }
     } catch (error) {
-      print('Error deleting insta: $error');
+      print('Error creating insta: $error');
     }
   }
 
-  Future<void> editInsta() async {
+  Future<List<Map<String, dynamic>>> instaRead() async {
     try {
-      String updatedPhoto = _newPhoto ?? widget.photo;
-      if (_imageFile != null) {
-        final ref = FirebaseStorage.instance
-            .ref('instas/${currentUser?.uid}/${widget.id}');
-        await ref.putFile(_imageFile!);
-        updatedPhoto = await ref.getDownloadURL();
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({'action': 'read'}),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return (data as List)
+            .map((insta) => {
+                  'id': insta['instaId'],
+                  'username': insta['userName'],
+                  'instaContents': insta['instaContents'],
+                  'photo': insta['instaImgURL'],
+                  'userImgURL': insta['userImgURL'],
+                  'userId': insta['userId'],
+                })
+            .toList();
+      } else {
+        print('Error response: ${response.statusCode}');
+        throw Exception('Failed to fetch instas');
+      }
+    } catch (error) {
+      print('Error fetching instas: $error');
+      return [];
+    }
+  }
+
+  Future<void> instaUpdate(String instaId, String userId, String instaContents,
+      XFile? imageFile) async {
+    try {
+      String? base64Image;
+      if (imageFile != null) {
+        final imageBytes = await imageFile.readAsBytes();
+        base64Image = base64Encode(imageBytes);
       }
 
-      await FirebaseFirestore.instance
-          .collection('instas')
-          .doc(widget.id)
-          .update({
-        'insta': _newInsta,
-        'photo': updatedPhoto,
-        'modifiedAt': FieldValue.serverTimestamp(),
-      });
-      setState(() {
-        _editModalVisible = false;
-        _modalVisible = false;
-      });
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'action': 'update',
+          'instaId': instaId,
+          'userId': userId,
+          'instaContents': instaContents,
+          'fileContent': base64Image ?? '',
+        }),
+      );
+
+      if (response.statusCode != 200) {
+        print('Error response: ${response.statusCode}');
+        throw Exception('Failed to update insta');
+      }
     } catch (error) {
       print('Error updating insta: $error');
     }
   }
 
-  Future<void> pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+  Future<void> instaDelete(String instaId, String userId) async {
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'action': 'delete',
+          'instaId': instaId,
+          'userId': userId,
+        }),
+      );
 
-    if (pickedFile != null) {
-      setState(() {
-        _imageFile = File(pickedFile.path);
-      });
+      if (response.statusCode != 200) {
+        print('Error response: ${response.statusCode}');
+        throw Exception('Failed to delete insta');
+      }
+    } catch (error) {
+      print('Error deleting insta: $error');
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _modalVisible = true;
-        });
-      },
-      child: Container(
-        width: MediaQuery.of(context).size.width / 3,
-        height: MediaQuery.of(context).size.width / 3,
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey[300]!),
-        ),
-        child: widget.photo.isNotEmpty
-            ? Image.network(widget.photo, fit: BoxFit.cover)
-            : Container(color: Colors.grey[200]),
-      ),
-    );
-  }
-}
-
-class InstaTimeline extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection('instas')
-          .orderBy('createdAt', descending: true)
-          .snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return Center(child: CircularProgressIndicator());
-        }
-
-        final instas = snapshot.data!.docs.map((doc) {
-          final data = doc.data() as Map<String, dynamic>;
-          return InstaPost(
-            username: data['username'],
-            avatar: '', // 추가 구현 필요
-            insta: data['insta'],
-            photo: data['photo'],
-            id: doc.id,
-            userId: data['userId'],
-          );
-        }).toList();
-
-        return GridView.builder(
-          itemCount: instas.length,
-          gridDelegate:
-              SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-          itemBuilder: (context, index) {
-            return instas[index];
-          },
-        );
-      },
-    );
   }
 }

@@ -1,6 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import '../services/login.dart';
+import '../services/insta.dart';
 
 class InstaPage extends StatefulWidget {
   @override
@@ -8,157 +11,111 @@ class InstaPage extends StatefulWidget {
 }
 
 class _InstaPageState extends State<InstaPage> {
-  bool _isLoading = false;
-  String _instaText = '';
-  XFile? _selectedFile;
-
+  final TextEditingController _instaController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
+  File? _imageFile;
+  List<Map<String, dynamic>> instas = [];
+  bool loading = false;
 
-  void _onChange(String text) {
+  @override
+  void initState() {
+    super.initState();
+    fetchInstas();
+  }
+
+  Future<void> fetchInstas() async {
     setState(() {
-      _instaText = text;
+      loading = true;
+    });
+
+    final instaService = InstaService();
+    final fetchedInstas = await instaService.instaRead();
+
+    setState(() {
+      instas = fetchedInstas;
+      loading = false;
     });
   }
 
-  Future<void> _pickImage(ImageSource source) async {
+  Future<void> _postInsta() async {
+    if (_instaController.text.isEmpty) return;
+
+    final loginService = Provider.of<LoginService>(context, listen: false);
+    final userId = loginService.userInfo?['id'] ?? '';
+
     try {
-      final XFile? pickedFile = await _picker.pickImage(source: source);
-      if (pickedFile != null) {
-        final double fileSizeInMB = (await pickedFile.length()) / (1024 * 1024);
-        if (fileSizeInMB > 3) {
-          _showErrorDialog('The selected image exceeds the 3MB size limit.');
-        } else {
-          setState(() {
-            _selectedFile = pickedFile;
-          });
-        }
-      }
-    } catch (e) {
-      _showErrorDialog('ImagePicker Error: $e');
+      await InstaService().instaCreate(
+        userId,
+        _instaController.text,
+        _imageFile != null ? XFile(_imageFile!.path) : null,
+      );
+      print('Insta posted successfully');
+    } catch (error) {
+      print('Error posting insta: $error');
+    }
+
+    setState(() {
+      _instaController.clear();
+      _imageFile = null;
+    });
+    fetchInstas();
+  }
+
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile.path);
+      });
+      Navigator.of(context).pop();
+      _showInstaDialog();
     }
   }
 
-  void _onFileChange() {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ListTile(
-              leading: Icon(Icons.camera_alt),
-              title: Text('Take Photo'),
-              onTap: () {
-                Navigator.pop(context);
-                _pickImage(ImageSource.camera);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.photo_library),
-              title: Text('Choose from Library'),
-              onTap: () {
-                Navigator.pop(context);
-                _pickImage(ImageSource.gallery);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _clearFile() {
+  void _cancelImageAttachment() {
     setState(() {
-      _selectedFile = null;
+      _imageFile = null;
     });
   }
 
-  void _onSubmit() {
-    if (_isLoading || _instaText.isEmpty || _instaText.length > 180) return;
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    setState(() {
-      _instaText = '';
-      _selectedFile = null;
-      _isLoading = false;
-    });
-  }
-
-  void _showErrorDialog(String message) {
+  void _showInstaDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Error'),
-          content: Text(message),
-          actions: <Widget>[
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Text('Create Insta Post'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _instaController,
+                decoration: InputDecoration(
+                  hintText: 'Write something...',
+                ),
+              ),
+              if (_imageFile != null)
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: Image.file(_imageFile!),
+                ),
+            ],
+          ),
+          actions: [
             TextButton(
-              child: Text('OK'),
+              onPressed: _cancelImageAttachment,
+              child: Text('Remove Image'),
+            ),
+            TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
+                _postInsta();
               },
+              child: Text('Post'),
             ),
           ],
-        );
-      },
-    );
-  }
-
-  void _openModal() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (BuildContext context) {
-        return Padding(
-          padding:
-              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: Container(
-            padding: EdgeInsets.all(20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                TextField(
-                  onChanged: _onChange,
-                  maxLength: 180,
-                  maxLines: null,
-                  decoration: InputDecoration(
-                    hintText: '내용을 입력하세요',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                if (_selectedFile != null) ...[
-                  SizedBox(height: 10),
-                  Image.file(
-                    File(_selectedFile!.path),
-                    height: 200,
-                  ),
-                  TextButton(
-                    onPressed: _clearFile,
-                    child: Text('Remove Image'),
-                  ),
-                ],
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    ElevatedButton(
-                      onPressed: _onFileChange,
-                      child: Text('Add photo'),
-                    ),
-                    ElevatedButton(
-                      onPressed: _isLoading ? null : _onSubmit,
-                      child: _isLoading
-                          ? CircularProgressIndicator()
-                          : Text('Post Insta'),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
         );
       },
     );
@@ -167,14 +124,34 @@ class _InstaPageState extends State<InstaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Insta Page'),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: _openModal,
-          child: Text('새 Insta 추가'),
-        ),
+      body: loading
+          ? Center(child: CircularProgressIndicator())
+          : ListView.builder(
+              itemCount: instas.length,
+              itemBuilder: (context, index) {
+                final insta = instas[index];
+                return ListTile(
+                  leading: CircleAvatar(
+                    backgroundImage: NetworkImage(insta['userImgURL']),
+                  ),
+                  title: Text(insta['username']),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(insta['instaContents']),
+                      if (insta['photo'] != null) Image.network(insta['photo']),
+                    ],
+                  ),
+                  onTap: () {},
+                );
+              },
+            ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _showInstaDialog();
+        },
+        backgroundColor: Colors.blue,
+        child: Icon(Icons.add, color: Colors.white),
       ),
     );
   }
