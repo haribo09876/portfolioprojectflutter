@@ -76,32 +76,39 @@ class _InstaPageState extends State<InstaPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(20),
           ),
-          title: Text('Create Insta Post'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: _instaController,
-                decoration: InputDecoration(
-                  hintText: 'Write something...',
+          title: Text('Create Insta Post',
+              style: TextStyle(fontWeight: FontWeight.bold)),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: _instaController,
+                  decoration: InputDecoration(
+                    hintText: 'Write a caption...',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  maxLines: null,
                 ),
-              ),
-              if (_imageFile != null)
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  child: Image.file(_imageFile!),
+                if (_imageFile != null)
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 10),
+                    child: Image.file(_imageFile!, fit: BoxFit.cover),
+                  ),
+                TextButton(
+                  onPressed: () async {
+                    await _pickImage();
+                    Navigator.of(context).pop();
+                    _showInstaDialog();
+                  },
+                  child: Text('Change Image'),
                 ),
-              TextButton(
-                onPressed: () async {
-                  await _pickImage();
-                  Navigator.of(context).pop();
-                  _showInstaDialog();
-                },
-                child: Text('Pick Image'),
-              ),
-            ],
+              ],
+            ),
           ),
           actions: [
             TextButton(
@@ -114,14 +121,55 @@ class _InstaPageState extends State<InstaPage> {
               },
               child: Text('Remove Image'),
             ),
-            TextButton(
+            ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 _postInsta();
               },
               child: Text('Post'),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
             ),
           ],
+        );
+      },
+    );
+  }
+
+  void _showInstaPostDialog(Map<String, dynamic> insta) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                insta['username'],
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
+              ),
+              IconButton(
+                icon: Icon(Icons.close, color: Colors.black54),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Image.network(insta['photo'], fit: BoxFit.cover),
+              SizedBox(height: 5),
+              Text(
+                insta['instaContents'],
+                textAlign: TextAlign.left,
+              ),
+            ],
+          ),
         );
       },
     );
@@ -140,7 +188,7 @@ class _InstaPageState extends State<InstaPage> {
               itemBuilder: (context, index) {
                 final insta = instas[index];
                 return GestureDetector(
-                  onTap: () {},
+                  onTap: () => _showInstaPostDialog(insta),
                   child: Image.network(
                     insta['photo'] ?? '',
                     fit: BoxFit.cover,
