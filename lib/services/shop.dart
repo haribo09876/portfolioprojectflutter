@@ -7,8 +7,8 @@ class ShopService {
   final String apiUrl = dotenv.env['ITEM_FUNC_URL']!;
   final ImagePicker _picker = ImagePicker();
 
-  Future<void> itemCreate(
-      String userId, String itemContents, XFile? imageFile) async {
+  Future<void> itemCreate(String userId, String itemTitle, String itemContents,
+      double itemPrice, XFile? imageFile) async {
     try {
       String? base64Image;
       if (imageFile != null) {
@@ -22,7 +22,9 @@ class ShopService {
         body: json.encode({
           'action': 'create',
           'userId': userId,
+          'itemTitle': itemTitle,
           'itemContents': itemContents,
+          'itemPrice': itemPrice,
           'fileContent': base64Image ?? '',
         }),
       );
@@ -47,9 +49,11 @@ class ShopService {
         final data = json.decode(response.body);
         return (data as List)
             .map((item) => {
-                  'id': item['itemId'],
+                  'itemId': item['itemId'],
                   'username': item['userName'],
-                  'item': item['itemContents'],
+                  'itemTitle': item['itemTitle'],
+                  'itemPrice': item['itemPrice'],
+                  'itemContents': item['itemContents'],
                   'photo': item['itemImgURL'],
                   'userImgURL': item['userImgURL'],
                   'userId': item['userId'],
@@ -65,8 +69,8 @@ class ShopService {
     }
   }
 
-  Future<void> itemUpdate(String itemId, String userId, String itemContents,
-      XFile? imageFile) async {
+  Future<void> itemUpdate(String itemId, String userId, String itemTitle,
+      String itemContents, double itemPrice, XFile? imageFile) async {
     try {
       String? base64Image;
       if (imageFile != null) {
@@ -81,7 +85,9 @@ class ShopService {
           'action': 'update',
           'itemId': itemId,
           'userId': userId,
+          'itemTitle': itemTitle,
           'itemContents': itemContents,
+          'itemPrice': itemPrice,
           'fileContent': base64Image ?? '',
         }),
       );

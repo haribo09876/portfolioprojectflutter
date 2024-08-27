@@ -411,30 +411,33 @@ class _InstaPageState extends State<InstaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: loading
-          ? Center(child: CircularProgressIndicator())
-          : GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
+      body: RefreshIndicator(
+        onRefresh: fetchInstas,
+        child: loading
+            ? Center(child: CircularProgressIndicator())
+            : GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                ),
+                itemCount: instas.length,
+                itemBuilder: (context, index) {
+                  final insta = instas[index];
+                  return GestureDetector(
+                    onTap: () => _showInstaDetailDialog(insta),
+                    child: Image.network(
+                      insta['photo'] ?? '',
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: Colors.grey[200],
+                          child: Center(child: Text('No Image')),
+                        );
+                      },
+                    ),
+                  );
+                },
               ),
-              itemCount: instas.length,
-              itemBuilder: (context, index) {
-                final insta = instas[index];
-                return GestureDetector(
-                  onTap: () => _showInstaDetailDialog(insta),
-                  child: Image.network(
-                    insta['photo'] ?? '',
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: Colors.grey[200],
-                        child: Center(child: Text('No Image')),
-                      );
-                    },
-                  ),
-                );
-              },
-            ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _showInstaDialog();
