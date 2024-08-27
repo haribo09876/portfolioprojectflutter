@@ -61,6 +61,7 @@ class _ShopPageState extends State<ShopPage> {
         _imageFile != null ? XFile(_imageFile!.path) : null,
       );
       print('Item posted successfully');
+      Navigator.of(context).pop();
     } catch (error) {
       print('Error posting item: $error');
     }
