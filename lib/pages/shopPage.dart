@@ -165,7 +165,7 @@ class _ShopPageState extends State<ShopPage> {
                         Navigator.of(context).pop();
                       },
                       child: Text(
-                        'Tweet',
+                        'Item',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
@@ -193,7 +193,7 @@ class _ShopPageState extends State<ShopPage> {
       print('Item updated successfully');
       fetchItems();
     } catch (error) {
-      print('Error updating tweet: $error');
+      print('Error updating item: $error');
     }
   }
 
