@@ -1,193 +1,536 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import '../services/login.dart';
+import '../services/tweet.dart';
 
 class ShopPage extends StatefulWidget {
   @override
-  _ShopPageState createState() => _ShopPageState();
+  _TweetPageState createState() => _TweetPageState();
 }
 
-class _ShopPageState extends State<ShopPage> {
-  bool isLoading = false;
-  String itemTitle = '';
-  String itemPrice = '';
-  String itemDetail = '';
-  XFile? file;
-  bool isModalVisible = false;
-  String userEmail = 'user@example.com';
-
+class _TweetPageState extends State<ShopPage> {
+  final TextEditingController _tweetController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
+  File? _imageFile;
+  List<Map<String, dynamic>> tweets = [];
+  bool loading = false;
 
-  void onChangeItemTitle(String text) {
+  @override
+  void initState() {
+    super.initState();
+    fetchTweets();
+  }
+
+  Future<void> fetchTweets() async {
     setState(() {
-      itemTitle = text;
+      loading = true;
+    });
+
+    final tweetService = TweetService();
+    final fetchedTweets = await tweetService.tweetRead();
+
+    setState(() {
+      tweets = fetchedTweets;
+      loading = false;
     });
   }
 
-  void onChangeItemPrice(String text) {
+  Future<void> _postTweet() async {
+    if (_tweetController.text.isEmpty) return;
+
+    final loginService = Provider.of<LoginService>(context, listen: false);
+    final userId = loginService.userInfo?['id'] ?? '';
+
+    try {
+      await TweetService().tweetCreate(
+        userId,
+        _tweetController.text,
+        _imageFile != null ? XFile(_imageFile!.path) : null,
+      );
+      print('Tweet posted successfully');
+    } catch (error) {
+      print('Error posting tweet: $error');
+    }
+
     setState(() {
-      itemPrice = text;
+      _tweetController.clear();
+      _imageFile = null;
     });
+    fetchTweets();
   }
 
-  void onChangeItemDetail(String text) {
-    setState(() {
-      itemDetail = text;
-    });
-  }
-
-  Future<void> onFileChange() async {
-    final XFile? pickedFile =
-        await _picker.pickImage(source: ImageSource.gallery);
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
-        file = pickedFile;
+        _imageFile = File(pickedFile.path);
       });
+      Navigator.of(context).pop();
+      _showTweetDialog();
     }
   }
 
-  void clearFile() {
+  void _cancelImageAttachment() {
     setState(() {
-      file = null;
+      _imageFile = null;
     });
   }
 
-  void onSubmit() {
-    if (itemTitle.isEmpty || itemTitle.length > 180) {
-      return;
+  void _showTweetDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Tweet',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+              IconButton(
+                icon: Icon(Icons.close, color: Colors.black54),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.9,
+            height: MediaQuery.of(context).size.height * 0.5,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: _tweetController,
+                  decoration: InputDecoration(
+                    hintText: 'What’s happening?',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 12, horizontal: 15),
+                  ),
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                ),
+                SizedBox(height: 10),
+                if (_imageFile != null)
+                  Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.file(
+                          _imageFile!,
+                          height: 200,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Positioned(
+                        right: 10,
+                        top: 10,
+                        child: IconButton(
+                          icon: Icon(Icons.cancel, color: Colors.red, size: 30),
+                          onPressed: () {
+                            _cancelImageAttachment();
+                            Navigator.of(context).pop();
+                            _showTweetDialog();
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.photo, color: Colors.blue),
+                      onPressed: _pickImage,
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      onPressed: () {
+                        _postTweet();
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                        'Tweet',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _editTweet(String tweetId, String tweetContents) async {
+    final loginService = Provider.of<LoginService>(context, listen: false);
+    final userId = loginService.userInfo?['id'] ?? '';
+
+    try {
+      await TweetService().tweetUpdate(
+        tweetId,
+        userId,
+        tweetContents,
+        _imageFile != null ? XFile(_imageFile!.path) : null,
+      );
+      print('Tweet updated successfully');
+      fetchTweets();
+    } catch (error) {
+      print('Error updating tweet: $error');
     }
-    setState(() {
-      isLoading = true;
-    });
-
-    setState(() {
-      itemTitle = '';
-      itemPrice = '';
-      itemDetail = '';
-      file = null;
-      isModalVisible = false;
-      isLoading = false;
-    });
   }
 
-  void openModal() {
-    setState(() {
-      isModalVisible = true;
-    });
+  Future<void> _deleteTweet(String tweetId) async {
+    final loginService = Provider.of<LoginService>(context, listen: false);
+    final userId = loginService.userInfo?['id'] ?? '';
+
+    try {
+      await TweetService().tweetDelete(tweetId, userId);
+      print('Tweet deleted successfully');
+      fetchTweets();
+    } catch (error) {
+      print('Error deleting tweet: $error');
+    }
   }
 
-  void closeModal() {
-    setState(() {
-      isModalVisible = false;
-    });
+  void _showTweetDetailDialog(Map<String, dynamic> tweet) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                tweet['username'],
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
+              ),
+              IconButton(
+                icon: Icon(Icons.close, color: Colors.black54),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.9,
+            height: MediaQuery.of(context).size.height * 0.6,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (tweet['photo'] != null)
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(
+                      tweet['photo'],
+                      width: double.infinity,
+                      height: 150,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                SizedBox(height: 30),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    tweet['tweet'],
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  tweet['timestamp'] ?? '',
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+                SizedBox(height: 20),
+                if (tweet['userId'] ==
+                    Provider.of<LoginService>(context, listen: false)
+                        .userInfo?['id'])
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.edit_outlined, color: Colors.blue),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          _showEditTweetDialog(tweet);
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete_outline, color: Colors.red),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          _showDeleteConfirmationDialog(tweet['id']);
+                        },
+                      ),
+                    ],
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showEditTweetDialog(Map<String, dynamic> tweet) {
+    final controller = TextEditingController(text: tweet['tweet']);
+    File? _newImageFile = null;
+    String? existingImageUrl = tweet['photo'];
+
+    void _pickImage() async {
+      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        setState(() {
+          _newImageFile = File(pickedFile.path);
+        });
+      }
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Text('Edit Tweet', style: TextStyle(fontSize: 22)),
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.9,
+            height: MediaQuery.of(context).size.height * 0.6,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: controller,
+                  decoration: InputDecoration(
+                    hintText: 'Update your tweet',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                ),
+                SizedBox(height: 10),
+                if (_newImageFile != null || existingImageUrl != null)
+                  Stack(
+                    children: [
+                      if (_newImageFile != null)
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.file(
+                            _newImageFile!,
+                            height: 200,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      else if (existingImageUrl != null)
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.network(
+                            existingImageUrl!,
+                            height: 200,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      Positioned(
+                        right: 10,
+                        top: 10,
+                        child: IconButton(
+                          icon: Icon(Icons.cancel, color: Colors.red, size: 30),
+                          onPressed: () {
+                            setState(() {
+                              _newImageFile = null;
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.photo, color: Colors.blue),
+                      onPressed: _pickImage,
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      onPressed: () async {
+                        final tweetService = TweetService();
+                        final userId =
+                            Provider.of<LoginService>(context, listen: false)
+                                    .userInfo?['id'] ??
+                                '';
+                        String? imageUrl =
+                            _newImageFile != null ? null : existingImageUrl;
+                        await tweetService.tweetUpdate(
+                          tweet['id'],
+                          userId,
+                          controller.text,
+                          _newImageFile != null
+                              ? XFile(_newImageFile!.path)
+                              : null,
+                        );
+                        Navigator.of(context).pop();
+                        fetchTweets();
+                      },
+                      child: Text(
+                        'Update',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showDeleteConfirmationDialog(String tweetId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Text('Delete Tweet', style: TextStyle(fontSize: 22)),
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.9,
+            height: MediaQuery.of(context).size.height * 0.3,
+            child: Center(
+              child: Text('Are you sure you want to delete this tweet?'),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel', style: TextStyle(color: Colors.black54)),
+            ),
+            TextButton(
+              onPressed: () async {
+                await _deleteTweet(tweetId);
+                Navigator.of(context).pop();
+              },
+              child: Text('Delete', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final loginService = Provider.of<LoginService>(context);
+    final currentUserId = loginService.userInfo?['id'] ?? '';
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Shop Page'),
-      ),
-      body: Stack(
-        children: [
-          if (userEmail == 'admin@gmail.com')
-            Align(
-              alignment: Alignment.topRight,
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: ElevatedButton(
-                  onPressed: openModal,
-                  child: Text('새 상품 추가'),
-                ),
-              ),
-            ),
-          Center(
-            child: Text('Shop Timeline Placeholder'),
-          ),
-          if (isModalVisible)
-            Center(
-              child: Dialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Align(
-                          alignment: Alignment.topRight,
-                          child: IconButton(
-                            icon: Icon(Icons.close),
-                            onPressed: closeModal,
-                          ),
-                        ),
-                        TextField(
-                          decoration: InputDecoration(
-                            labelText: 'Item Title',
-                            border: OutlineInputBorder(),
-                          ),
-                          onChanged: onChangeItemTitle,
-                          maxLength: 50,
-                        ),
-                        SizedBox(height: 10),
-                        TextField(
-                          decoration: InputDecoration(
-                            labelText: 'Item Price',
-                            border: OutlineInputBorder(),
-                          ),
-                          keyboardType: TextInputType.number,
-                          onChanged: onChangeItemPrice,
-                          maxLength: 9,
-                        ),
-                        SizedBox(height: 10),
-                        TextField(
-                          decoration: InputDecoration(
-                            labelText: 'Item Detail',
-                            border: OutlineInputBorder(),
-                          ),
-                          onChanged: onChangeItemDetail,
-                          maxLines: 5,
-                        ),
-                        SizedBox(height: 10),
-                        if (file != null)
-                          Column(
-                            children: [
-                              Image.file(
-                                File(file!.path),
-                                height: 200,
+      body: loading
+          ? Center(child: CircularProgressIndicator())
+          : RefreshIndicator(
+              onRefresh: fetchTweets,
+              child: ListView.builder(
+                itemCount: tweets.length,
+                itemBuilder: (context, index) {
+                  final tweet = tweets[index];
+                  final isOwnTweet = tweet['userId'] == currentUserId;
+
+                  return GestureDetector(
+                    onTap: () => _showTweetDetailDialog(tweet),
+                    child: Card(
+                      margin: EdgeInsets.all(8.0),
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                      child: ListTile(
+                        contentPadding: EdgeInsets.all(16.0),
+                        leading: tweet['userImgURL'] != null &&
+                                tweet['userImgURL'] != ''
+                            ? CircleAvatar(
+                                backgroundImage:
+                                    NetworkImage(tweet['userImgURL']!),
+                                radius: 25,
+                              )
+                            : CircleAvatar(
+                                child: Icon(Icons.account_circle_outlined,
+                                    color: Colors.grey, size: 30),
+                                radius: 25,
                               ),
-                              TextButton(
-                                onPressed: clearFile,
-                                child: Text('Remove Image'),
-                              ),
-                            ],
-                          ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        title: Text(tweet['username'],
+                            style: TextStyle(
+                                fontSize: 25, fontWeight: FontWeight.w400)),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            ElevatedButton(
-                              onPressed: onFileChange,
-                              child: Text('Add Photo'),
+                            SizedBox(height: 5),
+                            Text(
+                              tweet['tweet'],
+                              style: TextStyle(fontSize: 18),
                             ),
-                            ElevatedButton(
-                              onPressed: onSubmit,
-                              child: isLoading
-                                  ? CircularProgressIndicator(
-                                      color: Colors.white,
-                                    )
-                                  : Text('Post Shop'),
+                            if (tweet['photo'] != null) SizedBox(height: 10),
+                            if (tweet['photo'] != null)
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Image.network(tweet['photo'],
+                                    width: double.infinity,
+                                    height: 150,
+                                    fit: BoxFit.cover),
+                              ),
+                            SizedBox(height: 6),
+                            Text(
+                              tweet['timestamp'] ?? '',
+                              style:
+                                  TextStyle(fontSize: 12, color: Colors.grey),
                             ),
                           ],
                         ),
-                      ],
+                        isThreeLine: true,
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
             ),
-        ],
+      floatingActionButton: FloatingActionButton(
+        onPressed: _showTweetDialog,
+        backgroundColor: Colors.blue,
+        child: Icon(Icons.add, color: Colors.white),
       ),
     );
   }
