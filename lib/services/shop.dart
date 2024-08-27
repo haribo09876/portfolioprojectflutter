@@ -3,12 +3,12 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-class TweetService {
-  final String apiUrl = dotenv.env['TWEET_FUNC_URL']!;
+class ShopService {
+  final String apiUrl = dotenv.env['ITEM_FUNC_URL']!;
   final ImagePicker _picker = ImagePicker();
 
-  Future<void> tweetCreate(
-      String userId, String tweetContents, XFile? imageFile) async {
+  Future<void> itemCreate(
+      String userId, String itemContents, XFile? imageFile) async {
     try {
       String? base64Image;
       if (imageFile != null) {
@@ -22,21 +22,21 @@ class TweetService {
         body: json.encode({
           'action': 'create',
           'userId': userId,
-          'tweetContents': tweetContents,
+          'itemContents': itemContents,
           'fileContent': base64Image ?? '',
         }),
       );
 
       if (response.statusCode != 200) {
         print('Error response: ${response.statusCode}');
-        throw Exception('Failed to create tweet');
+        throw Exception('Failed to create item');
       }
     } catch (error) {
-      print('Error creating tweet: $error');
+      print('Error creating item: $error');
     }
   }
 
-  Future<List<Map<String, dynamic>>> tweetRead() async {
+  Future<List<Map<String, dynamic>>> itemRead() async {
     try {
       final response = await http.post(
         Uri.parse(apiUrl),
@@ -46,26 +46,26 @@ class TweetService {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return (data as List)
-            .map((tweet) => {
-                  'id': tweet['tweetId'],
-                  'username': tweet['userName'],
-                  'tweet': tweet['tweetContents'],
-                  'photo': tweet['tweetImgURL'],
-                  'userImgURL': tweet['userImgURL'],
-                  'userId': tweet['userId'],
+            .map((item) => {
+                  'id': item['itemId'],
+                  'username': item['userName'],
+                  'item': item['itemContents'],
+                  'photo': item['itemImgURL'],
+                  'userImgURL': item['userImgURL'],
+                  'userId': item['userId'],
                 })
             .toList();
       } else {
         print('Error response: ${response.statusCode}');
-        throw Exception('Failed to fetch tweets');
+        throw Exception('Failed to fetch items');
       }
     } catch (error) {
-      print('Error fetching tweets: $error');
+      print('Error fetching items: $error');
       return [];
     }
   }
 
-  Future<void> tweetUpdate(String tweetId, String userId, String tweetContents,
+  Future<void> itemUpdate(String itemId, String userId, String itemContents,
       XFile? imageFile) async {
     try {
       String? base64Image;
@@ -79,39 +79,39 @@ class TweetService {
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
           'action': 'update',
-          'tweetId': tweetId,
+          'itemId': itemId,
           'userId': userId,
-          'tweetContents': tweetContents,
+          'itemContents': itemContents,
           'fileContent': base64Image ?? '',
         }),
       );
 
       if (response.statusCode != 200) {
         print('Error response: ${response.statusCode}');
-        throw Exception('Failed to update tweet');
+        throw Exception('Failed to update item');
       }
     } catch (error) {
-      print('Error updating tweet: $error');
+      print('Error updating item: $error');
     }
   }
 
-  Future<void> tweetDelete(String tweetId, String userId) async {
+  Future<void> itemDelete(String itemId, String userId) async {
     try {
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
           'action': 'delete',
-          'tweetId': tweetId,
+          'itemId': itemId,
           'userId': userId,
         }),
       );
       if (response.statusCode != 200) {
         print('Error response: ${response.statusCode}');
-        throw Exception('Failed to delete tweet');
+        throw Exception('Failed to delete item');
       }
     } catch (error) {
-      print('Error deleting tweet: $error');
+      print('Error deleting item: $error');
     }
   }
 }

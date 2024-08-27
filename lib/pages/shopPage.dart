@@ -3,62 +3,62 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../services/login.dart';
-import '../services/tweet.dart';
+import '../services/shop.dart';
 
 class ShopPage extends StatefulWidget {
   @override
-  _TweetPageState createState() => _TweetPageState();
+  _ShopPageState createState() => _ShopPageState();
 }
 
-class _TweetPageState extends State<ShopPage> {
-  final TextEditingController _tweetController = TextEditingController();
+class _ShopPageState extends State<ShopPage> {
+  final TextEditingController _itemController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
   File? _imageFile;
-  List<Map<String, dynamic>> tweets = [];
+  List<Map<String, dynamic>> items = [];
   bool loading = false;
 
   @override
   void initState() {
     super.initState();
-    fetchTweets();
+    fetchItems();
   }
 
-  Future<void> fetchTweets() async {
+  Future<void> fetchItems() async {
     setState(() {
       loading = true;
     });
 
-    final tweetService = TweetService();
-    final fetchedTweets = await tweetService.tweetRead();
+    final shopService = ShopService();
+    final fetchedItems = await shopService.itemRead();
 
     setState(() {
-      tweets = fetchedTweets;
+      items = fetchedItems;
       loading = false;
     });
   }
 
-  Future<void> _postTweet() async {
-    if (_tweetController.text.isEmpty) return;
+  Future<void> _postItem() async {
+    if (_itemController.text.isEmpty) return;
 
     final loginService = Provider.of<LoginService>(context, listen: false);
     final userId = loginService.userInfo?['id'] ?? '';
 
     try {
-      await TweetService().tweetCreate(
+      await ShopService().itemCreate(
         userId,
-        _tweetController.text,
+        _itemController.text,
         _imageFile != null ? XFile(_imageFile!.path) : null,
       );
-      print('Tweet posted successfully');
+      print('Item posted successfully');
     } catch (error) {
-      print('Error posting tweet: $error');
+      print('Error posting item: $error');
     }
 
     setState(() {
-      _tweetController.clear();
+      _itemController.clear();
       _imageFile = null;
     });
-    fetchTweets();
+    fetchItems();
   }
 
   Future<void> _pickImage() async {
@@ -68,7 +68,7 @@ class _TweetPageState extends State<ShopPage> {
         _imageFile = File(pickedFile.path);
       });
       Navigator.of(context).pop();
-      _showTweetDialog();
+      _showItemDialog();
     }
   }
 
@@ -78,7 +78,7 @@ class _TweetPageState extends State<ShopPage> {
     });
   }
 
-  void _showTweetDialog() {
+  void _showItemDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -89,7 +89,7 @@ class _TweetPageState extends State<ShopPage> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Tweet',
+              Text('Item',
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
               IconButton(
                 icon: Icon(Icons.close, color: Colors.black54),
@@ -106,7 +106,7 @@ class _TweetPageState extends State<ShopPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
-                  controller: _tweetController,
+                  controller: _itemController,
                   decoration: InputDecoration(
                     hintText: 'What’s happening?',
                     border: OutlineInputBorder(
@@ -139,7 +139,7 @@ class _TweetPageState extends State<ShopPage> {
                           onPressed: () {
                             _cancelImageAttachment();
                             Navigator.of(context).pop();
-                            _showTweetDialog();
+                            _showItemDialog();
                           },
                         ),
                       ),
@@ -161,7 +161,7 @@ class _TweetPageState extends State<ShopPage> {
                         ),
                       ),
                       onPressed: () {
-                        _postTweet();
+                        _postItem();
                         Navigator.of(context).pop();
                       },
                       child: Text(
@@ -179,38 +179,38 @@ class _TweetPageState extends State<ShopPage> {
     );
   }
 
-  Future<void> _editTweet(String tweetId, String tweetContents) async {
+  Future<void> _editItem(String itemId, String itemContents) async {
     final loginService = Provider.of<LoginService>(context, listen: false);
     final userId = loginService.userInfo?['id'] ?? '';
 
     try {
-      await TweetService().tweetUpdate(
-        tweetId,
+      await ShopService().itemUpdate(
+        itemId,
         userId,
-        tweetContents,
+        itemContents,
         _imageFile != null ? XFile(_imageFile!.path) : null,
       );
-      print('Tweet updated successfully');
-      fetchTweets();
+      print('Item updated successfully');
+      fetchItems();
     } catch (error) {
       print('Error updating tweet: $error');
     }
   }
 
-  Future<void> _deleteTweet(String tweetId) async {
+  Future<void> _deleteItem(String itemId) async {
     final loginService = Provider.of<LoginService>(context, listen: false);
     final userId = loginService.userInfo?['id'] ?? '';
 
     try {
-      await TweetService().tweetDelete(tweetId, userId);
-      print('Tweet deleted successfully');
-      fetchTweets();
+      await ShopService().itemDelete(itemId, userId);
+      print('Item deleted successfully');
+      fetchItems();
     } catch (error) {
-      print('Error deleting tweet: $error');
+      print('Error deleting item: $error');
     }
   }
 
-  void _showTweetDetailDialog(Map<String, dynamic> tweet) {
+  void _showItemDetailDialog(Map<String, dynamic> item) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -222,7 +222,7 @@ class _TweetPageState extends State<ShopPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                tweet['username'],
+                item['username'],
                 style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
               ),
               IconButton(
@@ -239,11 +239,11 @@ class _TweetPageState extends State<ShopPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (tweet['photo'] != null)
+                if (item['photo'] != null)
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: Image.network(
-                      tweet['photo'],
+                      item['photo'],
                       width: double.infinity,
                       height: 150,
                       fit: BoxFit.cover,
@@ -253,17 +253,17 @@ class _TweetPageState extends State<ShopPage> {
                 Align(
                   alignment: Alignment.topLeft,
                   child: Text(
-                    tweet['tweet'],
+                    item['item'],
                     style: TextStyle(fontSize: 20),
                   ),
                 ),
                 SizedBox(height: 10),
                 Text(
-                  tweet['timestamp'] ?? '',
+                  item['timestamp'] ?? '',
                   style: TextStyle(fontSize: 12, color: Colors.grey),
                 ),
                 SizedBox(height: 20),
-                if (tweet['userId'] ==
+                if (item['userId'] ==
                     Provider.of<LoginService>(context, listen: false)
                         .userInfo?['id'])
                   Row(
@@ -273,14 +273,14 @@ class _TweetPageState extends State<ShopPage> {
                         icon: Icon(Icons.edit_outlined, color: Colors.blue),
                         onPressed: () {
                           Navigator.of(context).pop();
-                          _showEditTweetDialog(tweet);
+                          _showEditItemDialog(item);
                         },
                       ),
                       IconButton(
                         icon: Icon(Icons.delete_outline, color: Colors.red),
                         onPressed: () {
                           Navigator.of(context).pop();
-                          _showDeleteConfirmationDialog(tweet['id']);
+                          _showDeleteConfirmationDialog(item['id']);
                         },
                       ),
                     ],
@@ -293,10 +293,10 @@ class _TweetPageState extends State<ShopPage> {
     );
   }
 
-  void _showEditTweetDialog(Map<String, dynamic> tweet) {
-    final controller = TextEditingController(text: tweet['tweet']);
+  void _showEditItemDialog(Map<String, dynamic> item) {
+    final controller = TextEditingController(text: item['item']);
     File? _newImageFile = null;
-    String? existingImageUrl = tweet['photo'];
+    String? existingImageUrl = item['photo'];
 
     void _pickImage() async {
       final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -314,7 +314,7 @@ class _TweetPageState extends State<ShopPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
-          title: Text('Edit Tweet', style: TextStyle(fontSize: 22)),
+          title: Text('Edit Item', style: TextStyle(fontSize: 22)),
           content: SizedBox(
             width: MediaQuery.of(context).size.width * 0.9,
             height: MediaQuery.of(context).size.height * 0.6,
@@ -324,7 +324,7 @@ class _TweetPageState extends State<ShopPage> {
                 TextField(
                   controller: controller,
                   decoration: InputDecoration(
-                    hintText: 'Update your tweet',
+                    hintText: 'Update your item',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -386,15 +386,15 @@ class _TweetPageState extends State<ShopPage> {
                         ),
                       ),
                       onPressed: () async {
-                        final tweetService = TweetService();
+                        final shopService = ShopService();
                         final userId =
                             Provider.of<LoginService>(context, listen: false)
                                     .userInfo?['id'] ??
                                 '';
                         String? imageUrl =
                             _newImageFile != null ? null : existingImageUrl;
-                        await tweetService.tweetUpdate(
-                          tweet['id'],
+                        await shopService.itemUpdate(
+                          item['id'],
                           userId,
                           controller.text,
                           _newImageFile != null
@@ -402,7 +402,7 @@ class _TweetPageState extends State<ShopPage> {
                               : null,
                         );
                         Navigator.of(context).pop();
-                        fetchTweets();
+                        fetchItems();
                       },
                       child: Text(
                         'Update',
@@ -419,7 +419,7 @@ class _TweetPageState extends State<ShopPage> {
     );
   }
 
-  void _showDeleteConfirmationDialog(String tweetId) {
+  void _showDeleteConfirmationDialog(String itemId) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -427,12 +427,12 @@ class _TweetPageState extends State<ShopPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
-          title: Text('Delete Tweet', style: TextStyle(fontSize: 22)),
+          title: Text('Delete Item', style: TextStyle(fontSize: 22)),
           content: SizedBox(
             width: MediaQuery.of(context).size.width * 0.9,
             height: MediaQuery.of(context).size.height * 0.3,
             child: Center(
-              child: Text('Are you sure you want to delete this tweet?'),
+              child: Text('Are you sure you want to delete this item?'),
             ),
           ),
           actions: [
@@ -444,7 +444,7 @@ class _TweetPageState extends State<ShopPage> {
             ),
             TextButton(
               onPressed: () async {
-                await _deleteTweet(tweetId);
+                await _deleteItem(itemId);
                 Navigator.of(context).pop();
               },
               child: Text('Delete', style: TextStyle(color: Colors.red)),
@@ -464,15 +464,15 @@ class _TweetPageState extends State<ShopPage> {
       body: loading
           ? Center(child: CircularProgressIndicator())
           : RefreshIndicator(
-              onRefresh: fetchTweets,
+              onRefresh: fetchItems,
               child: ListView.builder(
-                itemCount: tweets.length,
+                itemCount: items.length,
                 itemBuilder: (context, index) {
-                  final tweet = tweets[index];
-                  final isOwnTweet = tweet['userId'] == currentUserId;
+                  final item = items[index];
+                  final isOwnItem = item['userId'] == currentUserId;
 
                   return GestureDetector(
-                    onTap: () => _showTweetDetailDialog(tweet),
+                    onTap: () => _showItemDetailDialog(item),
                     child: Card(
                       margin: EdgeInsets.all(8.0),
                       elevation: 4,
@@ -480,11 +480,11 @@ class _TweetPageState extends State<ShopPage> {
                           borderRadius: BorderRadius.circular(12)),
                       child: ListTile(
                         contentPadding: EdgeInsets.all(16.0),
-                        leading: tweet['userImgURL'] != null &&
-                                tweet['userImgURL'] != ''
+                        leading: item['userImgURL'] != null &&
+                                item['userImgURL'] != ''
                             ? CircleAvatar(
                                 backgroundImage:
-                                    NetworkImage(tweet['userImgURL']!),
+                                    NetworkImage(item['userImgURL']!),
                                 radius: 25,
                               )
                             : CircleAvatar(
@@ -492,7 +492,7 @@ class _TweetPageState extends State<ShopPage> {
                                     color: Colors.grey, size: 30),
                                 radius: 25,
                               ),
-                        title: Text(tweet['username'],
+                        title: Text(item['username'],
                             style: TextStyle(
                                 fontSize: 25, fontWeight: FontWeight.w400)),
                         subtitle: Column(
@@ -500,21 +500,21 @@ class _TweetPageState extends State<ShopPage> {
                           children: [
                             SizedBox(height: 5),
                             Text(
-                              tweet['tweet'],
+                              item['item'],
                               style: TextStyle(fontSize: 18),
                             ),
-                            if (tweet['photo'] != null) SizedBox(height: 10),
-                            if (tweet['photo'] != null)
+                            if (item['photo'] != null) SizedBox(height: 10),
+                            if (item['photo'] != null)
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
-                                child: Image.network(tweet['photo'],
+                                child: Image.network(item['photo'],
                                     width: double.infinity,
                                     height: 150,
                                     fit: BoxFit.cover),
                               ),
                             SizedBox(height: 6),
                             Text(
-                              tweet['timestamp'] ?? '',
+                              item['timestamp'] ?? '',
                               style:
                                   TextStyle(fontSize: 12, color: Colors.grey),
                             ),
@@ -528,7 +528,7 @@ class _TweetPageState extends State<ShopPage> {
               ),
             ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _showTweetDialog,
+        onPressed: _showItemDialog,
         backgroundColor: Colors.blue,
         child: Icon(Icons.add, color: Colors.white),
       ),
