@@ -99,7 +99,7 @@ class _ShopPageState extends State<ShopPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(5),
           ),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -125,7 +125,7 @@ class _ShopPageState extends State<ShopPage> {
                   decoration: InputDecoration(
                     hintText: 'Item Title',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(5),
                     ),
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 12, horizontal: 15),
@@ -137,7 +137,7 @@ class _ShopPageState extends State<ShopPage> {
                   decoration: InputDecoration(
                     hintText: 'Item Contents',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(5),
                     ),
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 12, horizontal: 15),
@@ -151,7 +151,7 @@ class _ShopPageState extends State<ShopPage> {
                   decoration: InputDecoration(
                     hintText: 'Item Price',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(5),
                     ),
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 12, horizontal: 15),
@@ -163,7 +163,7 @@ class _ShopPageState extends State<ShopPage> {
                   Stack(
                     children: [
                       ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(5),
                         child: Image.file(
                           _imageFile!,
                           height: 200,
@@ -246,7 +246,7 @@ class _ShopPageState extends State<ShopPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(5),
           ),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -269,7 +269,7 @@ class _ShopPageState extends State<ShopPage> {
               children: [
                 if (item['photo'] != null) ...[
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(5),
                     child: Image.network(
                       item['photo'],
                       height: 200,
@@ -320,7 +320,7 @@ class _ShopPageState extends State<ShopPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(5),
           ),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -346,7 +346,7 @@ class _ShopPageState extends State<ShopPage> {
                   decoration: InputDecoration(
                     hintText: 'Item Title',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(5),
                     ),
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 12, horizontal: 15),
@@ -358,7 +358,7 @@ class _ShopPageState extends State<ShopPage> {
                   decoration: InputDecoration(
                     hintText: 'Item Contents',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(5),
                     ),
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 12, horizontal: 15),
@@ -372,7 +372,7 @@ class _ShopPageState extends State<ShopPage> {
                   decoration: InputDecoration(
                     hintText: 'Item Price',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(5),
                     ),
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 12, horizontal: 15),
@@ -384,7 +384,7 @@ class _ShopPageState extends State<ShopPage> {
                   Stack(
                     children: [
                       ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(5),
                         child: Image.file(
                           _imageFile!,
                           height: 200,
@@ -439,9 +439,6 @@ class _ShopPageState extends State<ShopPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Shop'),
-      ),
       body: loading
           ? Center(child: CircularProgressIndicator())
           : RefreshIndicator(
@@ -464,7 +461,7 @@ class _ShopPageState extends State<ShopPage> {
                       },
                       child: Card(
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(5),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -472,7 +469,7 @@ class _ShopPageState extends State<ShopPage> {
                             if (item['photo'] != null)
                               ClipRRect(
                                 borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(15),
+                                  top: Radius.circular(5),
                                 ),
                                 child: Image.network(
                                   item['photo'],
@@ -519,7 +516,8 @@ class _ShopPageState extends State<ShopPage> {
           _imageFile = null;
           _showItemDialog();
         },
-        child: Icon(Icons.add),
+        backgroundColor: Colors.blue,
+        child: Icon(Icons.add, color: Colors.white),
       ),
     );
   }
