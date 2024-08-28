@@ -237,6 +237,19 @@ class _ShopPageState extends State<ShopPage> {
     }
   }
 
+  Future<void> _deleteItem(String itemId) async {
+    final loginService = Provider.of<LoginService>(context, listen: false);
+    final userId = loginService.userInfo?['id'] ?? '';
+
+    try {
+      await ShopService().itemDelete(itemId, userId);
+      print('Item deleted successfully');
+      fetchItems();
+    } catch (error) {
+      print('Error deleting item: $error');
+    }
+  }
+
   void _showItemDetailDialog(Map<String, dynamic> item) {
     final isOwnItem = item['userId'] ==
         Provider.of<LoginService>(context, listen: false).userInfo?['id'];
@@ -252,7 +265,7 @@ class _ShopPageState extends State<ShopPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(item['itemTitle'] ?? 'No Title',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500)),
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400)),
               IconButton(
                 icon: Icon(Icons.close, color: Colors.black54),
                 onPressed: () {
@@ -275,37 +288,56 @@ class _ShopPageState extends State<ShopPage> {
                       height: 200,
                       width: double.infinity,
                       fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Center(child: Text('Failed to load image'));
+                      },
                     ),
                   ),
-                  SizedBox(height: 10),
                 ],
-                Text(
-                  item['itemContents'] ?? 'No Content',
-                  style: TextStyle(fontSize: 18),
+                SizedBox(height: 10),
+                Row(
+                  children: [
+                    Spacer(),
+                    Text(
+                      '${NumberFormat('###,###,###').format(item['itemPrice'] ?? 0)}원 ',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.grey[700],
+                      ),
+                    ),
+                  ],
                 ),
                 SizedBox(height: 10),
-                Text(
-                  '\$${item['itemPrice']?.toStringAsFixed(2) ?? '0.00'}',
-                  style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.green,
-                      fontWeight: FontWeight.w600),
-                ),
+                Text(item['itemContents'] ?? 'No Contents',
+                    style:
+                        TextStyle(fontSize: 15, fontWeight: FontWeight.w400)),
                 if (isOwnItem) ...[
-                  Spacer(),
-                  ElevatedButton(
-                    onPressed: () {
-                      _itemTitleController.text = item['itemTitle'] ?? '';
-                      _itemController.text = item['itemContents'] ?? '';
-                      _itemPriceController.text =
-                          item['itemPrice']?.toString() ?? '';
-                      _imageFile = null;
-                      Navigator.of(context).pop();
-                      _showEditDialog(item['itemId']);
-                    },
-                    child: Text('Edit Item'),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.edit_outlined, color: Colors.blue),
+                        onPressed: () {
+                          _itemTitleController.text = item['itemTitle'] ?? '';
+                          _itemController.text = item['itemContents'] ?? '';
+                          _itemPriceController.text =
+                              item['itemPrice']?.toString() ?? '';
+                          _imageFile = null;
+                          Navigator.of(context).pop();
+                          _showEditDialog(item['itemId']);
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete_outline, color: Colors.red),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          _showDeleteConfirmationDialog(item['itemId']);
+                        },
+                      ),
+                    ],
                   ),
-                ]
+                ],
               ],
             ),
           ),
@@ -412,7 +444,7 @@ class _ShopPageState extends State<ShopPage> {
                   children: [
                     ElevatedButton(
                       onPressed: _pickEditImage,
-                      child: Text('Change Image'),
+                      child: Text('Pick Image'),
                     ),
                     ElevatedButton(
                       onPressed: () {
@@ -424,13 +456,49 @@ class _ShopPageState extends State<ShopPage> {
                         );
                         Navigator.of(context).pop();
                       },
-                      child: Text('Save Changes'),
+                      child: Text('Update Item'),
                     ),
                   ],
                 ),
               ],
             ),
           ),
+        );
+      },
+    );
+  }
+
+  void _showDeleteConfirmationDialog(String itemId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
+          title: Text('Delete Item', style: TextStyle(fontSize: 22)),
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.9,
+            height: MediaQuery.of(context).size.height * 0.3,
+            child: Center(
+              child: Text('Are you sure you want to delete this item?'),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel', style: TextStyle(color: Colors.black54)),
+            ),
+            TextButton(
+              onPressed: () async {
+                await _deleteItem(itemId);
+                Navigator.of(context).pop();
+              },
+              child: Text('Delete', style: TextStyle(color: Colors.red)),
+            ),
+          ],
         );
       },
     );
