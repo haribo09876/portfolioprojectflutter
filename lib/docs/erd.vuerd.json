@@ -4,8 +4,8 @@
   "settings": {
     "width": 2000,
     "height": 2000,
-    "scrollTop": -284.1663,
-    "scrollLeft": -113.2004,
+    "scrollTop": -277.3341,
+    "scrollLeft": -103.8819,
     "zoomLevel": 0.8,
     "show": 431,
     "database": 4,
@@ -1067,18 +1067,18 @@
         "tableId": "552199ce-fef4-496f-9757-98afd3a45c83",
         "name": "purchaseStatus",
         "comment": "",
-        "dataType": "ENUM('Purchased', 'Refunded')",
+        "dataType": "BOOLEAN",
         "default": "",
         "options": 8,
         "ui": {
           "keys": 0,
           "widthName": 82,
           "widthComment": 60,
-          "widthDataType": 166,
+          "widthDataType": 60,
           "widthDefault": 60
         },
         "meta": {
-          "updateAt": 1722829108797,
+          "updateAt": 1724909367892,
           "createAt": 1722829108797
         }
       },
@@ -1455,7 +1455,7 @@
           "columnIds": [
             "957b56ca-0186-4147-b8a7-54b068ed4239"
           ],
-          "x": 488.9995,
+          "x": 443.4995,
           "y": 1016.9726,
           "direction": 4
         },
@@ -1483,7 +1483,7 @@
           "columnIds": [
             "fffd78d9-5299-4a41-b850-ac8e7a3032af"
           ],
-          "x": 861.4995,
+          "x": 770.4995,
           "y": 1116.9726,
           "direction": 2
         },
@@ -1614,6 +1614,14 @@
       -1,
       {
         "name": 1723458225467
+      }
+    ],
+    "cb799fc4-fefc-44d6-82a5-cf43b1916b14": [
+      "tableColumnEntities",
+      -1,
+      -1,
+      {
+        "dataType": 1724909367891
       }
     ]
   }
