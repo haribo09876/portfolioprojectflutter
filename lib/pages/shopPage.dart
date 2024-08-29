@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../services/login.dart';
 import '../services/shop.dart';
+import '../services/purchase.dart';
 
 class ShopPage extends StatefulWidget {
   @override
@@ -16,8 +17,8 @@ class _ShopPageState extends State<ShopPage> {
   final TextEditingController _itemController = TextEditingController();
   final TextEditingController _itemPriceController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
-  File? _imageFile;
   List<Map<String, dynamic>> items = [];
+  File? _imageFile;
   bool loading = false;
 
   @override
@@ -311,6 +312,14 @@ class _ShopPageState extends State<ShopPage> {
                 Text(item['itemContents'] ?? 'No Contents',
                     style:
                         TextStyle(fontSize: 15, fontWeight: FontWeight.w400)),
+                SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () async {
+                    await _purchaseItem(item);
+                    _showPurchaseConfirmationDialog();
+                  },
+                  child: Text('Buy'),
+                ),
                 if (isOwnItem) ...[
                   SizedBox(height: 10),
                   Row(
@@ -468,6 +477,25 @@ class _ShopPageState extends State<ShopPage> {
     );
   }
 
+  Future<void> _purchaseItem(Map<String, dynamic> item) async {
+    final loginService = Provider.of<LoginService>(context, listen: false);
+    final userId = loginService.userInfo?['id'] ?? '';
+
+    if (userId.isEmpty) return;
+
+    final itemId = item['itemId'];
+
+    try {
+      await PurchaseService().purchaseCreate(
+        userId,
+        itemId,
+      );
+      fetchItems();
+    } catch (error) {
+      print('Error processing purchase: $error');
+    }
+  }
+
   void _showDeleteConfirmationDialog(String itemId) {
     showDialog(
       context: context,
@@ -499,6 +527,49 @@ class _ShopPageState extends State<ShopPage> {
               child: Text('Delete', style: TextStyle(color: Colors.red)),
             ),
           ],
+        );
+      },
+    );
+  }
+
+  void _showPurchaseConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment
+                  .center, // Center the column content horizontally
+              children: [
+                SizedBox(height: 50),
+                Center(
+                  child: Text(
+                    'Thank you for your purchase!',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+                SizedBox(height: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('OK'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         );
       },
     );
