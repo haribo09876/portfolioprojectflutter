@@ -6,10 +6,8 @@ class PurchaseService {
   final String apiUrl = dotenv.env['PURCHASE_FUNC_URL']!;
 
   Future<void> purchaseCreate(String userId, String itemId) async {
-    final url = Uri.parse('$apiUrl/purchase');
-
     final response = await http.post(
-      url,
+      Uri.parse(apiUrl),
       headers: {
         'Content-Type': 'application/json',
       },
