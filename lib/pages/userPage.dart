@@ -30,7 +30,7 @@ class _UserPageState extends State<UserPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (/* 사용자 UID가 특정 값인 경우 */ false)
+            if (false)
               GestureDetector(
                 onTap: () {},
                 child: Text(
@@ -40,8 +40,9 @@ class _UserPageState extends State<UserPage> {
               ),
             Text(
               'My Info',
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w400),
+              style: TextStyle(fontSize: 23, fontWeight: FontWeight.w400),
             ),
+            SizedBox(height: 8),
             Row(
               children: [
                 GestureDetector(
@@ -69,7 +70,7 @@ class _UserPageState extends State<UserPage> {
                           ),
                   ),
                 ),
-                SizedBox(width: 10),
+                SizedBox(width: 8),
                 Text(
                   userName,
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
@@ -89,18 +90,87 @@ class _UserPageState extends State<UserPage> {
             ),
             SizedBox(height: 20),
             Text(
-              'My Instas',
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w400),
+              'My Insta',
+              style: TextStyle(fontSize: 23, fontWeight: FontWeight.w400),
+            ),
+            SizedBox(height: 8),
+            // 가로 스크롤 가능한 박스들 추가
+            Container(
+              height: 80, // 박스의 높이
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: 10,
+                itemBuilder: (context, index) {
+                  return Container(
+                    width: 80, // 박스의 너비
+                    height: 100,
+                    margin: EdgeInsets.only(right: 10),
+                    color: Colors.grey,
+                    child: Center(
+                      child: Text(
+                        'Box ${index + 1}',
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
             SizedBox(height: 20),
             Text(
-              'My Tweets',
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w400),
+              'My Tweet',
+              style: TextStyle(fontSize: 23, fontWeight: FontWeight.w400),
+            ),
+            SizedBox(height: 8),
+            // 가로 스크롤 가능한 박스들 추가
+            Container(
+              height: 100, // 박스의 높이
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: 10,
+                itemBuilder: (context, index) {
+                  return Container(
+                    width: 100, // 박스의 너비
+                    height: 100,
+                    margin: EdgeInsets.only(right: 10),
+                    color: Colors.grey,
+                    child: Center(
+                      child: Text(
+                        'Box ${index + 1}',
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
             SizedBox(height: 20),
             Text(
-              'My Shops',
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w400),
+              'My Item',
+              style: TextStyle(fontSize: 23, fontWeight: FontWeight.w400),
+            ),
+            SizedBox(height: 8),
+            // 가로 스크롤 가능한 박스들 추가
+            Container(
+              height: 150, // 박스의 높이
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: 10,
+                itemBuilder: (context, index) {
+                  return Container(
+                    width: 100, // 박스의 너비
+                    height: 100,
+                    margin: EdgeInsets.only(right: 10),
+                    color: Colors.grey,
+                    child: Center(
+                      child: Text(
+                        'Box ${index + 1}',
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
           ],
         ),
