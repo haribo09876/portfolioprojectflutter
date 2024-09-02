@@ -99,7 +99,7 @@ class _UserPageState extends State<UserPage> {
             ),
             SizedBox(height: 20),
             Text(
-              'My Sales',
+              'My Shops',
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.w400),
             ),
           ],
