@@ -7,7 +7,7 @@ abstract class ApiService {
   final String apiUrl = dotenv.env['USER_INFO_FUNC_URL']!;
   final ImagePicker _picker = ImagePicker();
 
-  Future<Map<String, dynamic>> sendRequest(
+  Future<dynamic> sendRequest(
     String action,
     Map<String, dynamic> body,
   ) async {
@@ -33,15 +33,15 @@ abstract class ApiService {
 
 class UserService extends ApiService {
   Future<Map<String, dynamic>> userRead(String userId) async {
-    final data = await sendRequest('read', {'userId': userId});
+    final data = await sendRequest('userRead', {'userId': userId});
     return {'success': true, 'data': data['user']};
   }
 }
 
 class TweetService extends ApiService {
   Future<List<Map<String, dynamic>>> tweetRead() async {
-    final data = await sendRequest('read', {});
-    return (data as List)
+    final data = await sendRequest('tweetRead', {});
+    return (data as List<dynamic>)
         .map((tweet) => {
               'id': tweet['tweetId'],
               'username': tweet['userName'],
@@ -60,7 +60,7 @@ class TweetService extends ApiService {
       final imageBytes = await imageFile.readAsBytes();
       base64Image = base64Encode(imageBytes);
     }
-    await sendRequest('update', {
+    await sendRequest('tweetUpdate', {
       'tweetId': tweetId,
       'userId': userId,
       'tweetContents': tweetContents,
@@ -69,7 +69,7 @@ class TweetService extends ApiService {
   }
 
   Future<void> tweetDelete(String tweetId, String userId) async {
-    await sendRequest('delete', {
+    await sendRequest('tweetDelete', {
       'tweetId': tweetId,
       'userId': userId,
     });
@@ -78,8 +78,8 @@ class TweetService extends ApiService {
 
 class InstaService extends ApiService {
   Future<List<Map<String, dynamic>>> instaRead() async {
-    final data = await sendRequest('read', {});
-    return (data as List)
+    final data = await sendRequest('instaRead', {});
+    return (data as List<dynamic>)
         .map((insta) => {
               'id': insta['instaId'],
               'username': insta['userName'],
@@ -98,7 +98,7 @@ class InstaService extends ApiService {
       final imageBytes = await imageFile.readAsBytes();
       base64Image = base64Encode(imageBytes);
     }
-    await sendRequest('update', {
+    await sendRequest('instaUpdate', {
       'instaId': instaId,
       'userId': userId,
       'instaContents': instaContents,
@@ -107,7 +107,7 @@ class InstaService extends ApiService {
   }
 
   Future<void> instaDelete(String instaId, String userId) async {
-    await sendRequest('delete', {
+    await sendRequest('instaDelete', {
       'instaId': instaId,
       'userId': userId,
     });
@@ -116,8 +116,8 @@ class InstaService extends ApiService {
 
 class ShopService extends ApiService {
   Future<List<Map<String, dynamic>>> itemRead() async {
-    final data = await sendRequest('read', {});
-    return (data as List)
+    final data = await sendRequest('purchaseRead', {});
+    return (data as List<dynamic>)
         .map((item) => {
               'itemId': item['itemId'],
               'username': item['userName'],
@@ -138,7 +138,7 @@ class ShopService extends ApiService {
       final imageBytes = await imageFile.readAsBytes();
       base64Image = base64Encode(imageBytes);
     }
-    await sendRequest('update', {
+    await sendRequest('purchaseUpdate', {
       'itemId': itemId,
       'userId': userId,
       'itemTitle': itemTitle,
@@ -149,7 +149,7 @@ class ShopService extends ApiService {
   }
 
   Future<void> itemDelete(String itemId, String userId) async {
-    await sendRequest('delete', {
+    await sendRequest('purchaseDelete', {
       'itemId': itemId,
       'userId': userId,
     });

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/userInfo.dart';
 
 class UserPage extends StatefulWidget {
   @override
@@ -7,12 +8,19 @@ class UserPage extends StatefulWidget {
 
 class _UserPageState extends State<UserPage> {
   String? avatar;
-  String userName = 'Anonymous';
+  String userName = 'nickName';
   int money = 0;
+
+  late Future<List<Map<String, dynamic>>> instaData;
+  late Future<List<Map<String, dynamic>>> tweetData;
+  late Future<List<Map<String, dynamic>>> itemData;
 
   @override
   void initState() {
     super.initState();
+    instaData = InstaService().instaRead();
+    tweetData = TweetService().tweetRead();
+    itemData = ShopService().itemRead();
   }
 
   void onAvatarChange() {
@@ -94,25 +102,46 @@ class _UserPageState extends State<UserPage> {
               style: TextStyle(fontSize: 23, fontWeight: FontWeight.w400),
             ),
             SizedBox(height: 8),
-            // 가로 스크롤 가능한 박스들 추가
             Container(
-              height: 100, // 박스의 높이
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return Container(
-                    width: 100, // 박스의 너비
-                    height: 100,
-                    margin: EdgeInsets.only(right: 10),
-                    color: Colors.grey,
-                    child: Center(
-                      child: Text(
-                        'Box ${index + 1}',
-                        style: TextStyle(color: Colors.white, fontSize: 16),
-                      ),
-                    ),
-                  );
+              height: 80,
+              child: FutureBuilder<List<Map<String, dynamic>>>(
+                future: tweetData,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return Center(child: Text('No data available'));
+                  } else {
+                    final data = snapshot.data!;
+                    return ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: data.length,
+                      itemBuilder: (context, index) {
+                        final tweet = data[index];
+                        return Container(
+                          width: 120,
+                          height: 80,
+                          margin: EdgeInsets.only(right: 2),
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey, width: 1),
+                          ),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              tweet['tweet'] ?? 'No Tweet',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 12),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  }
                 },
               ),
             ),
@@ -122,25 +151,47 @@ class _UserPageState extends State<UserPage> {
               style: TextStyle(fontSize: 23, fontWeight: FontWeight.w400),
             ),
             SizedBox(height: 8),
-            // 가로 스크롤 가능한 박스들 추가
             Container(
-              height: 80, // 박스의 높이
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return Container(
-                    width: 80, // 박스의 너비
-                    height: 100,
-                    margin: EdgeInsets.only(right: 10),
-                    color: Colors.grey,
-                    child: Center(
-                      child: Text(
-                        'Box ${index + 1}',
-                        style: TextStyle(color: Colors.white, fontSize: 16),
-                      ),
-                    ),
-                  );
+              height: 100,
+              child: FutureBuilder<List<Map<String, dynamic>>>(
+                future: instaData,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return Center(child: Text('No data available'));
+                  } else {
+                    final data = snapshot.data!;
+                    return ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: data.length,
+                      itemBuilder: (context, index) {
+                        final insta = data[index];
+                        return Container(
+                          width: 100,
+                          height: 100,
+                          margin: EdgeInsets.only(right: 2),
+                          color: Colors.grey,
+                          child: insta['photo'] != null
+                              ? Image.network(
+                                  insta['photo'],
+                                  width: 100,
+                                  height: 100,
+                                  fit: BoxFit.cover,
+                                )
+                              : Center(
+                                  child: Text(
+                                    'No Image',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 16),
+                                  ),
+                                ),
+                        );
+                      },
+                    );
+                  }
                 },
               ),
             ),
@@ -150,27 +201,54 @@ class _UserPageState extends State<UserPage> {
               style: TextStyle(fontSize: 23, fontWeight: FontWeight.w400),
             ),
             SizedBox(height: 8),
-            // 가로 스크롤 가능한 박스들 추가
             Container(
-              height: 150, // 박스의 높이
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return Container(
-                    width: 100, // 박스의 너비
-                    height: 100,
-                    margin: EdgeInsets.only(right: 10),
-                    color: Colors.grey,
-                    child: Center(
-                      child: Text(
-                        'Box ${index + 1}',
-                        style: TextStyle(color: Colors.white, fontSize: 16),
-                      ),
-                    ),
-                  );
+              height: 150,
+              child: FutureBuilder<List<Map<String, dynamic>>>(
+                future: itemData,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return Center(child: Text('No data available'));
+                  } else {
+                    final data = snapshot.data!;
+                    return ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: data.length,
+                      itemBuilder: (context, index) {
+                        final item = data[index];
+                        return Container(
+                          width: 100,
+                          height: 100,
+                          margin: EdgeInsets.only(right: 2),
+                          color: Colors.grey,
+                          child: item['photo'] != null
+                              ? Image.network(
+                                  item['photo'],
+                                  width: 80,
+                                  height: 80,
+                                  fit: BoxFit.cover,
+                                )
+                              : Center(
+                                  child: Text(
+                                    'No Image',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 16),
+                                  ),
+                                ),
+                        );
+                      },
+                    );
+                  }
                 },
               ),
+            ),
+            SizedBox(height: 20),
+            Text(
+              '회원 탈퇴',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
             ),
           ],
         ),
