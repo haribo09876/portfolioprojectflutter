@@ -90,19 +90,19 @@ class _UserPageState extends State<UserPage> {
             ),
             SizedBox(height: 20),
             Text(
-              'My Insta',
+              'My Tweet',
               style: TextStyle(fontSize: 23, fontWeight: FontWeight.w400),
             ),
             SizedBox(height: 8),
             // 가로 스크롤 가능한 박스들 추가
             Container(
-              height: 80, // 박스의 높이
+              height: 100, // 박스의 높이
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: 10,
                 itemBuilder: (context, index) {
                   return Container(
-                    width: 80, // 박스의 너비
+                    width: 100, // 박스의 너비
                     height: 100,
                     margin: EdgeInsets.only(right: 10),
                     color: Colors.grey,
@@ -118,19 +118,19 @@ class _UserPageState extends State<UserPage> {
             ),
             SizedBox(height: 20),
             Text(
-              'My Tweet',
+              'My Insta',
               style: TextStyle(fontSize: 23, fontWeight: FontWeight.w400),
             ),
             SizedBox(height: 8),
             // 가로 스크롤 가능한 박스들 추가
             Container(
-              height: 100, // 박스의 높이
+              height: 80, // 박스의 높이
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: 10,
                 itemBuilder: (context, index) {
                   return Container(
-                    width: 100, // 박스의 너비
+                    width: 80, // 박스의 너비
                     height: 100,
                     margin: EdgeInsets.only(right: 10),
                     color: Colors.grey,

@@ -135,7 +135,6 @@ class _SignupPageState extends State<SignupPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('성공'),
           content: Text('회원가입이 완료되었습니다.'),
           actions: <Widget>[
             TextButton(
