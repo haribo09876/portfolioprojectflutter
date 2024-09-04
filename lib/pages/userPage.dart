@@ -10,6 +10,7 @@ class UserPage extends StatefulWidget {
 
 class _UserPageState extends State<UserPage> {
   String? avatar;
+  late String userId;
   late String userName;
   late String userImg;
   late int userMoney;
@@ -22,6 +23,7 @@ class _UserPageState extends State<UserPage> {
     super.initState();
 
     final loginService = Provider.of<LoginService>(context, listen: false);
+    userId = loginService.userInfo?['id'] ?? '';
     userName = loginService.userInfo?['name'] ?? '';
     userImg = loginService.userInfo?['imgURL'] ?? '';
     userMoney =
@@ -49,7 +51,7 @@ class _UserPageState extends State<UserPage> {
           children: [
             Text(
               'My Info',
-              style: TextStyle(fontSize: 23, fontWeight: FontWeight.w400),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
             ),
             SizedBox(height: 8),
             Row(
@@ -82,7 +84,7 @@ class _UserPageState extends State<UserPage> {
                 SizedBox(width: 8),
                 Text(
                   userName,
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                 ),
                 IconButton(
                   icon: Icon(Icons.edit),
@@ -100,7 +102,7 @@ class _UserPageState extends State<UserPage> {
             SizedBox(height: 20),
             Text(
               'My Tweet',
-              style: TextStyle(fontSize: 23, fontWeight: FontWeight.w400),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
             ),
             SizedBox(height: 8),
             Container(
@@ -149,7 +151,7 @@ class _UserPageState extends State<UserPage> {
             SizedBox(height: 20),
             Text(
               'My Insta',
-              style: TextStyle(fontSize: 23, fontWeight: FontWeight.w400),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
             ),
             SizedBox(height: 8),
             Container(
@@ -173,7 +175,7 @@ class _UserPageState extends State<UserPage> {
                         return Container(
                           width: 100,
                           height: 100,
-                          margin: EdgeInsets.only(right: 2),
+                          margin: EdgeInsets.only(right: 1),
                           color: Colors.grey,
                           child: insta['photo'] != null
                               ? Image.network(
@@ -199,7 +201,7 @@ class _UserPageState extends State<UserPage> {
             SizedBox(height: 20),
             Text(
               'My Item',
-              style: TextStyle(fontSize: 23, fontWeight: FontWeight.w400),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
             ),
             SizedBox(height: 8),
             Container(
