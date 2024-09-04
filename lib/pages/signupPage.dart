@@ -18,7 +18,7 @@ class _SignupPageState extends State<SignupPage> {
   String userName = '';
   String userGender = 'Male';
   int userAge = 0;
-  int userMoney = 100000;
+  int userMoney = 1000000;
   int userSpend = 0;
 
   bool _isSubmitting = false;

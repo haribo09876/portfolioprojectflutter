@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../services/login.dart';
 import '../services/userInfo.dart';
 
 class UserPage extends StatefulWidget {
@@ -8,9 +10,9 @@ class UserPage extends StatefulWidget {
 
 class _UserPageState extends State<UserPage> {
   String? avatar;
-  String userName = 'nickName';
-  int money = 0;
-
+  late String userName;
+  late String userImg;
+  late int userMoney;
   late Future<List<Map<String, dynamic>>> instaData;
   late Future<List<Map<String, dynamic>>> tweetData;
   late Future<List<Map<String, dynamic>>> itemData;
@@ -18,6 +20,13 @@ class _UserPageState extends State<UserPage> {
   @override
   void initState() {
     super.initState();
+
+    final loginService = Provider.of<LoginService>(context, listen: false);
+    userName = loginService.userInfo?['name'] ?? '';
+    userImg = loginService.userInfo?['imgURL'] ?? '';
+    userMoney =
+        loginService.userInfo?['money'] - loginService.userInfo?['spend'] ?? '';
+
     instaData = InstaService().instaRead();
     tweetData = TweetService().tweetRead();
     itemData = ShopService().itemRead();
@@ -38,14 +47,6 @@ class _UserPageState extends State<UserPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (false)
-              GestureDetector(
-                onTap: () {},
-                child: Text(
-                  'DashboardPage로 이동',
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.w400),
-                ),
-              ),
             Text(
               'My Info',
               style: TextStyle(fontSize: 23, fontWeight: FontWeight.w400),
@@ -62,10 +63,10 @@ class _UserPageState extends State<UserPage> {
                       color: Colors.grey,
                       borderRadius: BorderRadius.circular(50),
                     ),
-                    child: avatar != null
+                    child: userImg != null
                         ? ClipOval(
                             child: Image.network(
-                              avatar!,
+                              userImg!,
                               width: 65,
                               height: 65,
                               fit: BoxFit.cover,
@@ -91,7 +92,7 @@ class _UserPageState extends State<UserPage> {
                 ),
                 Spacer(),
                 Text(
-                  '$money 원',
+                  '$userMoney 원',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                 ),
               ],
