@@ -85,7 +85,7 @@ class InstaService extends ApiService {
               'username': insta['userName'],
               'insta': insta['instaContents'],
               'photo': insta['instaImgURL'],
-              'userImgURL': insta['userImgURL'],
+              'userImg': insta['userImg'],
               'userId': insta['userId'],
             })
         .toList();
@@ -115,18 +115,17 @@ class InstaService extends ApiService {
 }
 
 class ShopService extends ApiService {
-  Future<List<Map<String, dynamic>>> itemRead() async {
-    final data = await sendRequest('purchaseRead', {});
+  Future<List<Map<String, dynamic>>> itemRead(String userId) async {
+    final data = await sendRequest('purchaseRead', {'userId': userId});
     return (data as List<dynamic>)
         .map((item) => {
-              'itemId': item['itemId'],
-              'username': item['userName'],
-              'itemTitle': item['itemTitle'],
-              'itemPrice': item['itemPrice'],
-              'itemContents': item['itemContents'],
-              'photo': item['itemImgURL'],
-              'userImgURL': item['userImgURL'],
               'userId': item['userId'],
+              'itemId': item['itemId'],
+              'purchaseStatus': item['purchaseStatus'],
+              'itemTitle': item['itemTitle'],
+              'itemContents': item['itemContents'],
+              'itemPrice': item['itemPrice'],
+              'itemImg': item['itemImgURL'],
             })
         .toList();
   }

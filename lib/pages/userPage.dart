@@ -32,7 +32,7 @@ class _UserPageState extends State<UserPage> {
 
     instaData = InstaService().instaRead(userId);
     tweetData = TweetService().tweetRead(userId);
-    itemData = ShopService().itemRead();
+    itemData = ShopService().itemRead(userId);
   }
 
   void onAvatarChange() {
@@ -245,9 +245,9 @@ class _UserPageState extends State<UserPage> {
                           height: 100,
                           margin: EdgeInsets.only(right: 2),
                           color: Colors.grey,
-                          child: item['photo'] != null
+                          child: item['itemImg'] != null
                               ? Image.network(
-                                  item['photo'],
+                                  item['itemImg'],
                                   width: 80,
                                   height: 80,
                                   fit: BoxFit.cover,

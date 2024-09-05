@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -17,7 +18,9 @@ class _ShopPageState extends State<ShopPage> {
   final TextEditingController _itemController = TextEditingController();
   final TextEditingController _itemPriceController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
+  late String userId;
   List<Map<String, dynamic>> items = [];
+  String? adminId = dotenv.env['ADMIN_ID'];
   File? _imageFile;
   bool loading = false;
 
@@ -577,6 +580,8 @@ class _ShopPageState extends State<ShopPage> {
 
   @override
   Widget build(BuildContext context) {
+    final loginService = Provider.of<LoginService>(context, listen: false);
+    userId = loginService.userInfo?['id'] ?? '';
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: _refresh,
@@ -666,17 +671,19 @@ class _ShopPageState extends State<ShopPage> {
                 },
               ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _itemTitleController.clear();
-          _itemController.clear();
-          _itemPriceController.clear();
-          _imageFile = null;
-          _showItemDialog();
-        },
-        backgroundColor: Colors.blue,
-        child: Icon(Icons.add, color: Colors.white),
-      ),
+      floatingActionButton: (userId == adminId)
+          ? FloatingActionButton(
+              onPressed: () {
+                _itemTitleController.clear();
+                _itemController.clear();
+                _itemPriceController.clear();
+                _imageFile = null;
+                _showItemDialog();
+              },
+              backgroundColor: Colors.blue,
+              child: Icon(Icons.add, color: Colors.white),
+            )
+          : null,
     );
   }
 }
