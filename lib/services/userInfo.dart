@@ -39,8 +39,8 @@ class UserService extends ApiService {
 }
 
 class TweetService extends ApiService {
-  Future<List<Map<String, dynamic>>> tweetRead() async {
-    final data = await sendRequest('tweetRead', {});
+  Future<List<Map<String, dynamic>>> tweetRead(String userId) async {
+    final data = await sendRequest('tweetRead', {'userId': userId});
     return (data as List<dynamic>)
         .map((tweet) => {
               'id': tweet['tweetId'],
@@ -77,8 +77,8 @@ class TweetService extends ApiService {
 }
 
 class InstaService extends ApiService {
-  Future<List<Map<String, dynamic>>> instaRead() async {
-    final data = await sendRequest('instaRead', {});
+  Future<List<Map<String, dynamic>>> instaRead(String userId) async {
+    final data = await sendRequest('instaRead', {'userId': userId});
     return (data as List<dynamic>)
         .map((insta) => {
               'id': insta['instaId'],

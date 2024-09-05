@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import '../services/login.dart';
 import '../services/userInfo.dart';
 
@@ -29,8 +30,8 @@ class _UserPageState extends State<UserPage> {
     userMoney =
         loginService.userInfo?['money'] - loginService.userInfo?['spend'] ?? '';
 
-    instaData = InstaService().instaRead();
-    tweetData = TweetService().tweetRead();
+    instaData = InstaService().instaRead(userId);
+    tweetData = TweetService().tweetRead(userId);
     itemData = ShopService().itemRead();
   }
 
@@ -49,11 +50,6 @@ class _UserPageState extends State<UserPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'My Info',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
-            ),
-            SizedBox(height: 8),
             Row(
               children: [
                 GestureDetector(
@@ -82,21 +78,43 @@ class _UserPageState extends State<UserPage> {
                   ),
                 ),
                 SizedBox(width: 8),
-                Text(
-                  userName,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                ),
-                IconButton(
-                  icon: Icon(Icons.edit),
-                  onPressed: () {
-                    print('Edit name clicked');
-                  },
-                ),
-                Spacer(),
-                Text(
-                  '$userMoney 원',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              '  $userName',
+                              style: TextStyle(
+                                fontSize: 30,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            '${NumberFormat('###,###,###').format(userMoney ?? 0)} 원  ',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey[700],
+                            ),
+                          ),
+                        ],
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.edit,
+                          size: 15,
+                        ),
+                        onPressed: () {
+                          print('userEdit clicked');
+                        },
+                      ),
+                    ],
+                  ),
+                )
               ],
             ),
             SizedBox(height: 20),
@@ -115,7 +133,7 @@ class _UserPageState extends State<UserPage> {
                   } else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(child: Text('No data available'));
+                    return Center(child: Text('Tweet 내역이 없습니다'));
                   } else {
                     final data = snapshot.data!;
                     return ListView.builder(
@@ -164,7 +182,7 @@ class _UserPageState extends State<UserPage> {
                   } else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(child: Text('No data available'));
+                    return Center(child: Text('Insta 내역이 없습니다'));
                   } else {
                     final data = snapshot.data!;
                     return ListView.builder(
@@ -214,7 +232,7 @@ class _UserPageState extends State<UserPage> {
                   } else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(child: Text('No data available'));
+                    return Center(child: Text('Item 내역이 없습니다'));
                   } else {
                     final data = snapshot.data!;
                     return ListView.builder(
