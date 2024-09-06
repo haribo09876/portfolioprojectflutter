@@ -22,14 +22,14 @@ class _UserPageState extends State<UserPage> {
 
     allData = Future.wait([
       UserService().userRead(userId),
-      InstaService().instaRead(userId),
       TweetService().tweetRead(userId),
+      InstaService().instaRead(userId),
       ShopService().itemRead(userId)
     ]).then((responses) {
       return {
         'userData': responses[0],
-        'instaData': responses[1],
-        'tweetData': responses[2],
+        'tweetData': responses[1],
+        'instaData': responses[2],
         'itemData': responses[3],
       };
     });
@@ -37,6 +37,85 @@ class _UserPageState extends State<UserPage> {
 
   void onAvatarChange() {
     print('Avatar change clicked');
+  }
+
+  void _showEditDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Edit'),
+          content: Text('Here is Edit Dialog'),
+          actions: [
+            TextButton(
+              child: Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showConfirmDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm'),
+          content: Text(
+              'Are you sure to delete this Tweet or Insta ? or Are you sure to refund this Item ?'),
+          actions: [
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Confirm'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showDetailDialog(String title, Widget content) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: content,
+          actions: [
+            IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: () {
+                _showEditDialog();
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: () {
+                _showConfirmDialog();
+              },
+            ),
+            TextButton(
+              child: Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -58,10 +137,10 @@ class _UserPageState extends State<UserPage> {
 
           final userData =
               snapshot.data!['userData'] as List<Map<String, dynamic>>;
-          final instaData =
-              snapshot.data!['instaData'] as List<Map<String, dynamic>>;
           final tweetData =
               snapshot.data!['tweetData'] as List<Map<String, dynamic>>;
+          final instaData =
+              snapshot.data!['instaData'] as List<Map<String, dynamic>>;
           final itemData =
               snapshot.data!['itemData'] as List<Map<String, dynamic>>;
 
@@ -148,7 +227,7 @@ class _UserPageState extends State<UserPage> {
                               size: 15,
                             ),
                             onPressed: () {
-                              print('userEdit clicked');
+                              _showEditDialog();
                             },
                           ),
                         ],
@@ -194,22 +273,42 @@ class _UserPageState extends State<UserPage> {
         scrollDirection: Axis.horizontal,
         itemCount: data.length,
         itemBuilder: (context, index) {
-          final item = data[index];
-          return Container(
-            width: 120,
-            height: 80,
-            margin: EdgeInsets.only(right: 2),
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey, width: 1),
-            ),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                item[key] ?? defaultValue,
-                style: TextStyle(color: Colors.black, fontSize: 12),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+          final tweet = data[index];
+          return GestureDetector(
+            onTap: () {
+              _showDetailDialog(
+                '',
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(tweet['tweetContents'] ?? defaultValue),
+                    if (tweet['tweetImgURL'] != null)
+                      Image.network(
+                        tweet['tweetImgURL'],
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      ),
+                  ],
+                ),
+              );
+            },
+            child: Container(
+              width: 120,
+              height: 80,
+              margin: EdgeInsets.only(right: 2),
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey, width: 1),
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  tweet[key] ?? defaultValue,
+                  style: TextStyle(color: Colors.black, fontSize: 12),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ),
           );
@@ -225,25 +324,37 @@ class _UserPageState extends State<UserPage> {
         scrollDirection: Axis.horizontal,
         itemCount: data.length,
         itemBuilder: (context, index) {
-          final item = data[index];
-          return Container(
-            width: 100,
-            height: 100,
-            margin: EdgeInsets.only(right: 1),
-            color: Colors.grey,
-            child: item['instaImgURL'] != null
-                ? Image.network(
-                    item['instaImgURL'],
-                    width: 100,
-                    height: 100,
-                    fit: BoxFit.cover,
-                  )
-                : Center(
-                    child: Text(
-                      'No Image',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
+          final insta = data[index];
+          return GestureDetector(
+            onTap: () {
+              _showDetailDialog(
+                '',
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.network(
+                      insta['instaImgURL'],
+                      width: 100,
+                      height: 100,
+                      fit: BoxFit.cover,
                     ),
-                  ),
+                    Text(insta['instaContents'] ?? 'No Content'),
+                  ],
+                ),
+              );
+            },
+            child: Container(
+              width: 100,
+              height: 100,
+              margin: EdgeInsets.only(right: 1),
+              color: Colors.grey,
+              child: insta['instaImgURL'] != null
+                  ? Image.network(
+                      insta['instaImgURL'],
+                      fit: BoxFit.cover,
+                    )
+                  : Icon(Icons.camera_alt),
+            ),
           );
         },
       ),
@@ -258,24 +369,36 @@ class _UserPageState extends State<UserPage> {
         itemCount: data.length,
         itemBuilder: (context, index) {
           final item = data[index];
-          return Container(
-            width: 100,
-            height: 150,
-            margin: EdgeInsets.only(right: 1),
-            color: Colors.grey,
-            child: item['itemImgURL'] != null
-                ? Image.network(
-                    item['itemImgURL'],
-                    width: 100,
-                    height: 150,
-                    fit: BoxFit.cover,
-                  )
-                : Center(
-                    child: Text(
-                      'No Image',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
+          return GestureDetector(
+            onTap: () {
+              _showDetailDialog(
+                item['itemTitle'],
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.network(
+                      item['itemImgURL'],
+                      width: 200,
+                      height: 200,
+                      fit: BoxFit.cover,
                     ),
-                  ),
+                    Text(item['itemContents'] ?? 'No Content'),
+                  ],
+                ),
+              );
+            },
+            child: Container(
+              width: 100,
+              height: 150,
+              margin: EdgeInsets.only(right: 1),
+              color: Colors.grey,
+              child: item['itemImgURL'] != null
+                  ? Image.network(
+                      item['itemImgURL'],
+                      fit: BoxFit.cover,
+                    )
+                  : Icon(Icons.shopping_bag),
+            ),
           );
         },
       ),
