@@ -51,10 +51,10 @@ class TweetService extends ApiService {
     final data = await sendRequest('tweetRead', {'userId': userId});
     return (data as List<dynamic>)
         .map((tweet) => {
-              'id': tweet['tweetId'],
-              'username': tweet['userName'],
-              'tweet': tweet['tweetContents'],
-              'photo': tweet['tweetImgURL'],
+              'tweetId': tweet['tweetId'],
+              'userName': tweet['userName'],
+              'tweetContents': tweet['tweetContents'],
+              'tweetImgURL': tweet['tweetImgURL'],
               'userImgURL': tweet['userImgURL'],
               'userId': tweet['userId'],
             })
@@ -89,10 +89,10 @@ class InstaService extends ApiService {
     final data = await sendRequest('instaRead', {'userId': userId});
     return (data as List<dynamic>)
         .map((insta) => {
-              'id': insta['instaId'],
-              'username': insta['userName'],
-              'insta': insta['instaContents'],
-              'photo': insta['instaImgURL'],
+              'instaId': insta['instaId'],
+              'userName': insta['userName'],
+              'instaContents': insta['instaContents'],
+              'instaImgURL': insta['instaImgURL'],
               'userImg': insta['userImg'],
               'userId': insta['userId'],
             })
@@ -133,7 +133,7 @@ class ShopService extends ApiService {
               'itemTitle': item['itemTitle'],
               'itemContents': item['itemContents'],
               'itemPrice': item['itemPrice'],
-              'itemImg': item['itemImgURL'],
+              'itemImgURL': item['itemImgURL'],
             })
         .toList();
   }
