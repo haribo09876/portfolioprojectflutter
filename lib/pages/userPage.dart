@@ -10,11 +10,8 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
-  String? avatar;
   late String userId;
-  late String userName;
-  late String userImg;
-  late int userMoney;
+  late Future<List<Map<String, dynamic>>> userData;
   late Future<List<Map<String, dynamic>>> instaData;
   late Future<List<Map<String, dynamic>>> tweetData;
   late Future<List<Map<String, dynamic>>> itemData;
@@ -25,11 +22,7 @@ class _UserPageState extends State<UserPage> {
 
     final loginService = Provider.of<LoginService>(context, listen: false);
     userId = loginService.userInfo?['id'] ?? '';
-    userName = loginService.userInfo?['name'] ?? '';
-    userImg = loginService.userInfo?['imgURL'] ?? '';
-    userMoney =
-        loginService.userInfo?['money'] - loginService.userInfo?['spend'] ?? '';
-
+    userData = UserService().userRead(userId);
     instaData = InstaService().instaRead(userId);
     tweetData = TweetService().tweetRead(userId);
     itemData = ShopService().itemRead(userId);
@@ -50,72 +43,102 @@ class _UserPageState extends State<UserPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                GestureDetector(
-                  onTap: onAvatarChange,
-                  child: Container(
-                    width: 65,
-                    height: 65,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    child: userImg != null
-                        ? ClipOval(
-                            child: Image.network(
-                              userImg!,
-                              width: 65,
-                              height: 65,
-                              fit: BoxFit.cover,
-                            ),
-                          )
-                        : Icon(
-                            Icons.account_circle,
-                            size: 40,
-                            color: Colors.white,
-                          ),
-                  ),
-                ),
-                SizedBox(width: 8),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+            FutureBuilder<List<Map<String, dynamic>>>(
+              future: userData,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text('User 내역이 없습니다'));
+                } else {
+                  final data = snapshot.data!;
+                  final user = data[0];
+
+                  return Row(
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              '  $userName',
-                              style: TextStyle(
-                                fontSize: 30,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
+                      GestureDetector(
+                        onTap: onAvatarChange,
+                        child: Container(
+                          width: 80,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(50),
                           ),
-                          Text(
-                            '${NumberFormat('###,###,###').format(userMoney ?? 0)} 원  ',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.grey[700],
-                            ),
-                          ),
-                        ],
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.edit,
-                          size: 15,
+                          child: user['userImgURL'] != null
+                              ? ClipOval(
+                                  child: Image.network(
+                                    user['userImgURL']!,
+                                    width: 80,
+                                    height: 80,
+                                    fit: BoxFit.cover,
+                                  ),
+                                )
+                              : Icon(
+                                  Icons.account_circle,
+                                  size: 40,
+                                  color: Colors.white,
+                                ),
                         ),
-                        onPressed: () {
-                          print('userEdit clicked');
-                        },
+                      ),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        user['userName'] ?? 'No userName',
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                      Text(
+                                        user['userEmail'] ?? 'No userEmail',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w300,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Text(
+                                  '${NumberFormat('###,###,###').format((user['userMoney'] - user['userSpend']) ?? 0)}원  ',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.grey[700],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                Icons.edit,
+                                size: 15,
+                              ),
+                              onPressed: () {
+                                print('userEdit clicked');
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ],
-                  ),
-                )
-              ],
+                  );
+                }
+              },
             ),
             SizedBox(height: 20),
             Text(

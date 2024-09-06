@@ -32,9 +32,17 @@ abstract class ApiService {
 }
 
 class UserService extends ApiService {
-  Future<Map<String, dynamic>> userRead(String userId) async {
+  Future<List<Map<String, dynamic>>> userRead(String userId) async {
     final data = await sendRequest('userRead', {'userId': userId});
-    return {'success': true, 'data': data['user']};
+    return (data as List<dynamic>)
+        .map((user) => {
+              'userName': user['userName'],
+              'userEmail': user['userEmail'],
+              'userMoney': user['userMoney'],
+              'userSpend': user['userSpend'],
+              'userImgURL': user['userImgURL'],
+            })
+        .toList();
   }
 }
 
