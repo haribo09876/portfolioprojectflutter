@@ -255,102 +255,103 @@ class _ShopPageState extends State<ShopPage> {
   }
 
   void _showItemDetailDialog(Map<String, dynamic> item) {
-    final isOwnItem = item['userId'] ==
-        Provider.of<LoginService>(context, listen: false).userInfo?['id'];
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
+        return Dialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5),
           ),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(item['itemTitle'] ?? 'No Title',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400)),
-              IconButton(
-                icon: Icon(Icons.close, color: Colors.black54),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          ),
-          content: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.8,
-            height: MediaQuery.of(context).size.height * 0.5,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (item['photo'] != null) ...[
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
-                    child: Image.network(
-                      item['photo'],
-                      height: 200,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Center(child: Text('Failed to load image'));
-                      },
-                    ),
-                  ),
-                ],
-                SizedBox(height: 10),
-                Row(
-                  children: [
-                    Spacer(),
-                    Text(
-                      '${NumberFormat('###,###,###').format(item['itemPrice'] ?? 0)}원 ',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.grey[700],
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10),
-                Text(item['itemContents'] ?? 'No Contents',
-                    style:
-                        TextStyle(fontSize: 15, fontWeight: FontWeight.w400)),
-                SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () async {
-                    await _purchaseItem(item);
-                    _showPurchaseConfirmationDialog();
-                  },
-                  child: Text('Buy'),
-                ),
-                if (isOwnItem) ...[
-                  SizedBox(height: 10),
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      Text(item['itemTitle'] ?? 'No Title',
+                          style: TextStyle(
+                              fontSize: 22, fontWeight: FontWeight.w400)),
                       IconButton(
-                        icon: Icon(Icons.edit_outlined, color: Colors.blue),
-                        onPressed: () {
-                          _itemTitleController.text = item['itemTitle'] ?? '';
-                          _itemController.text = item['itemContents'] ?? '';
-                          _itemPriceController.text =
-                              item['itemPrice']?.toString() ?? '';
-                          _imageFile = null;
-                          Navigator.of(context).pop();
-                          _showEditDialog(item['itemId']);
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.delete_outline, color: Colors.red),
+                        icon: Icon(Icons.close, color: Colors.black54),
                         onPressed: () {
                           Navigator.of(context).pop();
-                          _showDeleteConfirmationDialog(item['itemId']);
                         },
                       ),
                     ],
                   ),
+                  SizedBox(height: 10),
+                  if (item['photo'] != null) ...[
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(5),
+                      child: Image.network(
+                        item['photo'],
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Center(child: Text('Failed to load image'));
+                        },
+                      ),
+                    ),
+                  ],
+                  SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Spacer(),
+                      Text(
+                        '${NumberFormat('###,###,###').format(item['itemPrice'] ?? 0)}원 ',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Text(item['itemContents'] ?? 'No Contents',
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.w400)),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await _purchaseItem(item);
+                      _showPurchaseConfirmationDialog();
+                    },
+                    child: Text('Buy'),
+                  ),
+                  if (userId == adminId) ...[
+                    SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit_outlined, color: Colors.blue),
+                          onPressed: () {
+                            _itemTitleController.text = item['itemTitle'] ?? '';
+                            _itemController.text = item['itemContents'] ?? '';
+                            _itemPriceController.text =
+                                item['itemPrice']?.toString() ?? '';
+                            _imageFile = null;
+                            Navigator.of(context).pop();
+                            _showEditDialog(item['itemId']);
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete_outline, color: Colors.red),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            _showDeleteConfirmationDialog(item['itemId']);
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
           ),
         );
@@ -547,8 +548,7 @@ class _ShopPageState extends State<ShopPage> {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment
-                  .center, // Center the column content horizontally
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(height: 50),
                 Center(
