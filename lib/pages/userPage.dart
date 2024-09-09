@@ -66,16 +66,19 @@ class _UserPageState extends State<UserPage> {
         return AlertDialog(
           title: Text('Confirm'),
           content: Text(
-              'Are you sure to delete this Tweet or Insta ? or Are you sure to refund this Item ?'),
+            'Are you sure to delete this Tweet?\n\nor\n\nAre you sure to delete this Insta?\n\nor\n\nAre you sure to refund this Item?\n\nor\n\nAre you sure to delete your Account?',
+            textAlign: TextAlign.left,
+          ),
           actions: [
             TextButton(
-              child: Text('Cancel'),
+              child: Text('Confirm'),
               onPressed: () {
+                Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Confirm'),
+              child: Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -86,7 +89,7 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
-  void _showDetailDialog(String title, Widget content) {
+  void _showDetailDialog(String title, Widget content, {bool isItem = false}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -94,18 +97,27 @@ class _UserPageState extends State<UserPage> {
           title: Text(title),
           content: content,
           actions: [
-            IconButton(
-              icon: Icon(Icons.edit),
-              onPressed: () {
-                _showEditDialog();
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.delete),
-              onPressed: () {
-                _showConfirmDialog();
-              },
-            ),
+            if (isItem)
+              TextButton(
+                child: Text('Refund'),
+                onPressed: () {
+                  _showConfirmDialog();
+                },
+              )
+            else
+              IconButton(
+                icon: Icon(Icons.edit_outlined),
+                onPressed: () {
+                  _showEditDialog();
+                },
+              ),
+            if (!isItem)
+              IconButton(
+                icon: Icon(Icons.delete_outline),
+                onPressed: () {
+                  _showConfirmDialog();
+                },
+              ),
             TextButton(
               child: Text('Close'),
               onPressed: () {
@@ -223,7 +235,7 @@ class _UserPageState extends State<UserPage> {
                           ),
                           IconButton(
                             icon: Icon(
-                              Icons.edit,
+                              Icons.edit_outlined,
                               size: 15,
                             ),
                             onPressed: () {
@@ -246,9 +258,18 @@ class _UserPageState extends State<UserPage> {
                 _buildSectionTitle('My Item'),
                 _buildItemImageList(itemData),
                 SizedBox(height: 20),
-                Text(
-                  '회원 탈퇴',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+                GestureDetector(
+                  onTap: () {
+                    _showConfirmDialog();
+                  },
+                  child: Text(
+                    'Delete Account',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.red,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -353,7 +374,7 @@ class _UserPageState extends State<UserPage> {
                       insta['instaImgURL'],
                       fit: BoxFit.cover,
                     )
-                  : Icon(Icons.camera_alt),
+                  : Icon(Icons.camera_alt_outlined),
             ),
           );
         },
@@ -385,6 +406,7 @@ class _UserPageState extends State<UserPage> {
                     Text(item['itemContents'] ?? 'No Content'),
                   ],
                 ),
+                isItem: true,
               );
             },
             child: Container(
@@ -397,7 +419,7 @@ class _UserPageState extends State<UserPage> {
                       item['itemImgURL'],
                       fit: BoxFit.cover,
                     )
-                  : Icon(Icons.shopping_bag),
+                  : Icon(Icons.shopping_bag_outlined),
             ),
           );
         },

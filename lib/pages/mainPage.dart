@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../routes.dart';
 import '../services/login.dart';
 import 'homePage.dart';
@@ -8,9 +9,13 @@ import 'instaPage.dart';
 import 'shopPage.dart';
 
 class MainPage extends StatelessWidget {
+  late String userId;
+  String? adminId = dotenv.env['ADMIN_ID'];
+
   @override
   Widget build(BuildContext context) {
     final loginService = Provider.of<LoginService>(context);
+    userId = loginService.userInfo?['id'] ?? '';
 
     return DefaultTabController(
       length: 4,
@@ -29,12 +34,13 @@ class MainPage extends StatelessWidget {
             ],
           ),
           actions: [
-            IconButton(
-              icon: Icon(Icons.book_outlined),
-              onPressed: () {
-                Navigator.pushNamed(context, AppRoutes.dashboard);
-              },
-            ),
+            if (userId == adminId)
+              IconButton(
+                icon: Icon(Icons.book_outlined),
+                onPressed: () {
+                  Navigator.pushNamed(context, AppRoutes.dashboard);
+                },
+              ),
             IconButton(
               icon: Icon(Icons.person_2_outlined),
               onPressed: () {
