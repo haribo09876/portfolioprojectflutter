@@ -66,7 +66,9 @@ class _UserPageState extends State<UserPage> {
         return AlertDialog(
           title: Text('Confirm'),
           content: Text(
-            'Are you sure to delete this Tweet?\n\nor\n\nAre you sure to delete this Insta?\n\nor\n\nAre you sure to refund this Item?\n\nor\n\nAre you sure to delete your Account?',
+            'Are you sure to delete this Account?'
+            '\n\nor\n\nAre you sure to delete this Tweet?'
+            '\n\nor\n\nAre you sure to delete this Insta?',
             textAlign: TextAlign.left,
           ),
           actions: [
