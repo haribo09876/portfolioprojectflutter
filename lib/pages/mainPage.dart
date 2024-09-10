@@ -55,19 +55,19 @@ class MainPage extends StatelessWidget {
                       barrierDismissible: false,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text('Logout'),
-                          content: Text('정말 로그아웃 하시겠습니까?'),
+                          title: Text('Log out'),
+                          content: Text('Are you sure you want to log out?'),
                           actions: <Widget>[
                             TextButton(
-                              child: Text('취소'),
+                              child: Text('Log out'),
                               onPressed: () {
-                                Navigator.of(context).pop(false);
+                                Navigator.of(context).pop(true);
                               },
                             ),
                             TextButton(
-                              child: Text('로그아웃'),
+                              child: Text('Cancel'),
                               onPressed: () {
-                                Navigator.of(context).pop(true);
+                                Navigator.of(context).pop(false);
                               },
                             ),
                           ],

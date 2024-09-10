@@ -498,20 +498,22 @@ class _TweetPageState extends State<TweetPage> {
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(height: 5),
-                            Text(
-                              tweet['tweet'],
-                              style: TextStyle(fontSize: 18),
-                            ),
                             if (tweet['photo'] != null) SizedBox(height: 10),
                             if (tweet['photo'] != null)
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
-                                child: Image.network(tweet['photo'],
-                                    width: double.infinity,
-                                    height: 150,
-                                    fit: BoxFit.cover),
+                                child: Image.network(
+                                  tweet['photo'],
+                                  width: double.infinity,
+                                  height: 150,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
+                            SizedBox(height: 10),
+                            Text(
+                              tweet['tweet'],
+                              style: TextStyle(fontSize: 18),
+                            ),
                             SizedBox(height: 6),
                             Text(
                               tweet['timestamp'] ?? '',

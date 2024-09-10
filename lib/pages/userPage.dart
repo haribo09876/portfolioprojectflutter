@@ -68,7 +68,8 @@ class _UserPageState extends State<UserPage> {
           content: Text(
             'Are you sure to delete this Account?'
             '\n\nor\n\nAre you sure to delete this Tweet?'
-            '\n\nor\n\nAre you sure to delete this Insta?',
+            '\n\nor\n\nAre you sure to delete this Insta?'
+            '\n\nor\n\nAre you sure to refund this Item?',
             textAlign: TextAlign.left,
           ),
           actions: [
@@ -196,7 +197,7 @@ class _UserPageState extends State<UserPage> {
                               ),
                       ),
                     ),
-                    SizedBox(width: 8),
+                    SizedBox(width: 10),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -238,7 +239,7 @@ class _UserPageState extends State<UserPage> {
                           IconButton(
                             icon: Icon(
                               Icons.edit_outlined,
-                              size: 15,
+                              size: 17,
                             ),
                             onPressed: () {
                               _showEditDialog();
@@ -250,14 +251,17 @@ class _UserPageState extends State<UserPage> {
                   ],
                 ),
                 SizedBox(height: 20),
-                _buildSectionTitle('My Tweet'),
+                _buildSectionTitle('My Tweet', tweetData.length),
+                SizedBox(height: 10),
                 _buildHorizontalList(
                     tweetData, 'tweetContents', 'No TweetContents'),
                 SizedBox(height: 20),
-                _buildSectionTitle('My Insta'),
+                _buildSectionTitle('My Insta', instaData.length),
+                SizedBox(height: 10),
                 _buildInstaImageList(instaData),
                 SizedBox(height: 20),
-                _buildSectionTitle('My Item'),
+                _buildSectionTitle('My Item', itemData.length),
+                SizedBox(height: 10),
                 _buildItemImageList(itemData),
                 SizedBox(height: 20),
                 GestureDetector(
@@ -281,10 +285,22 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
-  Widget _buildSectionTitle(String title) {
-    return Text(
-      title,
-      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+  Widget _buildSectionTitle(String title, int count) {
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: '$title   ',
+            style: TextStyle(
+                fontSize: 20, fontWeight: FontWeight.w400, color: Colors.black),
+          ),
+          TextSpan(
+            text: '$count',
+            style: TextStyle(
+                fontSize: 17, fontWeight: FontWeight.w400, color: Colors.blue),
+          ),
+        ],
+      ),
     );
   }
 

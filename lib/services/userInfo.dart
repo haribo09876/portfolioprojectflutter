@@ -44,6 +44,31 @@ class UserService extends ApiService {
             })
         .toList();
   }
+
+  Future<void> userUpdate(
+      String userId, String email, String password, String name, String gender,
+      {int? age, XFile? imageFile}) async {
+    String? base64Image;
+    if (imageFile != null) {
+      final imageBytes = await imageFile.readAsBytes();
+      base64Image = base64Encode(imageBytes);
+    }
+    await sendRequest('userUpdate', {
+      'userId': userId,
+      'userEmail': email,
+      'userPassword': password,
+      'userName': name,
+      'userGender': gender,
+      'userAge': age,
+      'fileContent': base64Image ?? '',
+    });
+  }
+
+  Future<void> userDelete(String userId) async {
+    await sendRequest('userDelete', {
+      'userId': userId,
+    });
+  }
 }
 
 class TweetService extends ApiService {
@@ -152,13 +177,6 @@ class ShopService extends ApiService {
       'itemContents': itemContents,
       'itemPrice': itemPrice,
       'fileContent': base64Image ?? '',
-    });
-  }
-
-  Future<void> itemDelete(String itemId, String userId) async {
-    await sendRequest('purchaseDelete', {
-      'itemId': itemId,
-      'userId': userId,
     });
   }
 }
