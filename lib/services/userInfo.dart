@@ -148,10 +148,11 @@ class InstaService extends ApiService {
 }
 
 class ShopService extends ApiService {
-  Future<List<Map<String, dynamic>>> itemRead(String userId) async {
+  Future<List<Map<String, dynamic>>> purchaseRead(String userId) async {
     final data = await sendRequest('purchaseRead', {'userId': userId});
     return (data as List<dynamic>)
         .map((item) => {
+              'purchaseId': item['purchaseId'],
               'userId': item['userId'],
               'itemId': item['itemId'],
               'purchaseStatus': item['purchaseStatus'],
@@ -163,18 +164,16 @@ class ShopService extends ApiService {
         .toList();
   }
 
-  Future<void> itemUpdate(String itemId, String userId, String itemTitle,
-      String itemContents, double itemPrice, XFile? imageFile) async {
+  Future<void> purchaseUpdate(String purchaseId, String userId,
+      double itemPrice, XFile? imageFile) async {
     String? base64Image;
     if (imageFile != null) {
       final imageBytes = await imageFile.readAsBytes();
       base64Image = base64Encode(imageBytes);
     }
     await sendRequest('purchaseUpdate', {
-      'itemId': itemId,
+      'purchaseId': purchaseId,
       'userId': userId,
-      'itemTitle': itemTitle,
-      'itemContents': itemContents,
       'itemPrice': itemPrice,
       'fileContent': base64Image ?? '',
     });

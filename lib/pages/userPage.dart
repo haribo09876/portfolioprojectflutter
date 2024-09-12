@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
 import '../services/login.dart';
 import '../services/userInfo.dart';
 
@@ -12,6 +13,7 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage> {
   late String userId;
   late Future<Map<String, dynamic>> allData;
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -24,32 +26,173 @@ class _UserPageState extends State<UserPage> {
       UserService().userRead(userId),
       TweetService().tweetRead(userId),
       InstaService().instaRead(userId),
-      ShopService().itemRead(userId)
+      ShopService().purchaseRead(userId)
     ]).then((responses) {
       return {
         'userData': responses[0],
         'tweetData': responses[1],
         'instaData': responses[2],
-        'itemData': responses[3],
+        'purchaseData': responses[3],
       };
     });
   }
 
-  void onAvatarChange() {
-    print('Avatar change clicked');
+  Future<void> userUpdate(
+      String password, String name, String gender, int age) async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    await UserService()
+        .userUpdate(userId, password, name, gender, age, imageFile: image);
   }
 
-  void _showEditDialog() {
+  Future<void> userDelete() async {
+    await UserService().userDelete(userId);
+  }
+
+  Future<void> tweetUpdate(String tweetId, String contents) async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    await TweetService().tweetUpdate(tweetId, userId, contents, image);
+  }
+
+  Future<void> tweetDelete(String tweetId) async {
+    await TweetService().tweetDelete(tweetId, userId);
+  }
+
+  Future<void> instaUpdate(String instaId, String contents) async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    await InstaService().instaUpdate(instaId, userId, contents, image);
+  }
+
+  Future<void> instaDelete(String instaId) async {
+    await InstaService().instaDelete(instaId, userId);
+  }
+
+  Future<void> purchaseUpdate(
+      String purchaseId, String userId, double itemPrice) async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    await ShopService().purchaseUpdate(purchaseId, userId, itemPrice, image);
+  }
+
+  void tweetDetailDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Edit'),
-          content: Text('Here is Edit Dialog'),
+          title: Text('Tweet Detail'),
+          content: Text('???'),
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.edit_outlined),
+                  onPressed: () {
+                    tweetUpdateDialog();
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.delete_outline),
+                  onPressed: () {
+                    tweetDeleteDialog();
+                  },
+                ),
+              ],
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                child: Text('Close'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void instaDetailDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Intsa Detail'),
+          content: Text('???'),
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.edit_outlined),
+                  onPressed: () {
+                    instaUpdateDialog();
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.delete_outline),
+                  onPressed: () {
+                    instaDeleteDialog();
+                  },
+                ),
+              ],
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                child: Text('Close'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void purchaseDetailDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Purchase Detail'),
+          content: Text('???'),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.refresh_outlined),
+              onPressed: () {
+                purchaseUpdateDialog();
+              },
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                child: Text('Close'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void userUpdateDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('userUpdate'),
+          content: Text('???'),
           actions: [
             TextButton(
               child: Text('Close'),
               onPressed: () {
+                userUpdate(password, name, gender, age);
                 Navigator.of(context).pop();
               },
             ),
@@ -59,24 +202,60 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
-  void _showConfirmDialog() {
+  void tweetUpdateDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('tweetUpdate'),
+          content: Text('???'),
+          actions: [
+            TextButton(
+              child: Text('Close'),
+              onPressed: () {
+                tweetUpdate(tweetId, contents);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void instaUpdateDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('instaUpdate'),
+          content: Text('???'),
+          actions: [
+            TextButton(
+              child: Text('Close'),
+              onPressed: () {
+                instaUpdate(instaId, contents);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void purchaseUpdateDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Confirm'),
-          content: Text(
-            'Are you sure to delete this Account?'
-            '\n\nor\n\nAre you sure to delete this Tweet?'
-            '\n\nor\n\nAre you sure to delete this Insta?'
-            '\n\nor\n\nAre you sure to refund this Item?',
-            textAlign: TextAlign.left,
-          ),
+          content: Text('Are you sure to refund this Item?'),
           actions: [
             TextButton(
               child: Text('Confirm'),
               onPressed: () {
-                Navigator.of(context).pop();
+                purchaseUpdate(purchaseId, userId, itemPrice);
                 Navigator.of(context).pop();
               },
             ),
@@ -92,37 +271,77 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
-  void _showDetailDialog(String title, Widget content, {bool isItem = false}) {
+  void userDeleteDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(title),
-          content: content,
+          title: Text('Confirm'),
+          content: Text('Are you sure to delete this Account?'),
           actions: [
-            if (isItem)
-              TextButton(
-                child: Text('Refund'),
-                onPressed: () {
-                  _showConfirmDialog();
-                },
-              )
-            else
-              IconButton(
-                icon: Icon(Icons.edit_outlined),
-                onPressed: () {
-                  _showEditDialog();
-                },
-              ),
-            if (!isItem)
-              IconButton(
-                icon: Icon(Icons.delete_outline),
-                onPressed: () {
-                  _showConfirmDialog();
-                },
-              ),
             TextButton(
-              child: Text('Close'),
+              child: Text('Confirm'),
+              onPressed: () {
+                userDelete();
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void tweetDeleteDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm'),
+          content: Text('Are you sure to delete this Tweet?'),
+          actions: [
+            TextButton(
+              child: Text('Confirm'),
+              onPressed: () {
+                tweetDelete();
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void instaDeleteDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm'),
+          content: Text('Are you sure to delete this Insta?'),
+          actions: [
+            TextButton(
+              child: Text('Confirm'),
+              onPressed: () {
+                instaDelete();
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -156,8 +375,8 @@ class _UserPageState extends State<UserPage> {
               snapshot.data!['tweetData'] as List<Map<String, dynamic>>;
           final instaData =
               snapshot.data!['instaData'] as List<Map<String, dynamic>>;
-          final itemData =
-              snapshot.data!['itemData'] as List<Map<String, dynamic>>;
+          final purchaseData =
+              snapshot.data!['purchaseData'] as List<Map<String, dynamic>>;
 
           if (userData.isEmpty) {
             return Center(child: Text('User 내역이 없습니다'));
@@ -173,7 +392,6 @@ class _UserPageState extends State<UserPage> {
                 Row(
                   children: [
                     GestureDetector(
-                      onTap: onAvatarChange,
                       child: Container(
                         width: 80,
                         height: 80,
@@ -260,9 +478,9 @@ class _UserPageState extends State<UserPage> {
                 SizedBox(height: 10),
                 _buildInstaImageList(instaData),
                 SizedBox(height: 20),
-                _buildSectionTitle('My Item', itemData.length),
+                _buildSectionTitle('My Purchase', purchaseData.length),
                 SizedBox(height: 10),
-                _buildItemImageList(itemData),
+                _buildItemImageList(purchaseData),
                 SizedBox(height: 20),
                 GestureDetector(
                   onTap: () {
