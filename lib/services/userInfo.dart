@@ -45,9 +45,9 @@ class UserService extends ApiService {
         .toList();
   }
 
-  Future<void> userUpdate(
-      String userId, String email, String password, String name, String gender,
-      {int? age, XFile? imageFile}) async {
+  Future<void> userUpdate(String userId, String userEmail, String userPassword,
+      String userName, String userGender,
+      {int? userAge, XFile? imageFile}) async {
     String? base64Image;
     if (imageFile != null) {
       final imageBytes = await imageFile.readAsBytes();
@@ -55,11 +55,11 @@ class UserService extends ApiService {
     }
     await sendRequest('userUpdate', {
       'userId': userId,
-      'userEmail': email,
-      'userPassword': password,
-      'userName': name,
-      'userGender': gender,
-      'userAge': age,
+      'userEmail': userEmail,
+      'userPassword': userPassword,
+      'userName': userName,
+      'userGender': userGender,
+      'userAge': userAge,
       'fileContent': base64Image ?? '',
     });
   }

@@ -37,48 +37,61 @@ class _UserPageState extends State<UserPage> {
     });
   }
 
-  Future<void> userUpdate(
-      String password, String name, String gender, int age) async {
+  Future<void> userUpdate(String userEmail, String userPassword,
+      String userName, String userGender, int userAge) async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    await UserService()
-        .userUpdate(userId, password, name, gender, age, imageFile: image);
+    await UserService().userUpdate(
+        userId, userEmail, userPassword, userName, userGender,
+        userAge: userAge, imageFile: image);
   }
 
   Future<void> userDelete() async {
     await UserService().userDelete(userId);
   }
 
-  Future<void> tweetUpdate(String tweetId, String contents) async {
+  Future<void> tweetUpdate(String tweetId, String tweetContents) async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    await TweetService().tweetUpdate(tweetId, userId, contents, image);
+    await TweetService().tweetUpdate(userId, tweetId, tweetContents, image);
   }
 
   Future<void> tweetDelete(String tweetId) async {
-    await TweetService().tweetDelete(tweetId, userId);
+    await TweetService().tweetDelete(userId, tweetId);
   }
 
-  Future<void> instaUpdate(String instaId, String contents) async {
+  Future<void> instaUpdate(String instaId, String instaContents) async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    await InstaService().instaUpdate(instaId, userId, contents, image);
+    await InstaService().instaUpdate(userId, instaId, instaContents, image);
   }
 
   Future<void> instaDelete(String instaId) async {
     await InstaService().instaDelete(instaId, userId);
   }
 
-  Future<void> purchaseUpdate(
-      String purchaseId, String userId, double itemPrice) async {
+  Future<void> purchaseUpdate(String purchaseId, double itemPrice) async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     await ShopService().purchaseUpdate(purchaseId, userId, itemPrice, image);
   }
 
-  void tweetDetailDialog() {
+  void tweetDetailDialog(BuildContext context, String tweetContents,
+      String? tweetImgURL, String tweetId) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Tweet Detail'),
-          content: Text('???'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(tweetContents),
+              if (tweetImgURL != null)
+                Image.network(
+                  tweetImgURL,
+                  width: 100,
+                  height: 100,
+                  fit: BoxFit.cover,
+                ),
+            ],
+          ),
           actions: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -86,13 +99,15 @@ class _UserPageState extends State<UserPage> {
                 IconButton(
                   icon: Icon(Icons.edit_outlined),
                   onPressed: () {
-                    tweetUpdateDialog();
+                    Navigator.of(context).pop();
+                    tweetUpdateDialog(tweetId, tweetContents);
                   },
                 ),
                 IconButton(
                   icon: Icon(Icons.delete_outline),
                   onPressed: () {
-                    tweetDeleteDialog();
+                    Navigator.of(context).pop();
+                    tweetDeleteDialog(tweetId);
                   },
                 ),
               ],
@@ -112,13 +127,26 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
-  void instaDetailDialog() {
+  void instaDetailDialog(BuildContext context, String instaId,
+      String instaContents, String instaImgURL) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Intsa Detail'),
-          content: Text('???'),
+          title: Text('Insta Detail'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.network(
+                instaImgURL,
+                width: 100,
+                height: 100,
+                fit: BoxFit.cover,
+              ),
+              SizedBox(height: 8),
+              Text(instaContents.isNotEmpty ? instaContents : 'No Content'),
+            ],
+          ),
           actions: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -126,13 +154,13 @@ class _UserPageState extends State<UserPage> {
                 IconButton(
                   icon: Icon(Icons.edit_outlined),
                   onPressed: () {
-                    instaUpdateDialog();
+                    instaUpdateDialog(instaId, instaContents);
                   },
                 ),
                 IconButton(
                   icon: Icon(Icons.delete_outline),
                   onPressed: () {
-                    instaDeleteDialog();
+                    instaDeleteDialog(instaId);
                   },
                 ),
               ],
@@ -152,18 +180,37 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
-  void purchaseDetailDialog() {
+  void purchaseDetailDialog(
+    BuildContext context,
+    String itemTitle,
+    String itemImgURL,
+    String itemContents,
+    String purchaseId,
+    double itemPrice,
+  ) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Purchase Detail'),
-          content: Text('???'),
+          title: Text(itemTitle),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.network(
+                itemImgURL,
+                width: 200,
+                height: 200,
+                fit: BoxFit.cover,
+              ),
+              SizedBox(height: 8),
+              Text(itemContents.isNotEmpty ? itemContents : 'No Content'),
+            ],
+          ),
           actions: [
             IconButton(
               icon: Icon(Icons.refresh_outlined),
               onPressed: () {
-                purchaseUpdateDialog();
+                purchaseUpdateDialog(purchaseId, itemPrice);
               },
             ),
             Align(
@@ -181,7 +228,8 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
-  void userUpdateDialog() {
+  void userUpdateDialog(String userEmail, String userPassword, String userName,
+      String userGender, int userAge) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -192,7 +240,8 @@ class _UserPageState extends State<UserPage> {
             TextButton(
               child: Text('Close'),
               onPressed: () {
-                userUpdate(password, name, gender, age);
+                userUpdate(
+                    userEmail, userPassword, userName, userGender, userAge);
                 Navigator.of(context).pop();
               },
             ),
@@ -202,7 +251,7 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
-  void tweetUpdateDialog() {
+  void tweetUpdateDialog(String tweetId, String tweetContents) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -213,7 +262,7 @@ class _UserPageState extends State<UserPage> {
             TextButton(
               child: Text('Close'),
               onPressed: () {
-                tweetUpdate(tweetId, contents);
+                tweetUpdate(tweetId, tweetContents);
                 Navigator.of(context).pop();
               },
             ),
@@ -223,7 +272,7 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
-  void instaUpdateDialog() {
+  void instaUpdateDialog(String instaId, String instaContents) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -234,7 +283,7 @@ class _UserPageState extends State<UserPage> {
             TextButton(
               child: Text('Close'),
               onPressed: () {
-                instaUpdate(instaId, contents);
+                instaUpdate(instaId, instaContents);
                 Navigator.of(context).pop();
               },
             ),
@@ -244,7 +293,7 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
-  void purchaseUpdateDialog() {
+  void purchaseUpdateDialog(String purchaseId, double itemPrice) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -255,7 +304,7 @@ class _UserPageState extends State<UserPage> {
             TextButton(
               child: Text('Confirm'),
               onPressed: () {
-                purchaseUpdate(purchaseId, userId, itemPrice);
+                purchaseUpdate(purchaseId, itemPrice);
                 Navigator.of(context).pop();
               },
             ),
@@ -298,7 +347,7 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
-  void tweetDeleteDialog() {
+  void tweetDeleteDialog(String tweetId) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -309,7 +358,7 @@ class _UserPageState extends State<UserPage> {
             TextButton(
               child: Text('Confirm'),
               onPressed: () {
-                tweetDelete();
+                tweetDelete(tweetId);
                 Navigator.of(context).pop();
               },
             ),
@@ -325,7 +374,7 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
-  void instaDeleteDialog() {
+  void instaDeleteDialog(String instaId) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -336,7 +385,7 @@ class _UserPageState extends State<UserPage> {
             TextButton(
               child: Text('Confirm'),
               onPressed: () {
-                instaDelete();
+                instaDelete(instaId);
                 Navigator.of(context).pop();
               },
             ),
@@ -382,284 +431,392 @@ class _UserPageState extends State<UserPage> {
             return Center(child: Text('User 내역이 없습니다'));
           }
 
-          final user = userData[0];
-
-          return SingleChildScrollView(
-            padding: EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    GestureDetector(
-                      child: Container(
-                        width: 80,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          color: Colors.grey,
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: user['userImgURL'] != null
-                            ? ClipOval(
-                                child: Image.network(
-                                  user['userImgURL']!,
-                                  width: 80,
-                                  height: 80,
-                                  fit: BoxFit.cover,
-                                ),
-                              )
-                            : Icon(
-                                Icons.account_circle,
-                                size: 40,
-                                color: Colors.white,
-                              ),
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      user['userName'] ?? 'No userName',
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                    Text(
-                                      user['userEmail'] ?? 'No userEmail',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w300,
-                                        color: Colors.grey[600],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Text(
-                                '${NumberFormat('###,###,###').format((user['userMoney'] - user['userSpend']) ?? 0)}원  ',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.grey[700],
-                                ),
-                              ),
-                            ],
-                          ),
-                          IconButton(
-                            icon: Icon(
-                              Icons.edit_outlined,
-                              size: 17,
-                            ),
-                            onPressed: () {
-                              _showEditDialog();
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 20),
-                _buildSectionTitle('My Tweet', tweetData.length),
-                SizedBox(height: 10),
-                _buildHorizontalList(
-                    tweetData, 'tweetContents', 'No TweetContents'),
-                SizedBox(height: 20),
-                _buildSectionTitle('My Insta', instaData.length),
-                SizedBox(height: 10),
-                _buildInstaImageList(instaData),
-                SizedBox(height: 20),
-                _buildSectionTitle('My Purchase', purchaseData.length),
-                SizedBox(height: 10),
-                _buildItemImageList(purchaseData),
-                SizedBox(height: 20),
-                GestureDetector(
-                  onTap: () {
-                    _showConfirmDialog();
-                  },
-                  child: Text(
-                    'Delete Account',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.red,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
+          return _buildContent(userData, tweetData, instaData, purchaseData);
         },
       ),
     );
   }
 
-  Widget _buildSectionTitle(String title, int count) {
-    return RichText(
-      text: TextSpan(
+  Widget _buildContent(
+    List<Map<String, dynamic>> userData,
+    List<Map<String, dynamic>> tweetData,
+    List<Map<String, dynamic>> instaData,
+    List<Map<String, dynamic>> purchaseData,
+  ) {
+    final user = userData[0];
+    final userEmail = user['userEmail'];
+    final userPassword = user['userPassword'];
+    final userName = user['userName'];
+    final userGender = user['userGender'];
+    final userAge = user['userAge'];
+
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextSpan(
-            text: '$title   ',
-            style: TextStyle(
-                fontSize: 20, fontWeight: FontWeight.w400, color: Colors.black),
+          Row(
+            children: [
+              GestureDetector(
+                child: Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  child: user['userImgURL'] != null
+                      ? ClipOval(
+                          child: Image.network(
+                            user['userImgURL']!,
+                            width: 80,
+                            height: 80,
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : Icon(
+                          Icons.account_circle,
+                          size: 40,
+                          color: Colors.white,
+                        ),
+                ),
+              ),
+              SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                user['userName'] ?? 'No userName',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              Text(
+                                user['userEmail'] ?? 'No userEmail',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w300,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Text(
+                          '${NumberFormat('###,###,###').format((user['userMoney'] - user['userSpend']) ?? 0)}원  ',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                      ],
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.edit_outlined,
+                        size: 17,
+                      ),
+                      onPressed: () {
+                        userUpdateDialog(userEmail, userPassword, userName,
+                            userGender, userAge);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          TextSpan(
-            text: '$count',
-            style: TextStyle(
-                fontSize: 17, fontWeight: FontWeight.w400, color: Colors.blue),
+          SizedBox(height: 20),
+          sectionTweet(tweetData),
+          SizedBox(height: 20),
+          sectionInsta(instaData),
+          SizedBox(height: 20),
+          sectionPurchase(purchaseData),
+          SizedBox(height: 20),
+          GestureDetector(
+            onTap: () {
+              userDelete();
+            },
+            child: Text(
+              'Delete Account',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+                color: Colors.red,
+              ),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildHorizontalList(
-      List<Map<String, dynamic>> data, String key, String defaultValue) {
-    return Container(
-      height: 80,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: data.length,
-        itemBuilder: (context, index) {
-          final tweet = data[index];
-          return GestureDetector(
-            onTap: () {
-              _showDetailDialog(
-                '',
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(tweet['tweetContents'] ?? defaultValue),
-                    if (tweet['tweetImgURL'] != null)
-                      Image.network(
-                        tweet['tweetImgURL'],
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      ),
-                  ],
-                ),
-              );
-            },
-            child: Container(
-              width: 120,
-              height: 80,
-              margin: EdgeInsets.only(right: 2),
-              padding: EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey, width: 1),
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  tweet[key] ?? defaultValue,
-                  style: TextStyle(color: Colors.black, fontSize: 12),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
+  Widget sectionUser(Map<String, dynamic> user, String userEmail,
+      String userPassword, String userName, String userGender, int userAge) {
+    return Row(
+      children: [
+        GestureDetector(
+          child: Container(
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              color: Colors.grey,
+              borderRadius: BorderRadius.circular(50),
             ),
-          );
-        },
-      ),
+            child: user['userImgURL'] != null
+                ? ClipOval(
+                    child: Image.network(
+                      user['userImgURL']!,
+                      width: 80,
+                      height: 80,
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                : Icon(
+                    Icons.account_circle,
+                    size: 40,
+                    color: Colors.white,
+                  ),
+          ),
+        ),
+        SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                user['userName'] ?? 'No userName',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+              ),
+              Text(
+                user['userEmail'] ?? 'No userEmail',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w300,
+                  color: Colors.grey[600],
+                ),
+              ),
+              Text(
+                '${NumberFormat('###,###,###').format((user['userMoney'] - user['userSpend']) ?? 0)}원',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey[700]),
+              ),
+            ],
+          ),
+        ),
+        IconButton(
+          icon: Icon(Icons.edit_outlined, size: 17),
+          onPressed: () {
+            userUpdateDialog(
+                userEmail, userPassword, userName, userGender, userAge);
+          },
+        ),
+      ],
     );
   }
 
-  Widget _buildInstaImageList(List<Map<String, dynamic>> data) {
-    return Container(
-      height: 100,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: data.length,
-        itemBuilder: (context, index) {
-          final insta = data[index];
-          return GestureDetector(
-            onTap: () {
-              _showDetailDialog(
-                '',
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Image.network(
-                      insta['instaImgURL'],
-                      width: 100,
-                      height: 100,
-                      fit: BoxFit.cover,
+  Widget sectionTweet(List<Map<String, dynamic>> tweetData) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10.0),
+          child: Row(
+            children: [
+              Text(
+                'My Tweet   ',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black,
+                ),
+              ),
+              Text(
+                '${tweetData.length}',
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.blue,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          height: 80,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: tweetData.length,
+            itemBuilder: (context, index) {
+              final tweet = tweetData[index];
+              final tweetContents = tweet['tweetContents'];
+              final tweetImgURL = tweet['tweetImgURL'];
+              final tweetId = tweet['tweetId'];
+              return GestureDetector(
+                onTap: () {
+                  tweetDetailDialog(
+                      context, tweetContents, tweetImgURL, tweetId);
+                },
+                child: Container(
+                  width: 120,
+                  height: 80,
+                  margin: EdgeInsets.only(right: 2),
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey, width: 1),
+                  ),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      tweet['tweetContents'] ?? '',
+                      style: TextStyle(color: Colors.black, fontSize: 12),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    Text(insta['instaContents'] ?? 'No Content'),
-                  ],
+                  ),
                 ),
               );
             },
-            child: Container(
-              width: 100,
-              height: 100,
-              margin: EdgeInsets.only(right: 1),
-              color: Colors.grey,
-              child: insta['instaImgURL'] != null
-                  ? Image.network(
-                      insta['instaImgURL'],
-                      fit: BoxFit.cover,
-                    )
-                  : Icon(Icons.camera_alt_outlined),
-            ),
-          );
-        },
-      ),
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _buildItemImageList(List<Map<String, dynamic>> data) {
-    return Container(
-      height: 150,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: data.length,
-        itemBuilder: (context, index) {
-          final item = data[index];
-          return GestureDetector(
-            onTap: () {
-              _showDetailDialog(
-                item['itemTitle'],
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Image.network(
-                      item['itemImgURL'],
-                      width: 200,
-                      height: 200,
-                      fit: BoxFit.cover,
-                    ),
-                    Text(item['itemContents'] ?? 'No Content'),
-                  ],
+  Widget sectionInsta(List<Map<String, dynamic>> instaData) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10.0),
+          child: Row(
+            children: [
+              Text(
+                'My Insta   ',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black,
                 ),
-                isItem: true,
+              ),
+              Text(
+                '${instaData.length}',
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.blue,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          height: 100,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: instaData.length,
+            itemBuilder: (context, index) {
+              final insta = instaData[index];
+              final instaContents = insta['instaContents'];
+              final instaImgURL = insta['instaImgURL'];
+              final instaId = insta['instaId'];
+              return GestureDetector(
+                onTap: () {
+                  instaDetailDialog(
+                      context, instaId, instaContents, instaImgURL);
+                },
+                child: Container(
+                  width: 100,
+                  height: 100,
+                  margin: EdgeInsets.only(right: 1),
+                  color: Colors.grey,
+                  child: insta['instaImgURL'] != null
+                      ? Image.network(
+                          insta['instaImgURL'],
+                          fit: BoxFit.cover,
+                        )
+                      : Icon(Icons.camera_alt_outlined),
+                ),
               );
             },
-            child: Container(
-              width: 100,
-              height: 150,
-              margin: EdgeInsets.only(right: 1),
-              color: Colors.grey,
-              child: item['itemImgURL'] != null
-                  ? Image.network(
-                      item['itemImgURL'],
-                      fit: BoxFit.cover,
-                    )
-                  : Icon(Icons.shopping_bag_outlined),
-            ),
-          );
-        },
-      ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget sectionPurchase(List<Map<String, dynamic>> purchaseData) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10.0),
+          child: Row(
+            children: [
+              Text(
+                'My Purchase   ',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black,
+                ),
+              ),
+              Text(
+                '${purchaseData.length}',
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.blue,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          height: 150,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: purchaseData.length,
+            itemBuilder: (context, index) {
+              final purchase = purchaseData[index];
+              final itemTitle = purchase['itemTitle'];
+              final itemImgURL = purchase['itemImgURL'];
+              final itemContents = purchase['itemContents'];
+              final purchaseId = purchase['purchaseId'];
+              final itemPrice = purchase['itemPrice'];
+              return GestureDetector(
+                onTap: () {
+                  purchaseDetailDialog(context, itemTitle, itemImgURL,
+                      itemContents, purchaseId, itemPrice);
+                },
+                child: Container(
+                  width: 100,
+                  height: 150,
+                  margin: EdgeInsets.only(right: 1),
+                  color: Colors.grey,
+                  child: purchase['itemImgURL'] != null
+                      ? Image.network(
+                          purchase['itemImgURL'],
+                          fit: BoxFit.cover,
+                        )
+                      : Icon(Icons.camera_alt_outlined),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }
