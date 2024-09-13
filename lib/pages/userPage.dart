@@ -49,13 +49,13 @@ class _UserPageState extends State<UserPage> {
     await UserService().userDelete(userId);
   }
 
-  Future<void> tweetUpdate(String tweetId, String tweetContents) async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    await TweetService().tweetUpdate(userId, tweetId, tweetContents, image);
+  Future<void> tweetUpdate(
+      String tweetId, String tweetContents, XFile? imageFile) async {
+    await TweetService().tweetUpdate(tweetId, userId, tweetContents, imageFile);
   }
 
   Future<void> tweetDelete(String tweetId) async {
-    await TweetService().tweetDelete(userId, tweetId);
+    await TweetService().tweetDelete(tweetId, userId);
   }
 
   Future<void> instaUpdate(String instaId, String instaContents) async {
@@ -255,14 +255,36 @@ class _UserPageState extends State<UserPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        final TextEditingController _controller =
+            TextEditingController(text: tweetContents);
         return AlertDialog(
-          title: Text('tweetUpdate'),
-          content: Text('???'),
+          title: Text('Update Tweet'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _controller,
+                decoration: InputDecoration(
+                  labelText: 'Tweet Content',
+                ),
+                maxLines: 3,
+              ),
+              SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () async {
+                  final XFile? image =
+                      await _picker.pickImage(source: ImageSource.gallery);
+                  await tweetUpdate(tweetId, _controller.text, image);
+                  Navigator.of(context).pop();
+                },
+                child: Text('Upload Image & Update'),
+              ),
+            ],
+          ),
           actions: [
             TextButton(
-              child: Text('Close'),
+              child: Text('Cancel'),
               onPressed: () {
-                tweetUpdate(tweetId, tweetContents);
                 Navigator.of(context).pop();
               },
             ),
@@ -353,7 +375,7 @@ class _UserPageState extends State<UserPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Confirm'),
-          content: Text('Are you sure to delete this Tweet?'),
+          content: Text('Are you sure you want to delete this Tweet?'),
           actions: [
             TextButton(
               child: Text('Confirm'),
