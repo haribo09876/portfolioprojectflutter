@@ -13,6 +13,7 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage> {
   late String userId;
   late Future<Map<String, dynamic>> allData;
+  XFile? selectedImage;
   final ImagePicker _picker = ImagePicker();
 
   @override
@@ -22,18 +23,24 @@ class _UserPageState extends State<UserPage> {
     final loginService = Provider.of<LoginService>(context, listen: false);
     userId = loginService.userInfo?['id'] ?? '';
 
-    allData = Future.wait([
-      UserService().userRead(userId),
-      TweetService().tweetRead(userId),
-      InstaService().instaRead(userId),
-      ShopService().purchaseRead(userId)
-    ]).then((responses) {
-      return {
-        'userData': responses[0],
-        'tweetData': responses[1],
-        'instaData': responses[2],
-        'purchaseData': responses[3],
-      };
+    _fetchData();
+  }
+
+  void _fetchData() {
+    setState(() {
+      allData = Future.wait([
+        UserService().userRead(userId),
+        TweetService().tweetRead(userId),
+        InstaService().instaRead(userId),
+        ShopService().purchaseRead(userId),
+      ]).then((responses) {
+        return {
+          'userData': responses[0],
+          'tweetData': responses[1],
+          'instaData': responses[2],
+          'purchaseData': responses[3],
+        };
+      });
     });
   }
 
@@ -43,6 +50,7 @@ class _UserPageState extends State<UserPage> {
     await UserService().userUpdate(
         userId, userEmail, userPassword, userName, userGender,
         userAge: userAge, imageFile: image);
+    _fetchData();
   }
 
   Future<void> userDelete() async {
@@ -52,24 +60,29 @@ class _UserPageState extends State<UserPage> {
   Future<void> tweetUpdate(
       String tweetId, String tweetContents, XFile? imageFile) async {
     await TweetService().tweetUpdate(tweetId, userId, tweetContents, imageFile);
+    _fetchData();
   }
 
   Future<void> tweetDelete(String tweetId) async {
     await TweetService().tweetDelete(tweetId, userId);
+    _fetchData();
   }
 
   Future<void> instaUpdate(String instaId, String instaContents) async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     await InstaService().instaUpdate(userId, instaId, instaContents, image);
+    _fetchData();
   }
 
   Future<void> instaDelete(String instaId) async {
     await InstaService().instaDelete(instaId, userId);
+    _fetchData();
   }
 
   Future<void> purchaseUpdate(String purchaseId, double itemPrice) async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     await ShopService().purchaseUpdate(purchaseId, userId, itemPrice, image);
+    _fetchData();
   }
 
   void tweetDetailDialog(BuildContext context, String tweetContents,
@@ -257,38 +270,51 @@ class _UserPageState extends State<UserPage> {
       builder: (BuildContext context) {
         final TextEditingController _controller =
             TextEditingController(text: tweetContents);
-        return AlertDialog(
-          title: Text('Update Tweet'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: _controller,
-                decoration: InputDecoration(
-                  labelText: 'Tweet Content',
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text('Update Tweet'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: _controller,
+                    decoration: InputDecoration(
+                      labelText: 'Tweet Content',
+                    ),
+                    maxLines: 3,
+                  ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final XFile? image =
+                          await _picker.pickImage(source: ImageSource.gallery);
+                      setState(() {
+                        selectedImage = image;
+                      });
+                    },
+                    child: Text('Add Image'),
+                  ),
+                  if (selectedImage != null) Text('Image Added'),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  child: Text('Update'),
+                  onPressed: () async {
+                    await tweetUpdate(tweetId, _controller.text, selectedImage);
+                    Navigator.of(context).pop();
+                  },
                 ),
-                maxLines: 3,
-              ),
-              SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () async {
-                  final XFile? image =
-                      await _picker.pickImage(source: ImageSource.gallery);
-                  await tweetUpdate(tweetId, _controller.text, image);
-                  Navigator.of(context).pop();
-                },
-                child: Text('Upload Image & Update'),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              child: Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
+                TextButton(
+                  child: Text('Cancel'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
         );
       },
     );
