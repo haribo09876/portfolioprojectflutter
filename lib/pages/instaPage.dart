@@ -92,16 +92,6 @@ class _InstaPageState extends State<InstaPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                TextField(
-                  controller: _instaController,
-                  decoration: InputDecoration(
-                    hintText: 'Write a caption...',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  maxLines: null,
-                ),
                 if (_imageFile != null)
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 10),
@@ -113,7 +103,17 @@ class _InstaPageState extends State<InstaPage> {
                     Navigator.of(context).pop();
                     _showInstaDialog();
                   },
-                  child: Text('Change Image'),
+                  child: Text('Add Image'),
+                ),
+                TextField(
+                  controller: _instaController,
+                  decoration: InputDecoration(
+                    hintText: 'Write a caption...',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  maxLines: null,
                 ),
               ],
             ),

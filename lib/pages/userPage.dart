@@ -67,9 +67,9 @@ class _UserPageState extends State<UserPage> {
     _fetchData();
   }
 
-  Future<void> instaUpdate(String instaId, String instaContents) async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    await InstaService().instaUpdate(userId, instaId, instaContents, image);
+  Future<void> instaUpdate(
+      String instaId, String instaContents, XFile? imageFile) async {
+    await InstaService().instaUpdate(instaId, userId, instaContents, imageFile);
     _fetchData();
   }
 
@@ -336,6 +336,7 @@ class _UserPageState extends State<UserPage> {
                   onPressed: () async {
                     await tweetUpdate(tweetId, _controller.text, selectedImage);
                     Navigator.of(context).pop();
+                    Navigator.of(context).pop();
                   },
                 ),
                 TextButton(
@@ -356,18 +357,87 @@ class _UserPageState extends State<UserPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('instaUpdate'),
-          content: Text('???'),
-          actions: [
-            TextButton(
-              child: Text('Close'),
-              onPressed: () {
-                instaUpdate(instaId, instaContents);
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
+        final TextEditingController _controller =
+            TextEditingController(text: instaContents);
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text('Update Insta'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (selectedImage != null)
+                    Container(
+                      constraints: BoxConstraints(
+                        maxHeight: 200,
+                        maxWidth: double.infinity,
+                      ),
+                      child: Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.file(
+                              File(selectedImage!.path),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Positioned(
+                            right: 10,
+                            top: 10,
+                            child: IconButton(
+                              icon: Icon(Icons.cancel,
+                                  color: Colors.red, size: 30),
+                              onPressed: () {
+                                setState(() {
+                                  selectedImage = null;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final XFile? image =
+                          await _picker.pickImage(source: ImageSource.gallery);
+                      if (image != null) {
+                        setState(() {
+                          selectedImage = image;
+                        });
+                      }
+                    },
+                    child: Text('Add Image'),
+                  ),
+                  SizedBox(height: 10),
+                  TextField(
+                    controller: _controller,
+                    decoration: InputDecoration(
+                      labelText: 'Insta Content',
+                    ),
+                    maxLines: 3,
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  child: Text('Update'),
+                  onPressed: () async {
+                    await instaUpdate(instaId, _controller.text, selectedImage);
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: Text('Cancel'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
         );
       },
     );
