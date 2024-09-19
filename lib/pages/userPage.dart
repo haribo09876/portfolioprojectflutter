@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import '../services/login.dart';
 import '../services/userInfo.dart';
 
@@ -19,10 +20,8 @@ class _UserPageState extends State<UserPage> {
   @override
   void initState() {
     super.initState();
-
     final loginService = Provider.of<LoginService>(context, listen: false);
     userId = loginService.userInfo?['id'] ?? '';
-
     _fetchData();
   }
 
@@ -289,13 +288,46 @@ class _UserPageState extends State<UserPage> {
                     onPressed: () async {
                       final XFile? image =
                           await _picker.pickImage(source: ImageSource.gallery);
-                      setState(() {
-                        selectedImage = image;
-                      });
+                      if (image != null) {
+                        setState(() {
+                          selectedImage = image;
+                        });
+                      }
                     },
                     child: Text('Add Image'),
                   ),
-                  if (selectedImage != null) Text('Image Added'),
+                  SizedBox(height: 10),
+                  if (selectedImage != null)
+                    Container(
+                      constraints: BoxConstraints(
+                        maxHeight: 200,
+                        maxWidth: double.infinity,
+                      ),
+                      child: Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.file(
+                              File(selectedImage!.path),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Positioned(
+                            right: 10,
+                            top: 10,
+                            child: IconButton(
+                              icon: Icon(Icons.cancel,
+                                  color: Colors.red, size: 30),
+                              onPressed: () {
+                                setState(() {
+                                  selectedImage = null;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                 ],
               ),
               actions: [
@@ -408,6 +440,7 @@ class _UserPageState extends State<UserPage> {
               onPressed: () {
                 tweetDelete(tweetId);
                 Navigator.of(context).pop();
+                Navigator.of(context).pop();
               },
             ),
             TextButton(
@@ -434,6 +467,7 @@ class _UserPageState extends State<UserPage> {
               child: Text('Confirm'),
               onPressed: () {
                 instaDelete(instaId);
+                Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
             ),
