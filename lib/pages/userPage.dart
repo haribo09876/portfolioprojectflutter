@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import '../routes.dart';
 import '../services/login.dart';
 import '../services/userInfo.dart';
 
@@ -54,6 +55,7 @@ class _UserPageState extends State<UserPage> {
 
   Future<void> userDelete() async {
     await UserService().userDelete(userId);
+    Navigator.pushReplacementNamed(context, AppRoutes.intro);
   }
 
   Future<void> tweetUpdate(
@@ -78,9 +80,9 @@ class _UserPageState extends State<UserPage> {
     _fetchData();
   }
 
-  Future<void> purchaseUpdate(String purchaseId, double itemPrice) async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    await ShopService().purchaseUpdate(purchaseId, userId, itemPrice, image);
+  Future<void> purchaseUpdate(String purchaseId, dynamic itemPrice) async {
+    double price = (itemPrice is int) ? itemPrice.toDouble() : itemPrice;
+    await ShopService().purchaseUpdate(purchaseId, userId, price);
     _fetchData();
   }
 
@@ -198,7 +200,8 @@ class _UserPageState extends State<UserPage> {
     String itemImgURL,
     String itemContents,
     String purchaseId,
-    double itemPrice,
+    dynamic itemPrice,
+    dynamic purchaseStatus,
   ) {
     showDialog(
       context: context,
@@ -216,23 +219,40 @@ class _UserPageState extends State<UserPage> {
               ),
               SizedBox(height: 8),
               Text(itemContents.isNotEmpty ? itemContents : 'No Content'),
+              SizedBox(height: 8),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  '${NumberFormat('###,###,###').format(itemPrice)}원',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
             ],
           ),
           actions: [
-            IconButton(
-              icon: Icon(Icons.refresh_outlined),
-              onPressed: () {
-                purchaseUpdateDialog(purchaseId, itemPrice);
-              },
-            ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                child: Text('Close'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                purchaseStatus == 1
+                    ? TextButton(
+                        child: Text('Refund'),
+                        onPressed: () {
+                          purchaseUpdateDialog(purchaseId, itemPrice);
+                        },
+                      )
+                    : Text('Refund Completed',
+                        style: TextStyle(color: Colors.red)),
+                TextButton(
+                  child: Text('Close'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
             ),
           ],
         );
@@ -443,7 +463,7 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
-  void purchaseUpdateDialog(String purchaseId, double itemPrice) {
+  void purchaseUpdateDialog(String purchaseId, dynamic itemPrice) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -455,6 +475,7 @@ class _UserPageState extends State<UserPage> {
               child: Text('Confirm'),
               onPressed: () {
                 purchaseUpdate(purchaseId, itemPrice);
+                Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
             ),
@@ -569,7 +590,6 @@ class _UserPageState extends State<UserPage> {
           } else if (!snapshot.hasData) {
             return Center(child: Text('데이터가 없습니다'));
           }
-
           final userData =
               snapshot.data!['userData'] as List<Map<String, dynamic>>;
           final tweetData =
@@ -578,11 +598,9 @@ class _UserPageState extends State<UserPage> {
               snapshot.data!['instaData'] as List<Map<String, dynamic>>;
           final purchaseData =
               snapshot.data!['purchaseData'] as List<Map<String, dynamic>>;
-
           if (userData.isEmpty) {
             return Center(child: Text('User 내역이 없습니다'));
           }
-
           return _buildContent(userData, tweetData, instaData, purchaseData);
         },
       ),
@@ -694,9 +712,9 @@ class _UserPageState extends State<UserPage> {
           SizedBox(height: 20),
           sectionPurchase(purchaseData),
           SizedBox(height: 20),
-          GestureDetector(
-            onTap: () {
-              userDelete();
+          TextButton(
+            onPressed: () {
+              userDeleteDialog();
             },
             child: Text(
               'Delete Account',
@@ -947,10 +965,11 @@ class _UserPageState extends State<UserPage> {
               final itemContents = purchase['itemContents'];
               final purchaseId = purchase['purchaseId'];
               final itemPrice = purchase['itemPrice'];
+              final purchaseStatus = purchase['purchaseStatus'];
               return GestureDetector(
                 onTap: () {
                   purchaseDetailDialog(context, itemTitle, itemImgURL,
-                      itemContents, purchaseId, itemPrice);
+                      itemContents, purchaseId, itemPrice, purchaseStatus);
                 },
                 child: Container(
                   width: 100,

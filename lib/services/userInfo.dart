@@ -164,18 +164,12 @@ class ShopService extends ApiService {
         .toList();
   }
 
-  Future<void> purchaseUpdate(String purchaseId, String userId,
-      double itemPrice, XFile? imageFile) async {
-    String? base64Image;
-    if (imageFile != null) {
-      final imageBytes = await imageFile.readAsBytes();
-      base64Image = base64Encode(imageBytes);
-    }
+  Future<void> purchaseUpdate(
+      String purchaseId, String userId, double itemPrice) async {
     await sendRequest('purchaseUpdate', {
       'purchaseId': purchaseId,
       'userId': userId,
       'itemPrice': itemPrice,
-      'fileContent': base64Image ?? '',
     });
   }
 }
