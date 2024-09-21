@@ -38,29 +38,35 @@ class UserService extends ApiService {
         .map((user) => {
               'userName': user['userName'],
               'userEmail': user['userEmail'],
+              'userPassword': user['userPassword'],
               'userMoney': user['userMoney'],
               'userSpend': user['userSpend'],
+              'userGender': user['userGender'],
+              'userAge': user['userAge'],
               'userImgURL': user['userImgURL'],
             })
         .toList();
   }
 
-  Future<void> userUpdate(String userId, String userEmail, String userPassword,
-      String userName, String userGender,
-      {int? userAge, XFile? imageFile}) async {
+  Future<void> userUpdate(
+      String userPassword,
+      String userName,
+      String userGender,
+      dynamic userAge,
+      XFile? imageFile,
+      String userId) async {
     String? base64Image;
     if (imageFile != null) {
       final imageBytes = await imageFile.readAsBytes();
       base64Image = base64Encode(imageBytes);
     }
     await sendRequest('userUpdate', {
-      'userId': userId,
-      'userEmail': userEmail,
       'userPassword': userPassword,
       'userName': userName,
       'userGender': userGender,
       'userAge': userAge,
       'fileContent': base64Image ?? '',
+      'userId': userId,
     });
   }
 

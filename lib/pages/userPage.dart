@@ -44,12 +44,10 @@ class _UserPageState extends State<UserPage> {
     });
   }
 
-  Future<void> userUpdate(String userEmail, String userPassword,
-      String userName, String userGender, int userAge) async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+  Future<void> userUpdate(String userPassword, String userName,
+      String userGender, dynamic userAge, XFile? userImgFile) async {
     await UserService().userUpdate(
-        userId, userEmail, userPassword, userName, userGender,
-        userAge: userAge, imageFile: image);
+        userPassword, userName, userGender, userAge, userImgFile, userId);
     _fetchData();
   }
 
@@ -260,20 +258,115 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
-  void userUpdateDialog(String userEmail, String userPassword, String userName,
-      String userGender, int userAge) {
+  void userUpdateDialog(String userPassword, String userName, String userGender,
+      dynamic userAge, String userImgURL) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        TextEditingController nameController =
+            TextEditingController(text: userName);
+        TextEditingController passwordController =
+            TextEditingController(text: userPassword);
+        TextEditingController ageController =
+            TextEditingController(text: userAge.toString());
+        final Map<String, String> _genderOptions = {
+          'Male': '남성',
+          'Female': '여성',
+        };
+        String? selectedGender = userGender ?? 'Male';
+
         return AlertDialog(
-          title: Text('userUpdate'),
-          content: Text('???'),
+          title: Text('Update User'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      child: Container(
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        child: userImgURL != null
+                            ? ClipOval(
+                                child: Image.network(
+                                  userImgURL,
+                                  width: 80,
+                                  height: 80,
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            : Container(),
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    IconButton(
+                      icon: Icon(
+                        Icons.photo_outlined,
+                        size: 20,
+                      ),
+                      onPressed: () async {
+                        XFile? pickedImage = await _picker.pickImage(
+                            source: ImageSource.gallery);
+                        setState(() {
+                          selectedImage = pickedImage;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              TextField(
+                decoration: InputDecoration(labelText: 'Nickname'),
+                controller: nameController,
+              ),
+              TextField(
+                decoration: InputDecoration(labelText: 'Password'),
+                controller: passwordController,
+              ),
+              DropdownButtonFormField<String>(
+                decoration: InputDecoration(labelText: 'Gender'),
+                value: selectedGender,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedGender = newValue;
+                  });
+                },
+                items: _genderOptions.entries
+                    .map((entry) => DropdownMenuItem(
+                          child: Text(entry.value),
+                          value: entry.key,
+                        ))
+                    .toList(),
+              ),
+              TextField(
+                decoration: InputDecoration(labelText: 'Age'),
+                controller: ageController,
+                keyboardType: TextInputType.number,
+              ),
+            ],
+          ),
           actions: [
+            TextButton(
+              child: Text('Update'),
+              onPressed: () {
+                userUpdate(
+                  passwordController.text,
+                  nameController.text,
+                  selectedGender ?? userGender,
+                  int.tryParse(ageController.text) ?? userAge,
+                  selectedImage,
+                );
+                Navigator.of(context).pop();
+              },
+            ),
             TextButton(
               child: Text('Close'),
               onPressed: () {
-                userUpdate(
-                    userEmail, userPassword, userName, userGender, userAge);
                 Navigator.of(context).pop();
               },
             ),
@@ -619,6 +712,7 @@ class _UserPageState extends State<UserPage> {
     final userName = user['userName'];
     final userGender = user['userGender'];
     final userAge = user['userAge'];
+    final userImgURL = user['userImgURL'];
 
     return SingleChildScrollView(
       padding: EdgeInsets.all(20),
@@ -696,8 +790,8 @@ class _UserPageState extends State<UserPage> {
                         size: 17,
                       ),
                       onPressed: () {
-                        userUpdateDialog(userEmail, userPassword, userName,
-                            userGender, userAge);
+                        userUpdateDialog(userPassword, userName, userGender,
+                            userAge, userImgURL);
                       },
                     ),
                   ],
@@ -727,72 +821,6 @@ class _UserPageState extends State<UserPage> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget sectionUser(Map<String, dynamic> user, String userEmail,
-      String userPassword, String userName, String userGender, int userAge) {
-    return Row(
-      children: [
-        GestureDetector(
-          child: Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              color: Colors.grey,
-              borderRadius: BorderRadius.circular(50),
-            ),
-            child: user['userImgURL'] != null
-                ? ClipOval(
-                    child: Image.network(
-                      user['userImgURL']!,
-                      width: 80,
-                      height: 80,
-                      fit: BoxFit.cover,
-                    ),
-                  )
-                : Icon(
-                    Icons.account_circle,
-                    size: 40,
-                    color: Colors.white,
-                  ),
-          ),
-        ),
-        SizedBox(width: 10),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                user['userName'] ?? 'No userName',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
-              ),
-              Text(
-                user['userEmail'] ?? 'No userEmail',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w300,
-                  color: Colors.grey[600],
-                ),
-              ),
-              Text(
-                '${NumberFormat('###,###,###').format((user['userMoney'] - user['userSpend']) ?? 0)}원',
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey[700]),
-              ),
-            ],
-          ),
-        ),
-        IconButton(
-          icon: Icon(Icons.edit_outlined, size: 17),
-          onPressed: () {
-            userUpdateDialog(
-                userEmail, userPassword, userName, userGender, userAge);
-          },
-        ),
-      ],
     );
   }
 
