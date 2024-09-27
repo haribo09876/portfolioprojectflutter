@@ -13,14 +13,26 @@ class DashboardSalesPage extends StatelessWidget {
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 10),
                 child: Text(
-                  'Info',
+                  'Analysis',
                   style: TextStyle(
                     fontSize: 25,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
               ),
-              DashboardSalesInfo(),
+              DashboardSalesAnalysis(),
+              SizedBox(height: 20),
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 10),
+                child: Text(
+                  'Prediction',
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+              DashboardSalesPrediction(),
             ],
           ),
         ),
@@ -29,11 +41,20 @@ class DashboardSalesPage extends StatelessWidget {
   }
 }
 
-class DashboardSalesInfo extends StatelessWidget {
+class DashboardSalesAnalysis extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Text('Info Component'),
+      child: Text('Analysis Component'),
+    );
+  }
+}
+
+class DashboardSalesPrediction extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Text('Prediction Component'),
     );
   }
 }
