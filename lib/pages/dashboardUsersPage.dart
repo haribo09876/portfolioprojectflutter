@@ -72,6 +72,7 @@ class DashboardUsersLocation extends StatefulWidget {
 class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
   late MapController mapController;
   List<GeoPoint> geoPoints = [];
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -104,6 +105,10 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
       });
     } catch (e) {
       print('Error loading locations: $e');
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -111,43 +116,45 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
   Widget build(BuildContext context) {
     return Container(
       height: 400,
-      child: OSMFlutter(
-        controller: mapController,
-        osmOption: OSMOption(
-          userTrackingOption: UserTrackingOption(
-            enableTracking: true,
-            unFollowUser: false,
-          ),
-          zoomOption: ZoomOption(
-            initZoom: 12,
-            minZoomLevel: 3,
-            maxZoomLevel: 19,
-            stepZoom: 1.0,
-          ),
-          userLocationMarker: UserLocationMaker(
-            personMarker: MarkerIcon(
-              icon: Icon(
-                Icons.location_on_outlined,
-                color: Colors.green,
-                size: 48,
+      child: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : OSMFlutter(
+              controller: mapController,
+              osmOption: OSMOption(
+                userTrackingOption: UserTrackingOption(
+                  enableTracking: true,
+                  unFollowUser: false,
+                ),
+                zoomOption: ZoomOption(
+                  initZoom: 12,
+                  minZoomLevel: 3,
+                  maxZoomLevel: 19,
+                  stepZoom: 1.0,
+                ),
+                userLocationMarker: UserLocationMaker(
+                  personMarker: MarkerIcon(
+                    icon: Icon(
+                      Icons.location_on_outlined,
+                      color: Colors.green,
+                      size: 48,
+                    ),
+                  ),
+                  directionArrowMarker: MarkerIcon(
+                    icon: Icon(
+                      Icons.double_arrow,
+                      size: 48,
+                    ),
+                  ),
+                ),
               ),
+              onMapIsReady: (isReady) async {
+                if (isReady) {
+                  for (var point in geoPoints) {
+                    mapController.addMarker(point);
+                  }
+                }
+              },
             ),
-            directionArrowMarker: MarkerIcon(
-              icon: Icon(
-                Icons.double_arrow,
-                size: 48,
-              ),
-            ),
-          ),
-        ),
-        onMapIsReady: (isReady) async {
-          if (isReady) {
-            for (var point in geoPoints) {
-              mapController.addMarker(point);
-            }
-          }
-        },
-      ),
     );
   }
 }
