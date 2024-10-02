@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/dashboard.dart';
 
 class DashboardContentsPage extends StatelessWidget {
   @override

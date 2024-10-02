@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import '../services/dashboard.dart';
 
 class DashboardUsersPage extends StatelessWidget {
@@ -63,11 +64,90 @@ class DashboardUsersInfo extends StatelessWidget {
   }
 }
 
-class DashboardUsersLocation extends StatelessWidget {
+class DashboardUsersLocation extends StatefulWidget {
+  @override
+  _DashboardUsersLocationState createState() => _DashboardUsersLocationState();
+}
+
+class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
+  late MapController mapController;
+  List<GeoPoint> geoPoints = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    mapController = MapController(
+      initPosition: GeoPoint(
+        latitude: 37.422,
+        longitude: -122.084,
+      ),
+    );
+
+    _loadLocations();
+  }
+
+  Future<void> _loadLocations() async {
+    try {
+      DashboardService dashboardService = DashboardService();
+      List<dynamic> locations = await dashboardService.fetchLocationsLatLong();
+
+      List<GeoPoint> points = locations.map((location) {
+        return GeoPoint(
+          latitude: double.parse(location['latitude']),
+          longitude: double.parse(location['longitude']),
+        );
+      }).toList();
+
+      setState(() {
+        geoPoints = points;
+      });
+    } catch (e) {
+      print('Error loading locations: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Text('Location Component'),
+      height: 400,
+      child: OSMFlutter(
+        controller: mapController,
+        osmOption: OSMOption(
+          userTrackingOption: UserTrackingOption(
+            enableTracking: true,
+            unFollowUser: false,
+          ),
+          zoomOption: ZoomOption(
+            initZoom: 12,
+            minZoomLevel: 3,
+            maxZoomLevel: 19,
+            stepZoom: 1.0,
+          ),
+          userLocationMarker: UserLocationMaker(
+            personMarker: MarkerIcon(
+              icon: Icon(
+                Icons.location_on_outlined,
+                color: Colors.green,
+                size: 48,
+              ),
+            ),
+            directionArrowMarker: MarkerIcon(
+              icon: Icon(
+                Icons.double_arrow,
+                size: 48,
+              ),
+            ),
+          ),
+        ),
+        onMapIsReady: (isReady) async {
+          if (isReady) {
+            for (var point in geoPoints) {
+              mapController.addMarker(point);
+            }
+          }
+        },
+      ),
     );
   }
 }
