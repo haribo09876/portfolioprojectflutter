@@ -36,7 +36,7 @@ class DashboardUsersPage extends StatelessWidget {
                 ),
               ),
               Container(
-                height: 300,
+                height: 250,
                 child: DashboardUsersLocation(),
               ),
               SizedBox(height: 20),
@@ -91,17 +91,86 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
   Widget build(BuildContext context) {
     return isLoading
         ? Center(child: CircularProgressIndicator())
-        : ListView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: users.length,
-            itemBuilder: (context, index) {
-              final user = users[index];
-              return ListTile(
-                title: Text('Name: ${user['userName']}'),
-                subtitle: Text('Age: ${user['userAge']}'),
-              );
-            },
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        '방문',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        '연령',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        '성별',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: users.length,
+                itemBuilder: (context, index) {
+                  final user = users[index];
+                  return Row(
+                    children: [
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            user['userName'].toString(),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            user['userAge'].toString(),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            user['userGender'] ?? 'N/A',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ],
           );
   }
 }
@@ -216,11 +285,8 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
                   ),
                   userLocationMarker: UserLocationMaker(
                     personMarker: MarkerIcon(
-                      icon: Icon(
-                        Icons.location_on_outlined,
-                        color: Colors.green,
-                        size: 48,
-                      ),
+                      icon: Icon(Icons.location_history_rounded,
+                          color: Colors.blue, size: 80),
                     ),
                     directionArrowMarker: MarkerIcon(
                       icon: Icon(
@@ -239,15 +305,15 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
                 },
               ),
               Positioned(
-                top: 20,
                 right: 10,
+                bottom: 10,
                 child: Column(
                   children: [
                     FloatingActionButton(
                       onPressed: _zoomIn,
                       child: Icon(Icons.add),
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 5),
                     FloatingActionButton(
                       onPressed: _zoomOut,
                       child: Icon(Icons.remove),
