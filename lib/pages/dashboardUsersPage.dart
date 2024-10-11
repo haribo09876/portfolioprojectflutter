@@ -134,7 +134,7 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
                       child: Text(
                         '방문',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 17,
                           fontWeight: FontWeight.w400,
                         ),
                         textAlign: TextAlign.center,
@@ -146,7 +146,7 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
                       child: Text(
                         '연령',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 17,
                           fontWeight: FontWeight.w400,
                         ),
                         textAlign: TextAlign.center,
@@ -158,7 +158,7 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
                       child: Text(
                         '성별',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 17,
                           fontWeight: FontWeight.w400,
                         ),
                         textAlign: TextAlign.center,
@@ -178,7 +178,8 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
                     ),
                   ),
                   Expanded(
-                    child: Center(
+                    child: SizedBox(
+                      height: 150,
                       child: SfCircularChart(
                         series: <CircularSeries>[
                           PieSeries<_AgeData, String>(
@@ -196,9 +197,14 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
                     ),
                   ),
                   Expanded(
-                    child: Center(
+                    child: SizedBox(
+                      height: 150,
                       child: SfCartesianChart(
                         primaryXAxis: CategoryAxis(),
+                        primaryYAxis: NumericAxis(
+                          isVisible: false,
+                          majorGridLines: MajorGridLines(width: 0),
+                        ),
                         series: <CartesianSeries>[
                           ColumnSeries<_GenderData, String>(
                             dataSource: [
@@ -207,6 +213,13 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
                             ],
                             xValueMapper: (_GenderData data, _) => data.gender,
                             yValueMapper: (_GenderData data, _) => data.count,
+                            dataLabelSettings: DataLabelSettings(
+                              isVisible: true,
+                              textStyle: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -341,32 +354,13 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
                     initZoom: 12,
                     minZoomLevel: 3,
                     maxZoomLevel: 19,
-                    stepZoom: 1.0,
                   ),
-                  userLocationMarker: UserLocationMaker(
-                    personMarker: MarkerIcon(
-                      icon: Icon(Icons.location_history_rounded,
-                          color: Colors.blue, size: 80),
-                    ),
-                    directionArrowMarker: MarkerIcon(
-                      icon: Icon(
-                        Icons.double_arrow,
-                        size: 48,
-                      ),
-                    ),
-                  ),
+                  isPicker: false,
                 ),
-                onMapIsReady: (isReady) async {
-                  if (isReady) {
-                    for (var point in geoPoints) {
-                      await mapController.addMarker(point);
-                    }
-                  }
-                },
               ),
               Positioned(
+                top: 10,
                 right: 10,
-                bottom: 10,
                 child: Column(
                   children: [
                     FloatingActionButton(
@@ -389,19 +383,10 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
 class DashboardUsersSearch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(10.0),
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: TextField(
-        decoration: InputDecoration(
-          hintText: 'Search...',
-          suffixIcon: Icon(Icons.search),
-          border: InputBorder.none,
-        ),
-      ),
+    return Column(
+      children: [
+        Text('Search functionality not implemented yet.'),
+      ],
     );
   }
 }
