@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:geolocator/geolocator.dart' as geolocator_position;
 import '../services/dashboard.dart';
 
 class DashboardUsersPage extends StatelessWidget {
@@ -67,6 +68,8 @@ class DashboardUsersInfo extends StatefulWidget {
 class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
   List<dynamic> users = [];
   bool isLoading = true;
+  int maleCount = 0;
+  int femaleCount = 0;
 
   @override
   void initState() {
@@ -81,9 +84,39 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
       setState(() {
         users = fetchedUsers;
         isLoading = false;
+        _countGender();
       });
     } catch (e) {
       print('Error loading users: $e');
+    }
+  }
+
+  void _countGender() {
+    maleCount = 0;
+    femaleCount = 0;
+
+    for (var user in users) {
+      if (user['userGender'] == 'Male') {
+        maleCount++;
+      } else if (user['userGender'] == 'Female') {
+        femaleCount++;
+      }
+    }
+  }
+
+  List<_AgeData> _getAgeData(int age) {
+    if (age <= 19) {
+      return [_AgeData('20대 미만', 1)];
+    } else if (age <= 29) {
+      return [_AgeData('20대', 1)];
+    } else if (age <= 39) {
+      return [_AgeData('30대', 1)];
+    } else if (age <= 49) {
+      return [_AgeData('40대', 1)];
+    } else if (age <= 59) {
+      return [_AgeData('50대', 1)];
+    } else {
+      return [_AgeData('60세 이상', 1)];
     }
   }
 
@@ -152,17 +185,38 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
                       ),
                       Expanded(
                         child: Center(
-                          child: Text(
-                            user['userAge'].toString(),
-                            textAlign: TextAlign.center,
+                          child: SfCircularChart(
+                            series: <CircularSeries>[
+                              PieSeries<_AgeData, String>(
+                                dataSource: _getAgeData(user['userAge']),
+                                xValueMapper: (_AgeData data, _) =>
+                                    data.ageGroup,
+                                yValueMapper: (_AgeData data, _) => data.count,
+                                dataLabelMapper: (_AgeData data, _) =>
+                                    data.ageGroup,
+                                dataLabelSettings:
+                                    DataLabelSettings(isVisible: true),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                       Expanded(
                         child: Center(
-                          child: Text(
-                            user['userGender'] ?? 'N/A',
-                            textAlign: TextAlign.center,
+                          child: SfCartesianChart(
+                            primaryXAxis: CategoryAxis(),
+                            series: <CartesianSeries>[
+                              ColumnSeries<_GenderData, String>(
+                                dataSource: [
+                                  _GenderData('Male', maleCount),
+                                  _GenderData('Female', femaleCount),
+                                ],
+                                xValueMapper: (_GenderData data, _) =>
+                                    data.gender,
+                                yValueMapper: (_GenderData data, _) =>
+                                    data.count,
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -173,6 +227,20 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
             ],
           );
   }
+}
+
+class _AgeData {
+  _AgeData(this.ageGroup, this.count);
+
+  final String ageGroup;
+  final int count;
+}
+
+class _GenderData {
+  _GenderData(this.gender, this.count);
+
+  final String gender;
+  final int count;
 }
 
 class DashboardUsersLocation extends StatefulWidget {
@@ -193,9 +261,10 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
 
   Future<void> _initializeMap() async {
     bool serviceEnabled;
-    LocationPermission permission;
+    geolocator_position.LocationPermission permission;
 
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    serviceEnabled =
+        await geolocator_position.Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       setState(() {
         isLoading = false;
@@ -204,11 +273,11 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
       return;
     }
 
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission != LocationPermission.whileInUse &&
-          permission != LocationPermission.always) {
+    permission = await geolocator_position.Geolocator.checkPermission();
+    if (permission == geolocator_position.LocationPermission.denied) {
+      permission = await geolocator_position.Geolocator.requestPermission();
+      if (permission != geolocator_position.LocationPermission.whileInUse &&
+          permission != geolocator_position.LocationPermission.always) {
         setState(() {
           isLoading = false;
         });
@@ -217,8 +286,9 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
       }
     }
 
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
+    geolocator_position.Position position =
+        await geolocator_position.Geolocator.getCurrentPosition(
+      desiredAccuracy: geolocator_position.LocationAccuracy.high,
     );
 
     mapController = MapController(
@@ -311,12 +381,12 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
                   children: [
                     FloatingActionButton(
                       onPressed: _zoomIn,
-                      child: Icon(Icons.add),
+                      child: Icon(Icons.zoom_in),
                     ),
-                    SizedBox(height: 5),
+                    SizedBox(height: 10),
                     FloatingActionButton(
                       onPressed: _zoomOut,
-                      child: Icon(Icons.remove),
+                      child: Icon(Icons.zoom_out),
                     ),
                   ],
                 ),
@@ -326,79 +396,22 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
   }
 }
 
-class DashboardUsersSearch extends StatefulWidget {
-  @override
-  _DashboardUsersSearchState createState() => _DashboardUsersSearchState();
-}
-
-class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
-  List<dynamic> users = [];
-  List<dynamic> filteredUsers = [];
-  bool isLoading = true;
-  String searchQuery = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _loadUsers();
-  }
-
-  Future<void> _loadUsers() async {
-    try {
-      DashboardService dashboardService = DashboardService();
-      List<dynamic> fetchedUsers = await dashboardService.fetchUsersAll();
-      setState(() {
-        users = fetchedUsers;
-        filteredUsers = users;
-        isLoading = false;
-      });
-    } catch (e) {
-      print('Error loading users: $e');
-    }
-  }
-
-  void _searchUsers(String query) {
-    final results = users.where((user) {
-      final userName = user['userName'].toLowerCase();
-      final input = query.toLowerCase();
-      return userName.contains(input);
-    }).toList();
-
-    setState(() {
-      filteredUsers = results;
-    });
-  }
-
+class DashboardUsersSearch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TextField(
-          onChanged: (query) {
-            _searchUsers(query);
-          },
-          decoration: InputDecoration(
-            hintText: 'Search by name...',
-            border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.search),
-          ),
+    return Container(
+      padding: EdgeInsets.all(10.0),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: TextField(
+        decoration: InputDecoration(
+          hintText: 'Search...',
+          suffixIcon: Icon(Icons.search),
+          border: InputBorder.none,
         ),
-        SizedBox(height: 10),
-        isLoading
-            ? CircularProgressIndicator()
-            : ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: filteredUsers.length,
-                itemBuilder: (context, index) {
-                  final user = filteredUsers[index];
-                  return ListTile(
-                    title: Text(user['userName']),
-                    subtitle: Text('Age: ${user['userAge']}'),
-                  );
-                },
-              ),
-      ],
+      ),
     );
   }
 }
