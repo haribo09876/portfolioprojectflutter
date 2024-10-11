@@ -104,20 +104,34 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
     }
   }
 
-  List<_AgeData> _getAgeData(int age) {
-    if (age <= 19) {
-      return [_AgeData('20대 미만', 1)];
-    } else if (age <= 29) {
-      return [_AgeData('20대', 1)];
-    } else if (age <= 39) {
-      return [_AgeData('30대', 1)];
-    } else if (age <= 49) {
-      return [_AgeData('40대', 1)];
-    } else if (age <= 59) {
-      return [_AgeData('50대', 1)];
-    } else {
-      return [_AgeData('60세 이상', 1)];
+  List<_AgeData> _getAgeData() {
+    int below20 = 0, in20s = 0, in30s = 0, in40s = 0, in50s = 0, above60 = 0;
+
+    for (var user in users) {
+      int age = user['userAge'];
+      if (age <= 19) {
+        below20++;
+      } else if (age >= 20 && age <= 29) {
+        in20s++;
+      } else if (age >= 30 && age <= 39) {
+        in30s++;
+      } else if (age >= 40 && age <= 49) {
+        in40s++;
+      } else if (age >= 50 && age <= 59) {
+        in50s++;
+      } else if (age >= 60) {
+        above60++;
+      }
     }
+
+    return [
+      _AgeData('20대 미만', below20),
+      _AgeData('20대', in20s),
+      _AgeData('30대', in30s),
+      _AgeData('40대', in40s),
+      _AgeData('50대', in50s),
+      _AgeData('60세 이상', above60),
+    ];
   }
 
   @override
@@ -183,14 +197,16 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
                       child: SfCircularChart(
                         series: <CircularSeries>[
                           PieSeries<_AgeData, String>(
-                            dataSource: _getAgeData(
-                                users.isNotEmpty ? users[0]['userAge'] : 0),
+                            dataSource: _getAgeData(),
                             xValueMapper: (_AgeData data, _) => data.ageGroup,
                             yValueMapper: (_AgeData data, _) => data.count,
                             dataLabelMapper: (_AgeData data, _) =>
                                 data.ageGroup,
-                            dataLabelSettings:
-                                DataLabelSettings(isVisible: true),
+                            dataLabelSettings: DataLabelSettings(
+                                isVisible: true,
+                                textStyle: TextStyle(
+                                  color: Colors.white,
+                                )),
                           ),
                         ],
                       ),
