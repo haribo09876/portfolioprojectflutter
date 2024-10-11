@@ -167,62 +167,52 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
                   ),
                 ],
               ),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: users.length,
-                itemBuilder: (context, index) {
-                  final user = users[index];
-                  return Row(
-                    children: [
-                      Expanded(
-                        child: Center(
-                          child: Text(
-                            user['userName'].toString(),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        'User Info',
+                        style: TextStyle(fontSize: 14),
                       ),
-                      Expanded(
-                        child: Center(
-                          child: SfCircularChart(
-                            series: <CircularSeries>[
-                              PieSeries<_AgeData, String>(
-                                dataSource: _getAgeData(user['userAge']),
-                                xValueMapper: (_AgeData data, _) =>
-                                    data.ageGroup,
-                                yValueMapper: (_AgeData data, _) => data.count,
-                                dataLabelMapper: (_AgeData data, _) =>
-                                    data.ageGroup,
-                                dataLabelSettings:
-                                    DataLabelSettings(isVisible: true),
-                              ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Center(
+                      child: SfCircularChart(
+                        series: <CircularSeries>[
+                          PieSeries<_AgeData, String>(
+                            dataSource: _getAgeData(
+                                users.isNotEmpty ? users[0]['userAge'] : 0),
+                            xValueMapper: (_AgeData data, _) => data.ageGroup,
+                            yValueMapper: (_AgeData data, _) => data.count,
+                            dataLabelMapper: (_AgeData data, _) =>
+                                data.ageGroup,
+                            dataLabelSettings:
+                                DataLabelSettings(isVisible: true),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Center(
+                      child: SfCartesianChart(
+                        primaryXAxis: CategoryAxis(),
+                        series: <CartesianSeries>[
+                          ColumnSeries<_GenderData, String>(
+                            dataSource: [
+                              _GenderData('Male', maleCount),
+                              _GenderData('Female', femaleCount),
                             ],
+                            xValueMapper: (_GenderData data, _) => data.gender,
+                            yValueMapper: (_GenderData data, _) => data.count,
                           ),
-                        ),
+                        ],
                       ),
-                      Expanded(
-                        child: Center(
-                          child: SfCartesianChart(
-                            primaryXAxis: CategoryAxis(),
-                            series: <CartesianSeries>[
-                              ColumnSeries<_GenderData, String>(
-                                dataSource: [
-                                  _GenderData('Male', maleCount),
-                                  _GenderData('Female', femaleCount),
-                                ],
-                                xValueMapper: (_GenderData data, _) =>
-                                    data.gender,
-                                yValueMapper: (_GenderData data, _) =>
-                                    data.count,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                },
+                    ),
+                  ),
+                ],
               ),
             ],
           );
