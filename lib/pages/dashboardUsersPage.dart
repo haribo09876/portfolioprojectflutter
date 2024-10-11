@@ -71,6 +71,15 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
   int maleCount = 0;
   int femaleCount = 0;
 
+  Map<String, int> ageGroupCounts = {
+    '20대 미만': 0,
+    '20대': 0,
+    '30대': 0,
+    '40대': 0,
+    '50대': 0,
+    '60세 이상': 0,
+  };
+
   @override
   void initState() {
     super.initState();
@@ -85,6 +94,7 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
         users = fetchedUsers;
         isLoading = false;
         _countGender();
+        _countAgeGroups();
       });
     } catch (e) {
       print('Error loading users: $e');
@@ -104,34 +114,30 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
     }
   }
 
-  List<_AgeData> _getAgeData() {
-    int below20 = 0, in20s = 0, in30s = 0, in40s = 0, in50s = 0, above60 = 0;
-
+  void _countAgeGroups() {
     for (var user in users) {
       int age = user['userAge'];
-      if (age <= 19) {
-        below20++;
+
+      if (age < 20) {
+        ageGroupCounts['20대 미만'] = ageGroupCounts['20대 미만']! + 1;
       } else if (age >= 20 && age <= 29) {
-        in20s++;
+        ageGroupCounts['20대'] = ageGroupCounts['20대']! + 1;
       } else if (age >= 30 && age <= 39) {
-        in30s++;
+        ageGroupCounts['30대'] = ageGroupCounts['30대']! + 1;
       } else if (age >= 40 && age <= 49) {
-        in40s++;
+        ageGroupCounts['40대'] = ageGroupCounts['40대']! + 1;
       } else if (age >= 50 && age <= 59) {
-        in50s++;
-      } else if (age >= 60) {
-        above60++;
+        ageGroupCounts['50대'] = ageGroupCounts['50대']! + 1;
+      } else {
+        ageGroupCounts['60세 이상'] = ageGroupCounts['60세 이상']! + 1;
       }
     }
+  }
 
-    return [
-      _AgeData('20대 미만', below20),
-      _AgeData('20대', in20s),
-      _AgeData('30대', in30s),
-      _AgeData('40대', in40s),
-      _AgeData('50대', in50s),
-      _AgeData('60세 이상', above60),
-    ];
+  List<_AgeData> _getAgeData() {
+    return ageGroupCounts.entries.map((entry) {
+      return _AgeData(entry.key, entry.value);
+    }).toList();
   }
 
   @override
@@ -483,7 +489,8 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
                   final user = filteredUsers[index];
                   return ListTile(
                     title: Text(user['userName']),
-                    subtitle: Text('Age: ${user['userAge']}'),
+                    subtitle: Text(
+                        'Age: ${user['userAge']}      Gender: ${user['userGender']}'),
                   );
                 },
               ),
