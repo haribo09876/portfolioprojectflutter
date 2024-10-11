@@ -354,23 +354,42 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
                     initZoom: 12,
                     minZoomLevel: 3,
                     maxZoomLevel: 19,
+                    stepZoom: 1.0,
                   ),
-                  isPicker: false,
+                  userLocationMarker: UserLocationMaker(
+                    personMarker: MarkerIcon(
+                      icon: Icon(Icons.location_history_rounded,
+                          color: Colors.blue, size: 80),
+                    ),
+                    directionArrowMarker: MarkerIcon(
+                      icon: Icon(
+                        Icons.double_arrow,
+                        size: 48,
+                      ),
+                    ),
+                  ),
                 ),
+                onMapIsReady: (isReady) async {
+                  if (isReady) {
+                    for (var point in geoPoints) {
+                      await mapController.addMarker(point);
+                    }
+                  }
+                },
               ),
               Positioned(
-                top: 10,
                 right: 10,
+                bottom: 10,
                 child: Column(
                   children: [
                     FloatingActionButton(
                       onPressed: _zoomIn,
-                      child: Icon(Icons.zoom_in),
+                      child: Icon(Icons.add),
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 5),
                     FloatingActionButton(
                       onPressed: _zoomOut,
-                      child: Icon(Icons.zoom_out),
+                      child: Icon(Icons.remove),
                     ),
                   ],
                 ),
@@ -380,12 +399,78 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
   }
 }
 
-class DashboardUsersSearch extends StatelessWidget {
+class DashboardUsersSearch extends StatefulWidget {
+  @override
+  _DashboardUsersSearchState createState() => _DashboardUsersSearchState();
+}
+
+class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
+  List<dynamic> users = [];
+  List<dynamic> filteredUsers = [];
+  bool isLoading = true;
+  String searchQuery = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUsers();
+  }
+
+  Future<void> _loadUsers() async {
+    try {
+      DashboardService dashboardService = DashboardService();
+      List<dynamic> fetchedUsers = await dashboardService.fetchUsersAll();
+      setState(() {
+        users = fetchedUsers;
+        filteredUsers = users;
+        isLoading = false;
+      });
+    } catch (e) {
+      print('Error loading users: $e');
+    }
+  }
+
+  void _searchUsers(String query) {
+    final results = users.where((user) {
+      final userName = user['userName'].toLowerCase();
+      final input = query.toLowerCase();
+      return userName.contains(input);
+    }).toList();
+
+    setState(() {
+      filteredUsers = results;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text('Search functionality not implemented yet.'),
+        TextField(
+          onChanged: (query) {
+            _searchUsers(query);
+          },
+          decoration: InputDecoration(
+            hintText: 'Search by name...',
+            border: OutlineInputBorder(),
+            prefixIcon: Icon(Icons.search),
+          ),
+        ),
+        SizedBox(height: 10),
+        isLoading
+            ? CircularProgressIndicator()
+            : ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: filteredUsers.length,
+                itemBuilder: (context, index) {
+                  final user = filteredUsers[index];
+                  return ListTile(
+                    title: Text(user['userName']),
+                    subtitle: Text('Age: ${user['userAge']}'),
+                  );
+                },
+              ),
       ],
     );
   }
