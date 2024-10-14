@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:geolocator/geolocator.dart' as geolocator_position;
@@ -432,6 +433,8 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
   bool isLoading = true;
   String searchQuery = '';
 
+  final formatter = NumberFormat('#,###');
+
   @override
   void initState() {
     super.initState();
@@ -481,18 +484,187 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
         SizedBox(height: 10),
         isLoading
             ? CircularProgressIndicator()
-            : ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: filteredUsers.length,
-                itemBuilder: (context, index) {
-                  final user = filteredUsers[index];
-                  return ListTile(
-                    title: Text(user['userName']),
-                    subtitle: Text(
-                        'Age: ${user['userAge']}      Gender: ${user['userGender']}'),
-                  );
-                },
+            : SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: IntrinsicWidth(
+                  child: Table(
+                    columnWidths: {
+                      0: FixedColumnWidth(100),
+                      1: FixedColumnWidth(100),
+                      2: FixedColumnWidth(300),
+                      3: FixedColumnWidth(200),
+                      4: FixedColumnWidth(150),
+                      5: FixedColumnWidth(50),
+                      6: FixedColumnWidth(100),
+                      7: FixedColumnWidth(100),
+                      8: FixedColumnWidth(100),
+                      9: FixedColumnWidth(200),
+                      10: FixedColumnWidth(200),
+                    },
+                    border: TableBorder.all(),
+                    children: [
+                      TableRow(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                        ),
+                        children: [
+                          TableCell(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child:
+                                  Text('Profile', textAlign: TextAlign.center),
+                            ),
+                          ),
+                          TableCell(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text('Name', textAlign: TextAlign.center),
+                            ),
+                          ),
+                          TableCell(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text('ID', textAlign: TextAlign.center),
+                            ),
+                          ),
+                          TableCell(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text('Email', textAlign: TextAlign.center),
+                            ),
+                          ),
+                          TableCell(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child:
+                                  Text('Password', textAlign: TextAlign.center),
+                            ),
+                          ),
+                          TableCell(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text('Age', textAlign: TextAlign.center),
+                            ),
+                          ),
+                          TableCell(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child:
+                                  Text('Gender', textAlign: TextAlign.center),
+                            ),
+                          ),
+                          TableCell(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text('Money', textAlign: TextAlign.center),
+                            ),
+                          ),
+                          TableCell(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text('Spend', textAlign: TextAlign.center),
+                            ),
+                          ),
+                          TableCell(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text('createdAt',
+                                  textAlign: TextAlign.center),
+                            ),
+                          ),
+                          TableCell(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text('modifiedAt',
+                                  textAlign: TextAlign.center),
+                            ),
+                          ),
+                        ],
+                      ),
+                      for (var user in filteredUsers)
+                        TableRow(
+                          children: [
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: CircleAvatar(
+                                  radius: 17,
+                                  backgroundImage:
+                                      NetworkImage(user['userImgURL']),
+                                  onBackgroundImageError: (_, __) =>
+                                      Icon(Icons.person),
+                                ),
+                              ),
+                            ),
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(user['userName']),
+                              ),
+                            ),
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(user['userId']),
+                              ),
+                            ),
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(user['userEmail']),
+                              ),
+                            ),
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(user['userPassword']),
+                              ),
+                            ),
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(user['userAge'].toString(),
+                                    textAlign: TextAlign.center),
+                              ),
+                            ),
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(user['userGender'],
+                                    textAlign: TextAlign.center),
+                              ),
+                            ),
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(formatter.format(user['userMoney']),
+                                    textAlign: TextAlign.right),
+                              ),
+                            ),
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(formatter.format(user['userSpend']),
+                                    textAlign: TextAlign.right),
+                              ),
+                            ),
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(user['createdAt'].toString()),
+                              ),
+                            ),
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(user['modifiedAt'].toString()),
+                              ),
+                            ),
+                          ],
+                        ),
+                    ],
+                  ),
+                ),
               ),
       ],
     );
