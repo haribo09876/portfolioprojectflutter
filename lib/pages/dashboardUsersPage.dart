@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:geolocator/geolocator.dart' as geolocator_position;
 import '../services/dashboard.dart';
 
@@ -68,6 +68,8 @@ class DashboardUsersInfo extends StatefulWidget {
 
 class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
   List<dynamic> users = [];
+  late DashboardService _dashboardService;
+  int _locationsCount = 0;
   bool isLoading = true;
   int maleCount = 0;
   int femaleCount = 0;
@@ -84,7 +86,9 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
   @override
   void initState() {
     super.initState();
+    _dashboardService = DashboardService();
     _loadUsers();
+    _fetchLocationsCount();
   }
 
   Future<void> _loadUsers() async {
@@ -99,6 +103,17 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
       });
     } catch (e) {
       print('Error loading users: $e');
+    }
+  }
+
+  Future<void> _fetchLocationsCount() async {
+    try {
+      final locations = await _dashboardService.fetchLocationsAll();
+      setState(() {
+        _locationsCount = locations.length;
+      });
+    } catch (e) {
+      print('Error fetching locations: $e');
     }
   }
 
@@ -192,9 +207,27 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
                 children: [
                   Expanded(
                     child: Center(
-                      child: Text(
-                        'User Info',
-                        style: TextStyle(fontSize: 14),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Total',
+                            style: TextStyle(fontSize: 30),
+                            textAlign: TextAlign.center,
+                          ),
+                          Text(
+                            '$_locationsCount',
+                            style: TextStyle(fontSize: 20),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: 3),
+                          Text(
+                            'Today 000',
+                            style: TextStyle(
+                                fontSize: 15, fontStyle: FontStyle.italic),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -330,7 +363,7 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
   Future<void> _loadLocations() async {
     try {
       DashboardService dashboardService = DashboardService();
-      List<dynamic> locations = await dashboardService.fetchLocationsLatLong();
+      List<dynamic> locations = await dashboardService.fetchLocationsAll();
 
       List<GeoPoint> points = locations.map((location) {
         return GeoPoint(
@@ -477,8 +510,12 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
           },
           decoration: InputDecoration(
             hintText: 'Search by name...',
-            border: OutlineInputBorder(),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
             prefixIcon: Icon(Icons.search),
+            filled: true,
+            fillColor: Colors.grey[200],
           ),
         ),
         SizedBox(height: 10),
@@ -486,14 +523,26 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
             ? CircularProgressIndicator()
             : SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: IntrinsicWidth(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        blurRadius: 8,
+                        spreadRadius: 2,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
+                  ),
                   child: Table(
                     columnWidths: {
                       0: FixedColumnWidth(100),
                       1: FixedColumnWidth(100),
-                      2: FixedColumnWidth(300),
-                      3: FixedColumnWidth(200),
-                      4: FixedColumnWidth(150),
+                      2: FixedColumnWidth(200),
+                      3: FixedColumnWidth(150),
+                      4: FixedColumnWidth(300),
                       5: FixedColumnWidth(50),
                       6: FixedColumnWidth(100),
                       7: FixedColumnWidth(100),
@@ -501,84 +550,29 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
                       9: FixedColumnWidth(200),
                       10: FixedColumnWidth(200),
                     },
-                    border: TableBorder.all(),
+                    border: TableBorder.all(
+                      color: Colors.grey[300]!,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                     children: [
                       TableRow(
                         decoration: BoxDecoration(
-                          color: Colors.grey[300],
+                          color: Colors.blue[100],
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(20)),
                         ),
                         children: [
-                          TableCell(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child:
-                                  Text('Profile', textAlign: TextAlign.center),
-                            ),
-                          ),
-                          TableCell(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text('Name', textAlign: TextAlign.center),
-                            ),
-                          ),
-                          TableCell(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text('ID', textAlign: TextAlign.center),
-                            ),
-                          ),
-                          TableCell(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text('Email', textAlign: TextAlign.center),
-                            ),
-                          ),
-                          TableCell(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child:
-                                  Text('Password', textAlign: TextAlign.center),
-                            ),
-                          ),
-                          TableCell(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text('Age', textAlign: TextAlign.center),
-                            ),
-                          ),
-                          TableCell(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child:
-                                  Text('Gender', textAlign: TextAlign.center),
-                            ),
-                          ),
-                          TableCell(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text('Money', textAlign: TextAlign.center),
-                            ),
-                          ),
-                          TableCell(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text('Spend', textAlign: TextAlign.center),
-                            ),
-                          ),
-                          TableCell(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text('createdAt',
-                                  textAlign: TextAlign.center),
-                            ),
-                          ),
-                          TableCell(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text('modifiedAt',
-                                  textAlign: TextAlign.center),
-                            ),
-                          ),
+                          _tableHeader('Profile'),
+                          _tableHeader('Name'),
+                          _tableHeader('Email'),
+                          _tableHeader('Password'),
+                          _tableHeader('ID'),
+                          _tableHeader('Age'),
+                          _tableHeader('Gender'),
+                          _tableHeader('Money'),
+                          _tableHeader('Spend'),
+                          _tableHeader('Created At'),
+                          _tableHeader('Modified At'),
                         ],
                       ),
                       for (var user in filteredUsers)
@@ -599,13 +593,10 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
                             TableCell(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Text(user['userName']),
-                              ),
-                            ),
-                            TableCell(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(user['userId']),
+                                child: Text(
+                                  user['userName'],
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
                               ),
                             ),
                             TableCell(
@@ -623,29 +614,43 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
                             TableCell(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Text(user['userAge'].toString(),
-                                    textAlign: TextAlign.center),
+                                child: Text(user['userId']),
                               ),
                             ),
                             TableCell(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Text(user['userGender'],
-                                    textAlign: TextAlign.center),
+                                child: Text(
+                                  user['userAge'].toString(),
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
                             ),
                             TableCell(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Text(formatter.format(user['userMoney']),
-                                    textAlign: TextAlign.right),
+                                child: Text(
+                                  user['userGender'],
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
                             ),
                             TableCell(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Text(formatter.format(user['userSpend']),
-                                    textAlign: TextAlign.right),
+                                child: Text(
+                                  formatter.format(user['userMoney']),
+                                  textAlign: TextAlign.right,
+                                ),
+                              ),
+                            ),
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  formatter.format(user['userSpend']),
+                                  textAlign: TextAlign.right,
+                                ),
                               ),
                             ),
                             TableCell(
@@ -667,6 +672,20 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
                 ),
               ),
       ],
+    );
+  }
+
+  Widget _tableHeader(String text) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Colors.blue[800],
+        ),
+      ),
     );
   }
 }

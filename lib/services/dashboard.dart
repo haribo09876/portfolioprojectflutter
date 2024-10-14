@@ -35,12 +35,12 @@ class DashboardService {
     }
   }
 
-  // Locations 테이블의 latitude, longitude 조회 함수
-  Future<List<dynamic>> fetchLocationsLatLong() async {
+  // Locations 테이블의 전체 데이터 조회 함수
+  Future<List<dynamic>> fetchLocationsAll() async {
     final response = await http.post(
       Uri.parse(apiUrl),
       headers: {'Content-Type': 'application/json'},
-      body: json.encode({'action': 'readLocationsLatLong'}),
+      body: json.encode({'action': 'readLocationsAll'}),
     );
 
     if (response.statusCode == 200) {
