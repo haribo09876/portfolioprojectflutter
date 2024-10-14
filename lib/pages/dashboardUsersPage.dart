@@ -70,6 +70,7 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
   List<dynamic> users = [];
   late DashboardService _dashboardService;
   int _locationsCount = 0;
+  int _todayLocationsCount = 0;
   bool isLoading = true;
   int maleCount = 0;
   int femaleCount = 0;
@@ -89,6 +90,7 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
     _dashboardService = DashboardService();
     _loadUsers();
     _fetchLocationsCount();
+    _fetchTodayLocationsCount();
   }
 
   Future<void> _loadUsers() async {
@@ -114,6 +116,25 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
       });
     } catch (e) {
       print('Error fetching locations: $e');
+    }
+  }
+
+  Future<void> _fetchTodayLocationsCount() async {
+    try {
+      final locations = await _dashboardService.fetchLocationsAll();
+      DateTime today = DateTime.now();
+      int todayCount = locations.where((location) {
+        DateTime createdAt = DateTime.parse(location['createdAt']);
+        return createdAt.year == today.year &&
+            createdAt.month == today.month &&
+            createdAt.day == today.day;
+      }).length;
+
+      setState(() {
+        _todayLocationsCount = todayCount;
+      });
+    } catch (e) {
+      print('Error fetching today locations: $e');
     }
   }
 
@@ -212,19 +233,19 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
                         children: [
                           Text(
                             'Total',
-                            style: TextStyle(fontSize: 30),
+                            style: TextStyle(fontSize: 25),
                             textAlign: TextAlign.center,
                           ),
                           Text(
                             '$_locationsCount',
-                            style: TextStyle(fontSize: 20),
+                            style: TextStyle(fontSize: 30),
                             textAlign: TextAlign.center,
                           ),
                           SizedBox(height: 3),
                           Text(
-                            'Today 000',
+                            'Today $_todayLocationsCount',
                             style: TextStyle(
-                                fontSize: 15, fontStyle: FontStyle.italic),
+                                fontSize: 20, fontStyle: FontStyle.italic),
                             textAlign: TextAlign.center,
                           ),
                         ],
