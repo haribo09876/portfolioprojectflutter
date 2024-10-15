@@ -531,12 +531,8 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
           },
           decoration: InputDecoration(
             hintText: 'Search by name...',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
+            border: OutlineInputBorder(),
             prefixIcon: Icon(Icons.search),
-            filled: true,
-            fillColor: Colors.grey[200],
           ),
         ),
         SizedBox(height: 10),
@@ -547,7 +543,6 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.grey.withOpacity(0.2),
@@ -573,14 +568,11 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
                     },
                     border: TableBorder.all(
                       color: Colors.grey[300]!,
-                      borderRadius: BorderRadius.circular(20),
                     ),
                     children: [
                       TableRow(
                         decoration: BoxDecoration(
                           color: Colors.blue[100],
-                          borderRadius:
-                              BorderRadius.vertical(top: Radius.circular(20)),
                         ),
                         children: [
                           _tableHeader('Profile'),
