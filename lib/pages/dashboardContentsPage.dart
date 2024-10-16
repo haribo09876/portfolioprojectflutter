@@ -137,8 +137,11 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
                         ),
                       ),
                       IconButton(
-                        icon: Icon(Icons.calendar_month,
-                            color: Colors.blueAccent),
+                        icon: Icon(
+                          Icons.calendar_today,
+                          color: Colors.blueAccent,
+                          size: 35,
+                        ),
                         onPressed: _showDateRangePicker,
                       ),
                     ],
