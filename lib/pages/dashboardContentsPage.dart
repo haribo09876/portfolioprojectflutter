@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../services/dashboard.dart';
 
 class DashboardContentsPage extends StatefulWidget {
@@ -8,51 +9,24 @@ class DashboardContentsPage extends StatefulWidget {
 }
 
 class _DashboardContentsPageState extends State<DashboardContentsPage> {
-  DateTimeRange? _selectedDateRange;
+  DateRangePickerController _datePickerController = DateRangePickerController();
   TextEditingController _startDateController = TextEditingController();
   TextEditingController _endDateController = TextEditingController();
 
-  Future<void> _selectDateRange(BuildContext context) async {
-    final DateTimeRange? picked = await showDateRangePicker(
-      context: context,
-      initialDateRange: _selectedDateRange,
-      firstDate: DateTime(2000),
-      lastDate: DateTime.now(),
-      builder: (BuildContext context, Widget? child) {
-        return Theme(
-          data: ThemeData.light().copyWith(
-            primaryColor: Colors.blueAccent,
-            colorScheme: ColorScheme.light(
-              primary: Colors.blueAccent,
-              secondary: Colors.blueAccent,
-              onSurface: Colors.black,
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.blueAccent,
-              ),
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
-    if (picked != null && picked != _selectedDateRange) {
+  void _onDateRangeChanged(DateRangePickerSelectionChangedArgs args) {
+    if (args.value is PickerDateRange) {
+      PickerDateRange range = args.value;
       setState(() {
-        _selectedDateRange = picked;
         _startDateController.text =
-            DateFormat('yyyy/MM/dd').format(_selectedDateRange!.start);
+            DateFormat('yyyy/MM/dd').format(range.startDate!);
         _endDateController.text =
-            DateFormat('yyyy/MM/dd').format(_selectedDateRange!.end);
+            DateFormat('yyyy/MM/dd').format(range.endDate ?? range.startDate!);
       });
     }
   }
 
   void _onSearch() {
-    if (_selectedDateRange != null) {
-      print(
-          '조회된 날짜 범위: ${_startDateController.text} ~ ${_endDateController.text}');
-    } else {
+    if (_startDateController.text.isEmpty || _endDateController.text.isEmpty) {
       _showAlertDialog(context, '\n날짜 범위를 설정하세요');
     }
   }
@@ -64,7 +38,50 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
         return AlertDialog(
           content: Text(
             message,
-            style: TextStyle(fontSize: 17),
+            style: TextStyle(fontSize: 15),
+          ),
+          actions: [
+            TextButton(
+              child: Text('확인'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showDateRangePicker() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: EdgeInsets.all(10),
+          content: Container(
+            width: 300,
+            height: 300,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(height: 20),
+                  SfDateRangePicker(
+                    controller: _datePickerController,
+                    onSelectionChanged: _onDateRangeChanged,
+                    selectionMode: DateRangePickerSelectionMode.range,
+                    initialSelectedRange: PickerDateRange(
+                      DateTime.now().subtract(Duration(days: 7)),
+                      DateTime.now(),
+                    ),
+                    startRangeSelectionColor: Colors.blueAccent,
+                    endRangeSelectionColor: Colors.blueAccent,
+                    rangeSelectionColor: Colors.blueAccent.withOpacity(0.2),
+                    backgroundColor: Colors.transparent,
+                  ),
+                ],
+              ),
+            ),
           ),
           actions: [
             TextButton(
@@ -89,38 +106,43 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                margin: EdgeInsets.only(bottom: 20),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: _startDateController,
-                        readOnly: true,
-                        decoration: InputDecoration(
-                          labelText: 'Start Date',
-                          border: OutlineInputBorder(),
+                  margin: EdgeInsets.only(bottom: 20),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          controller: _startDateController,
+                          readOnly: true,
+                          decoration: InputDecoration(
+                            labelText: 'Start Date',
+                            border: OutlineInputBorder(),
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 10),
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: TextFormField(
-                        controller: _endDateController,
-                        readOnly: true,
-                        decoration: InputDecoration(
-                          labelText: 'End Date',
-                          border: OutlineInputBorder(),
+                      SizedBox(width: 5),
+                      Text(' ~ ', style: TextStyle(fontSize: 18)),
+                      SizedBox(width: 5),
+                      Expanded(
+                        child: TextFormField(
+                          controller: _endDateController,
+                          readOnly: true,
+                          decoration: InputDecoration(
+                            labelText: 'End Date',
+                            border: OutlineInputBorder(),
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 10),
+                          ),
                         ),
                       ),
-                    ),
-                    IconButton(
-                      icon:
-                          Icon(Icons.calendar_month, color: Colors.blueAccent),
-                      onPressed: () => _selectDateRange(context),
-                    ),
-                  ],
-                ),
-              ),
+                      IconButton(
+                        icon: Icon(Icons.calendar_month,
+                            color: Colors.blueAccent),
+                        onPressed: _showDateRangePicker,
+                      ),
+                    ],
+                  )),
               Container(
                 width: double.infinity,
                 child: ElevatedButton(
