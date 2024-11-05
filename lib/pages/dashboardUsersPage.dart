@@ -612,7 +612,13 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
                           children: [
                             TableCell(
                               child: GestureDetector(
-                                onTap: () => _showUserDetails(context, user),
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    '/userPage',
+                                    arguments: user['userId'],
+                                  );
+                                },
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: CircleAvatar(
@@ -627,7 +633,13 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
                             ),
                             TableCell(
                               child: GestureDetector(
-                                onTap: () => _showUserDetails(context, user),
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    '/userPage',
+                                    arguments: user['userId'],
+                                  );
+                                },
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(

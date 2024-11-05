@@ -21,10 +21,8 @@ class _UserPageState extends State<UserPage> {
   @override
   void initState() {
     super.initState();
-    final previousUserId =
-        ModalRoute.of(context)?.settings.arguments as String?;
     final loginService = Provider.of<LoginService>(context, listen: false);
-    userId = previousUserId ?? loginService.userInfo?['id'] ?? '';
+    userId = loginService.userInfo?['id'] ?? '';
     _fetchData();
   }
 
