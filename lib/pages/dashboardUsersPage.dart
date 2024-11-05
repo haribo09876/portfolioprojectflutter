@@ -4,7 +4,7 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:geolocator/geolocator.dart' as geolocator_position;
 import '../services/dashboard.dart';
-import '../pages/userPage.dart';
+import '../routes.dart';
 
 class DashboardUsersPage extends StatelessWidget {
   @override
@@ -613,11 +613,8 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
                             TableCell(
                               child: GestureDetector(
                                 onTap: () {
-                                  Navigator.pushNamed(
-                                    context,
-                                    '/userPage',
-                                    arguments: user['userId'],
-                                  );
+                                  Navigator.pushNamed(context, AppRoutes.user,
+                                      arguments: {'userId': user['userId']});
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -634,11 +631,8 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
                             TableCell(
                               child: GestureDetector(
                                 onTap: () {
-                                  Navigator.pushNamed(
-                                    context,
-                                    '/userPage',
-                                    arguments: user['userId'],
-                                  );
+                                  Navigator.pushNamed(context, AppRoutes.user,
+                                      arguments: {'userId': user['userId']});
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),

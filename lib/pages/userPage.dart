@@ -21,8 +21,15 @@ class _UserPageState extends State<UserPage> {
   @override
   void initState() {
     super.initState();
-    final loginService = Provider.of<LoginService>(context, listen: false);
-    userId = loginService.userInfo?['id'] ?? '';
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final loginService = Provider.of<LoginService>(context);
+    final args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    userId = args?['userId'] ?? loginService.userInfo?['id'] ?? '';
     _fetchData();
   }
 
