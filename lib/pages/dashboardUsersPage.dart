@@ -4,6 +4,7 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:geolocator/geolocator.dart' as geolocator_position;
 import '../services/dashboard.dart';
+import '../pages/userPage.dart';
 
 class DashboardUsersPage extends StatelessWidget {
   @override
@@ -75,15 +76,6 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
   int maleCount = 0;
   int femaleCount = 0;
 
-  Map<String, int> ageGroupCounts = {
-    '20대 미만': 0,
-    '20대': 0,
-    '30대': 0,
-    '40대': 0,
-    '50대': 0,
-    '60세 이상': 0,
-  };
-
   @override
   void initState() {
     super.initState();
@@ -150,6 +142,15 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
       }
     }
   }
+
+  Map<String, int> ageGroupCounts = {
+    '20대 미만': 0,
+    '20대': 0,
+    '30대': 0,
+    '40대': 0,
+    '50대': 0,
+    '60세 이상': 0,
+  };
 
   void _countAgeGroups() {
     for (var user in users) {
@@ -310,17 +311,15 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
 }
 
 class _AgeData {
-  _AgeData(this.ageGroup, this.count);
-
   final String ageGroup;
   final int count;
+  _AgeData(this.ageGroup, this.count);
 }
 
 class _GenderData {
-  _GenderData(this.gender, this.count);
-
   final String gender;
   final int count;
+  _GenderData(this.gender, this.count);
 }
 
 class DashboardUsersLocation extends StatefulWidget {
@@ -521,6 +520,26 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
     });
   }
 
+  void _showUserDetails(BuildContext context, dynamic user) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('To User Page'),
+          content: Text('userId : ${user['userId']}'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -592,23 +611,30 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
                         TableRow(
                           children: [
                             TableCell(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: CircleAvatar(
-                                  radius: 17,
-                                  backgroundImage:
-                                      NetworkImage(user['userImgURL']),
-                                  onBackgroundImageError: (_, __) =>
-                                      Icon(Icons.person),
+                              child: GestureDetector(
+                                onTap: () => _showUserDetails(context, user),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: CircleAvatar(
+                                    radius: 17,
+                                    backgroundImage:
+                                        NetworkImage(user['userImgURL']),
+                                    onBackgroundImageError: (_, __) =>
+                                        Icon(Icons.person),
+                                  ),
                                 ),
                               ),
                             ),
                             TableCell(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  user['userName'],
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                              child: GestureDetector(
+                                onTap: () => _showUserDetails(context, user),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    user['userName'],
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
                                 ),
                               ),
                             ),
