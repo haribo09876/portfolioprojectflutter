@@ -30,4 +30,22 @@ class DashboardService {
       throw Exception('Failed to load locations');
     }
   }
+
+  Future<Map<String, dynamic>> sendDateRange(
+      DateTime startDate, DateTime endDate) async {
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        'action': 'fetchDataByDateRange',
+        'start_date': startDate.toIso8601String(),
+        'end_date': endDate.toIso8601String(),
+      }),
+    );
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Failed to fetch data by date range');
+    }
+  }
 }

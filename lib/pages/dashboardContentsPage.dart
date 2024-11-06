@@ -12,6 +12,7 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
   DateRangePickerController _datePickerController = DateRangePickerController();
   TextEditingController _startDateController = TextEditingController();
   TextEditingController _endDateController = TextEditingController();
+  String? imageUrl;
 
   void _onDateRangeChanged(DateRangePickerSelectionChangedArgs args) {
     if (args.value is PickerDateRange) {
@@ -28,6 +29,23 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
   void _onSearch() {
     if (_startDateController.text.isEmpty || _endDateController.text.isEmpty) {
       _showAlertDialog(context, '\n날짜 범위를 설정하세요');
+    } else {
+      _sendDateRange();
+    }
+  }
+
+  void _sendDateRange() async {
+    final startDate = DateFormat('yyyy/MM/dd').parse(_startDateController.text);
+    final endDate = DateFormat('yyyy/MM/dd').parse(_endDateController.text);
+
+    try {
+      final response =
+          await DashboardService().sendDateRange(startDate, endDate);
+      setState(() {
+        imageUrl = response['s3_url'];
+      });
+    } catch (e) {
+      _showAlertDialog(context, '데이터 로드 실패: $e');
     }
   }
 
