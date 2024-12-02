@@ -30,17 +30,17 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
     if (_startDateController.text.isEmpty || _endDateController.text.isEmpty) {
       _showAlertDialog(context, '\n날짜 범위를 설정하세요');
     } else {
-      _sendDateRange();
+      _contentsDateRange();
     }
   }
 
-  void _sendDateRange() async {
+  void _contentsDateRange() async {
     final startDate = DateFormat('yyyy/MM/dd').parse(_startDateController.text);
     final endDate = DateFormat('yyyy/MM/dd').parse(_endDateController.text);
 
     try {
       final response =
-          await DashboardService().sendDateRange(startDate, endDate);
+          await DashboardService().contentsDateRange(startDate, endDate);
       setState(() {
         imageUrl = response['s3_url'];
       });
