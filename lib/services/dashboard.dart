@@ -45,7 +45,7 @@ class DashboardService {
     if (response.statusCode == 200) {
       return json.decode(response.body)['contents'];
     } else {
-      throw Exception('Failed to fetch data by date range');
+      throw Exception('Failed to fetch contents by date range');
     }
   }
 
@@ -63,7 +63,7 @@ class DashboardService {
     if (response.statusCode == 200) {
       return json.decode(response.body)['sales'];
     } else {
-      throw Exception('Failed to fetch data by date range');
+      throw Exception('Failed to fetch sales by date range');
     }
   }
 }

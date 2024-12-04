@@ -185,26 +185,14 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 10),
                 child: Text(
-                  'Insta Image',
+                  'Tweet Text',
                   style: TextStyle(
                     fontSize: 25,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
               ),
-              DashboardContentsInstaImage(),
-              SizedBox(height: 20),
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 10),
-                child: Text(
-                  'Insta Text',
-                  style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ),
-              DashboardContentsInstaText(),
+              DashboardContentsTweetText(),
               SizedBox(height: 20),
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 10),
@@ -221,14 +209,26 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 10),
                 child: Text(
-                  'Tweet Text',
+                  'Insta Text',
                   style: TextStyle(
                     fontSize: 25,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
               ),
-              DashboardContentsTweetText(),
+              DashboardContentsInstaText(),
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 10),
+                child: Text(
+                  'Insta Image',
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+              DashboardContentsInstaImage(),
+              SizedBox(height: 20),
             ],
           ),
         ),
@@ -237,20 +237,11 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
   }
 }
 
-class DashboardContentsInstaImage extends StatelessWidget {
+class DashboardContentsTweetText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Text('Insta Image Component'),
-    );
-  }
-}
-
-class DashboardContentsInstaText extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Text('Insta Text Component'),
+      child: Text('Tweet Text Component'),
     );
   }
 }
@@ -264,11 +255,20 @@ class DashboardContentsTweetImage extends StatelessWidget {
   }
 }
 
-class DashboardContentsTweetText extends StatelessWidget {
+class DashboardContentsInstaText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Text('Tweet Text Component'),
+      child: Text('Insta Text Component'),
+    );
+  }
+}
+
+class DashboardContentsInstaImage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Text('Insta Image Component'),
     );
   }
 }
