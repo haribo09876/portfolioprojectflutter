@@ -12,7 +12,6 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
   DateRangePickerController _datePickerController = DateRangePickerController();
   TextEditingController _startDateController = TextEditingController();
   TextEditingController _endDateController = TextEditingController();
-  String? imageUrl;
 
   void _onDateRangeChanged(DateRangePickerSelectionChangedArgs args) {
     if (args.value is PickerDateRange) {
@@ -41,9 +40,11 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
     try {
       final response =
           await DashboardService().contentsDateRange(startDate, endDate);
-      setState(() {
-        imageUrl = response['s3_url'];
-      });
+      setState(() {});
+      print(response['tweets']);
+      print(response['tweetImgURLs']);
+      print(response['instas']);
+      print(response['instaImgURLs']);
     } catch (e) {
       _showAlertDialog(context, '데이터 로드 실패: $e');
     }
