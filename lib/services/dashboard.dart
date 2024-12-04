@@ -48,4 +48,22 @@ class DashboardService {
       throw Exception('Failed to fetch data by date range');
     }
   }
+
+  Future<Map<String, dynamic>> salesDateRange(
+      DateTime startDate, DateTime endDate) async {
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        'action': 'fetchSalesDateRange',
+        'start_date': startDate.toIso8601String(),
+        'end_date': endDate.toIso8601String(),
+      }),
+    );
+    if (response.statusCode == 200) {
+      return json.decode(response.body)['sales'];
+    } else {
+      throw Exception('Failed to fetch data by date range');
+    }
+  }
 }

@@ -28,6 +28,21 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
   void _onSearch() {
     if (_startDateController.text.isEmpty || _endDateController.text.isEmpty) {
       _showAlertDialog(context, '\n날짜 범위를 설정하세요');
+    } else {
+      _salesDateRange();
+    }
+  }
+
+  void _salesDateRange() async {
+    final startDate = DateFormat('yyyy/MM/dd').parse(_startDateController.text);
+    final endDate = DateFormat('yyyy/MM/dd').parse(_endDateController.text);
+
+    try {
+      final response =
+          await DashboardService().salesDateRange(startDate, endDate);
+      setState(() {});
+    } catch (e) {
+      _showAlertDialog(context, '데이터 로드 실패: $e');
     }
   }
 
