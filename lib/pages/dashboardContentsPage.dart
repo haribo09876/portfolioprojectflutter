@@ -241,7 +241,7 @@ class DashboardContentsTweetText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Text('Tweet Text Component'),
+      child: Text('tweetWordcloud'),
     );
   }
 }
@@ -250,7 +250,7 @@ class DashboardContentsTweetImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Text('Tweet Image Component'),
+      child: Text('tweetImageComponent'),
     );
   }
 }
@@ -259,7 +259,7 @@ class DashboardContentsInstaText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Text('Insta Text Component'),
+      child: Text('instaWordcloud'),
     );
   }
 }
@@ -268,7 +268,7 @@ class DashboardContentsInstaImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Text('Insta Image Component'),
+      child: Text('instaImageComponent'),
     );
   }
 }
