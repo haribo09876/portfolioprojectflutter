@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+import 'package:word_cloud/word_cloud_data.dart';
+import 'package:word_cloud/word_cloud_view.dart';
+import 'package:word_cloud/word_cloud_shape.dart';
 import '../services/dashboard.dart';
 
 class DashboardContentsPage extends StatefulWidget {
@@ -12,6 +15,19 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
   DateRangePickerController _datePickerController = DateRangePickerController();
   TextEditingController _startDateController = TextEditingController();
   TextEditingController _endDateController = TextEditingController();
+
+  List<String> tweets = [];
+  List<String> instas = [];
+
+  List<Map> _generateWordCloudData(List<String> dataList) {
+    Map<String, int> wordCount = {};
+    for (var word in dataList) {
+      wordCount[word] = (wordCount[word] ?? 0) + 1;
+    }
+    return wordCount.entries.map((entry) {
+      return {'word': entry.key, 'value': entry.value * 10};
+    }).toList();
+  }
 
   void _onDateRangeChanged(DateRangePickerSelectionChangedArgs args) {
     if (args.value is PickerDateRange) {
@@ -40,9 +56,16 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
     try {
       final response =
           await DashboardService().contentsDateRange(startDate, endDate);
-      setState(() {});
+      if (mounted) {
+        setState(() {
+          tweets = List<String>.from(response['tweets']);
+          instas = List<String>.from(response['instas']);
+        });
+      }
     } catch (e) {
-      _showAlertDialog(context, '데이터 로드 실패: $e');
+      if (mounted) {
+        _showAlertDialog(context, '데이터 로드 실패: $e');
+      }
     }
   }
 
@@ -113,6 +136,11 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
 
   @override
   Widget build(BuildContext context) {
+    List<Map> tweetsWordList =
+        tweets.isNotEmpty ? _generateWordCloudData(tweets) : [];
+    List<Map> instasWordList =
+        instas.isNotEmpty ? _generateWordCloudData(instas) : [];
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
@@ -121,46 +149,45 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                  margin: EdgeInsets.only(bottom: 20),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: _startDateController,
-                          readOnly: true,
-                          decoration: InputDecoration(
-                            labelText: 'Start Date',
-                            border: OutlineInputBorder(),
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 10),
-                          ),
+                margin: EdgeInsets.only(bottom: 20),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _startDateController,
+                        readOnly: true,
+                        decoration: InputDecoration(
+                          labelText: 'Start Date',
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10),
                         ),
                       ),
-                      SizedBox(width: 5),
-                      Text(' ~ ', style: TextStyle(fontSize: 18)),
-                      SizedBox(width: 5),
-                      Expanded(
-                        child: TextFormField(
-                          controller: _endDateController,
-                          readOnly: true,
-                          decoration: InputDecoration(
-                            labelText: 'End Date',
-                            border: OutlineInputBorder(),
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 10),
-                          ),
+                    ),
+                    SizedBox(width: 5),
+                    Text(' ~ ', style: TextStyle(fontSize: 18)),
+                    SizedBox(width: 5),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _endDateController,
+                        readOnly: true,
+                        decoration: InputDecoration(
+                          labelText: 'End Date',
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10),
                         ),
                       ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.calendar_today,
-                          color: Colors.blueAccent,
-                          size: 35,
-                        ),
-                        onPressed: _showDateRangePicker,
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.calendar_today,
+                        color: Colors.blueAccent,
+                        size: 35,
                       ),
-                    ],
-                  )),
+                      onPressed: _showDateRangePicker,
+                    ),
+                  ],
+                ),
+              ),
               Container(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -189,7 +216,7 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
                   ),
                 ),
               ),
-              DashboardContentsTweetText(),
+              DashboardContentsTweetText(tweetsWordList: tweetsWordList),
               SizedBox(height: 20),
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 10),
@@ -213,7 +240,8 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
                   ),
                 ),
               ),
-              DashboardContentsInstaText(),
+              DashboardContentsInstaText(instasWordList: instasWordList),
+              SizedBox(height: 20),
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 10),
                 child: Text(
@@ -235,10 +263,35 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
 }
 
 class DashboardContentsTweetText extends StatelessWidget {
+  final List<Map> tweetsWordList;
+
+  DashboardContentsTweetText({required this.tweetsWordList});
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text('tweetWordcloud'),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (tweetsWordList.isNotEmpty)
+          WordCloudView(
+            data: WordCloudData(data: tweetsWordList),
+            mapcolor: Colors.white,
+            mapwidth: 500,
+            mapheight: 500,
+            fontWeight: FontWeight.bold,
+            shape: WordCloudEllipse(majoraxis: 250, minoraxis: 200),
+            colorlist: [
+              Color.fromRGBO(29, 107, 255, 1),
+              Color.fromRGBO(0, 221, 145, 1),
+              Color.fromRGBO(255, 63, 62, 1),
+              Color.fromRGBO(255, 198, 52, 1),
+              Color.fromRGBO(206, 105, 18, 1),
+              Color.fromRGBO(110, 84, 194, 1),
+              Color.fromRGBO(14, 107, 70, 1),
+              Color.fromRGBO(255, 125, 169, 1),
+            ],
+          ),
+      ],
     );
   }
 }
@@ -253,10 +306,35 @@ class DashboardContentsTweetImage extends StatelessWidget {
 }
 
 class DashboardContentsInstaText extends StatelessWidget {
+  final List<Map> instasWordList;
+
+  DashboardContentsInstaText({required this.instasWordList});
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text('instaWordcloud'),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (instasWordList.isNotEmpty)
+          WordCloudView(
+            data: WordCloudData(data: instasWordList),
+            mapcolor: Colors.white,
+            mapwidth: 500,
+            mapheight: 500,
+            fontWeight: FontWeight.bold,
+            shape: WordCloudEllipse(majoraxis: 250, minoraxis: 200),
+            colorlist: [
+              Color.fromRGBO(29, 107, 255, 1),
+              Color.fromRGBO(0, 221, 145, 1),
+              Color.fromRGBO(255, 63, 62, 1),
+              Color.fromRGBO(255, 198, 52, 1),
+              Color.fromRGBO(206, 105, 18, 1),
+              Color.fromRGBO(110, 84, 194, 1),
+              Color.fromRGBO(14, 107, 70, 1),
+              Color.fromRGBO(255, 125, 169, 1),
+            ],
+          ),
+      ],
     );
   }
 }
