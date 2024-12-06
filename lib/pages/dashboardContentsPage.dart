@@ -25,7 +25,7 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
       wordCount[word] = (wordCount[word] ?? 0) + 1;
     }
     return wordCount.entries.map((entry) {
-      return {'word': entry.key, 'value': entry.value * 10};
+      return {'word': entry.key, 'value': entry.value + 10};
     }).toList();
   }
 
@@ -276,8 +276,8 @@ class DashboardContentsTweetText extends StatelessWidget {
           WordCloudView(
             data: WordCloudData(data: tweetsWordList),
             mapcolor: Colors.white,
-            mapwidth: 500,
-            mapheight: 500,
+            mapwidth: 350,
+            mapheight: 350,
             fontWeight: FontWeight.bold,
             shape: WordCloudEllipse(majoraxis: 250, minoraxis: 200),
             colorlist: [
@@ -319,8 +319,8 @@ class DashboardContentsInstaText extends StatelessWidget {
           WordCloudView(
             data: WordCloudData(data: instasWordList),
             mapcolor: Colors.white,
-            mapwidth: 500,
-            mapheight: 500,
+            mapwidth: 350,
+            mapheight: 350,
             fontWeight: FontWeight.bold,
             shape: WordCloudEllipse(majoraxis: 250, minoraxis: 200),
             colorlist: [
