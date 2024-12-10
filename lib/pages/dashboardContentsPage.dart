@@ -4,6 +4,10 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:word_cloud/word_cloud_data.dart';
 import 'package:word_cloud/word_cloud_view.dart';
 import 'package:word_cloud/word_cloud_shape.dart';
+import 'package:flutter/widgets.dart';
+import 'package:http/http.dart' as http;
+import 'dart:typed_data';
+import 'package:image/image.dart' as img;
 import '../services/dashboard.dart';
 
 class DashboardContentsPage extends StatefulWidget {
@@ -18,6 +22,9 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
 
   List<String> tweets = [];
   List<String> instas = [];
+  List<String> tweetImageURLs = [];
+  List<String> instaImageURLs = [];
+  List<Widget> overlayImages = [];
 
   List<Map> _generateWordCloudData(List<String> dataList) {
     Map<String, int> wordCount = {};
@@ -60,12 +67,44 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
         setState(() {
           tweets = List<String>.from(response['tweets']);
           instas = List<String>.from(response['instas']);
+          tweetImageURLs = List<String>.from(response['tweetImageURLs']);
+          instaImageURLs = List<String>.from(response['instaImageURLs']);
         });
+        _loadOverlayImages();
       }
     } catch (e) {
       if (mounted) {
         _showAlertDialog(context, '데이터 로드 실패: $e');
       }
+    }
+  }
+
+  Future<void> _loadOverlayImages() async {
+    List<Widget> images = [];
+
+    for (var url in tweetImageURLs) {
+      images.add(await _loadImage(url));
+    }
+    for (var url in instaImageURLs) {
+      images.add(await _loadImage(url));
+    }
+    setState(() {
+      overlayImages = images;
+    });
+  }
+
+  Future<Widget> _loadImage(String url) async {
+    final response = await http.get(Uri.parse(url));
+    final bytes = response.bodyBytes;
+    final image = img.decodeImage(Uint8List.fromList(bytes));
+
+    if (image != null) {
+      return Opacity(
+        opacity: 0.3,
+        child: Image.memory(Uint8List.fromList(img.encodeJpg(image))),
+      );
+    } else {
+      return SizedBox();
     }
   }
 
@@ -228,7 +267,7 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
                   ),
                 ),
               ),
-              DashboardContentsTweetImage(),
+              DashboardContentsTweetImage(overlayImages: overlayImages),
               SizedBox(height: 20),
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 10),
@@ -252,7 +291,7 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
                   ),
                 ),
               ),
-              DashboardContentsInstaImage(),
+              DashboardContentsInstaImage(overlayImages: overlayImages),
               SizedBox(height: 20),
             ],
           ),
@@ -297,11 +336,17 @@ class DashboardContentsTweetText extends StatelessWidget {
 }
 
 class DashboardContentsTweetImage extends StatelessWidget {
+  final List<Widget> overlayImages;
+
+  DashboardContentsTweetImage({required this.overlayImages});
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text('tweetImageComponent'),
-    );
+    return overlayImages.isEmpty
+        ? Center(child: CircularProgressIndicator())
+        : Stack(
+            children: overlayImages,
+          );
   }
 }
 
@@ -340,10 +385,16 @@ class DashboardContentsInstaText extends StatelessWidget {
 }
 
 class DashboardContentsInstaImage extends StatelessWidget {
+  final List<Widget> overlayImages;
+
+  DashboardContentsInstaImage({required this.overlayImages});
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text('instaImageComponent'),
-    );
+    return overlayImages.isEmpty
+        ? Center(child: CircularProgressIndicator())
+        : Stack(
+            children: overlayImages,
+          );
   }
 }
