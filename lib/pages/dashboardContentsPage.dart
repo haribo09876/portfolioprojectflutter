@@ -24,7 +24,8 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
   List<String> instas = [];
   List<String> tweetImageURLs = [];
   List<String> instaImageURLs = [];
-  List<Widget> overlayImages = [];
+  List<Widget> tweetOverlayImages = [];
+  List<Widget> instaOverlayImages = [];
 
   List<Map> _generateWordCloudData(List<String> dataList) {
     Map<String, int> wordCount = {};
@@ -80,16 +81,17 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
   }
 
   Future<void> _loadOverlayImages() async {
-    List<Widget> images = [];
-
+    List<Widget> tweetImages = [];
     for (var url in tweetImageURLs) {
-      images.add(await _loadImage(url));
+      tweetImages.add(await _loadImage(url));
     }
+    List<Widget> instaImages = [];
     for (var url in instaImageURLs) {
-      images.add(await _loadImage(url));
+      instaImages.add(await _loadImage(url));
     }
     setState(() {
-      overlayImages = images;
+      tweetOverlayImages = tweetImages;
+      instaOverlayImages = instaImages;
     });
   }
 
@@ -267,7 +269,7 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
                   ),
                 ),
               ),
-              DashboardContentsTweetImage(overlayImages: overlayImages),
+              DashboardContentsTweetImage(overlayImages: tweetOverlayImages),
               SizedBox(height: 20),
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 10),
@@ -291,7 +293,7 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
                   ),
                 ),
               ),
-              DashboardContentsInstaImage(overlayImages: overlayImages),
+              DashboardContentsInstaImage(overlayImages: instaOverlayImages),
               SizedBox(height: 20),
             ],
           ),
