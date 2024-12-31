@@ -61,9 +61,9 @@ class DashboardService {
       }),
     );
     if (response.statusCode == 200) {
-      return json.decode(response.body)['sales'];
+      return json.decode(response.body);
     } else {
-      throw Exception('Failed to fetch sales by date range');
+      throw Exception('Failed to start processing job');
     }
   }
 }
