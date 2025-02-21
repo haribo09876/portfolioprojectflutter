@@ -13,6 +13,10 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
   TextEditingController _startDateController = TextEditingController();
   TextEditingController _endDateController = TextEditingController();
 
+  String? _analysisImageUrl;
+  String? _predictionImageUrl;
+  bool _isLoading = false;
+
   void _onDateRangeChanged(DateRangePickerSelectionChangedArgs args) {
     if (args.value is PickerDateRange) {
       PickerDateRange range = args.value;
@@ -37,11 +41,23 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
     final startDate = DateFormat('yyyy/MM/dd').parse(_startDateController.text);
     final endDate = DateFormat('yyyy/MM/dd').parse(_endDateController.text);
 
+    setState(() {
+      _isLoading = true;
+    });
+
     try {
       final response =
           await DashboardService().salesDateRange(startDate, endDate);
-      setState(() {});
+
+      setState(() {
+        _analysisImageUrl = response['analysisImageURL'];
+        _predictionImageUrl = response['predictionImageURL'];
+        _isLoading = false;
+      });
     } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
       _showAlertDialog(context, '데이터 로드 실패: $e');
     }
   }
@@ -121,46 +137,45 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                  margin: EdgeInsets.only(bottom: 20),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: _startDateController,
-                          readOnly: true,
-                          decoration: InputDecoration(
-                            labelText: 'Start Date',
-                            border: OutlineInputBorder(),
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 10),
-                          ),
+                margin: EdgeInsets.only(bottom: 20),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _startDateController,
+                        readOnly: true,
+                        decoration: InputDecoration(
+                          labelText: 'Start Date',
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10),
                         ),
                       ),
-                      SizedBox(width: 5),
-                      Text(' ~ ', style: TextStyle(fontSize: 18)),
-                      SizedBox(width: 5),
-                      Expanded(
-                        child: TextFormField(
-                          controller: _endDateController,
-                          readOnly: true,
-                          decoration: InputDecoration(
-                            labelText: 'End Date',
-                            border: OutlineInputBorder(),
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 10),
-                          ),
+                    ),
+                    SizedBox(width: 5),
+                    Text(' ~ ', style: TextStyle(fontSize: 18)),
+                    SizedBox(width: 5),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _endDateController,
+                        readOnly: true,
+                        decoration: InputDecoration(
+                          labelText: 'End Date',
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10),
                         ),
                       ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.calendar_today,
-                          color: Colors.blueAccent,
-                          size: 35,
-                        ),
-                        onPressed: _showDateRangePicker,
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.calendar_today,
+                        color: Colors.blueAccent,
+                        size: 35,
                       ),
-                    ],
-                  )),
+                      onPressed: _showDateRangePicker,
+                    ),
+                  ],
+                ),
+              ),
               Container(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -189,7 +204,8 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
                   ),
                 ),
               ),
-              DashboardSalesAnalysis(),
+              DashboardSalesAnalysis(
+                  imageUrl: _analysisImageUrl, isLoading: _isLoading),
               SizedBox(height: 20),
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 10),
@@ -201,7 +217,8 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
                   ),
                 ),
               ),
-              DashboardSalesPrediction(),
+              DashboardSalesPrediction(
+                  imageUrl: _predictionImageUrl, isLoading: _isLoading),
             ],
           ),
         ),
@@ -211,19 +228,33 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
 }
 
 class DashboardSalesAnalysis extends StatelessWidget {
+  final String? imageUrl;
+  final bool isLoading;
+
+  DashboardSalesAnalysis({required this.imageUrl, required this.isLoading});
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text('Analysis Component'),
-    );
+    return isLoading
+        ? Center(child: CircularProgressIndicator())
+        : imageUrl != null
+            ? Image.network(imageUrl!)
+            : Text('분석 이미지 없음');
   }
 }
 
 class DashboardSalesPrediction extends StatelessWidget {
+  final String? imageUrl;
+  final bool isLoading;
+
+  DashboardSalesPrediction({required this.imageUrl, required this.isLoading});
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text('Prediction Component'),
-    );
+    return isLoading
+        ? Center(child: CircularProgressIndicator())
+        : imageUrl != null
+            ? Image.network(imageUrl!)
+            : Text('예측 이미지 없음');
   }
 }

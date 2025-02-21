@@ -61,7 +61,7 @@ class DashboardService {
       }),
     );
     if (response.statusCode == 200) {
-      return json.decode(response.body);
+      return json.decode(response.body)['sales'];
     } else {
       throw Exception('Failed to start processing job');
     }
