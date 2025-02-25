@@ -10,7 +10,7 @@ class IntroPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: 60),
+            SizedBox(height: 50),
             Text(
               'Welcome to PPFA',
               style: TextStyle(

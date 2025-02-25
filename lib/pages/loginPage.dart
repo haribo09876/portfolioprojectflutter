@@ -53,26 +53,27 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              SizedBox(height: 50),
               Text(
                 'PPFA',
                 style: TextStyle(
                   fontSize: 40,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                   color: Color(0xff333333),
                 ),
               ),
               SizedBox(height: 40),
               _buildTextField(
                 controller: _emailController,
-                hintText: '이메일',
+                hintText: ' Email',
               ),
               _buildTextField(
                 controller: _passwordController,
-                hintText: '비밀번호',
+                hintText: ' Password',
                 obscureText: true,
               ),
+              SizedBox(height: 100),
               if (_errorMessage != null) ...[
-                SizedBox(height: 20),
                 Text(
                   _errorMessage!,
                   style: TextStyle(color: Colors.red),
@@ -81,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(height: 20),
               _isLoading
                   ? CircularProgressIndicator()
-                  : _buildButton('로그인', _handleLogin),
+                  : _buildButton('Log in', _handleLogin),
               _buildButton('회원가입', () {
                 Navigator.pushNamed(context, AppRoutes.signup);
               }, color: Color(0xff2ecc71)),
@@ -106,11 +107,20 @@ class _LoginPageState extends State<LoginPage> {
           obscureText: obscureText,
           decoration: InputDecoration(
             hintText: hintText,
+            hintStyle: TextStyle(color: Color.fromARGB(176, 176, 176, 176)),
             filled: true,
-            fillColor: Colors.white,
+            fillColor: Color.fromARGB(240, 240, 240, 240),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(50),
-              borderSide: BorderSide(color: Colors.grey),
+              borderSide: BorderSide.none,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(50),
+              borderSide: BorderSide.none,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(50),
+              borderSide: BorderSide.none,
             ),
           ),
         ),
@@ -136,8 +146,8 @@ class _LoginPageState extends State<LoginPage> {
           child: Text(
             text,
             style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+              fontSize: 15,
+              fontWeight: FontWeight.w400,
               color: Colors.white,
             ),
           ),
