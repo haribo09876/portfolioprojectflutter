@@ -5,31 +5,31 @@ class IntroPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xfff5f5f5),
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(height: 60),
             Text(
-              'Welcome to PPF',
+              'Welcome to PPFA',
               style: TextStyle(
-                fontSize: 42,
+                fontSize: 40,
                 fontWeight: FontWeight.w600,
                 color: Color(0xff333333),
               ),
               textAlign: TextAlign.center,
             ),
             Text(
-              'portfolio project with flutter',
+              'Portfolio Project with Flutter and AWS',
               style: TextStyle(
-                fontSize: 17,
+                fontSize: 15,
                 fontWeight: FontWeight.w400,
                 color: Color(0xff333333),
               ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 300),
+            SizedBox(height: 250),
             SizedBox(
               width: 340,
               child: ElevatedButton(
@@ -46,7 +46,7 @@ class IntroPage extends StatelessWidget {
                 child: Text(
                   'Get started',
                   style: TextStyle(
-                    fontSize: 17,
+                    fontSize: 15,
                     fontWeight: FontWeight.w400,
                     color: Colors.white,
                   ),
