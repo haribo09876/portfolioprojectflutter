@@ -25,8 +25,8 @@ class _SignupPageState extends State<SignupPage> {
   File? _image;
 
   final Map<String, String> _genderOptions = {
-    'Male': '남성',
-    'Female': '여성',
+    'Male': 'Male',
+    'Female': 'Female',
   };
 
   Future<void> _pickImage() async {
@@ -55,7 +55,7 @@ class _SignupPageState extends State<SignupPage> {
         setState(() {
           _isSubmitting = false;
         });
-        _showErrorDialog('이메일 또는 닉네임이 비어 있습니다.');
+        _showErrorDialog('Email or username cannot be empty.');
         return;
       }
 
@@ -66,7 +66,7 @@ class _SignupPageState extends State<SignupPage> {
         setState(() {
           _isSubmitting = false;
         });
-        _showErrorDialog('서버 응답이 없습니다.');
+        _showErrorDialog('No response from server.');
         return;
       }
 
@@ -75,7 +75,7 @@ class _SignupPageState extends State<SignupPage> {
         setState(() {
           _isSubmitting = false;
         });
-        _showErrorDialog('사용자 이메일 또는 이름이 중복됩니다.');
+        _showErrorDialog('Email or username already exists.');
         return;
       }
 
@@ -104,7 +104,8 @@ class _SignupPageState extends State<SignupPage> {
       if (createUserResponse['status'] == 'success') {
         _showSuccessDialog();
       } else {
-        final errorMessage = createUserResponse['message'] ?? '회원가입 오류 발생';
+        final errorMessage =
+            createUserResponse['message'] ?? 'Sign up error occurred.';
         _showErrorDialog(errorMessage);
       }
     }
@@ -115,14 +116,14 @@ class _SignupPageState extends State<SignupPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('오류'),
+          title: Text('Error'),
           content: Text(message),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('확인'),
+              child: Text('Confirm'),
             ),
           ],
         );
@@ -135,14 +136,14 @@ class _SignupPageState extends State<SignupPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: Text('회원가입이 완료되었습니다.'),
+          content: Text('Sign up completed successfully.'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
-              child: Text('확인'),
+              child: Text('Confirm'),
             ),
           ],
         );
@@ -153,7 +154,7 @@ class _SignupPageState extends State<SignupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('회원가입')),
+      appBar: AppBar(title: Text('Sign up')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -179,10 +180,10 @@ class _SignupPageState extends State<SignupPage> {
                   child: Column(
                     children: <Widget>[
                       TextFormField(
-                        decoration: InputDecoration(labelText: '닉네임'),
+                        decoration: InputDecoration(labelText: 'Username'),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return '닉네임을 입력하세요';
+                            return 'Please enter your username.';
                           }
                           return null;
                         },
@@ -190,12 +191,12 @@ class _SignupPageState extends State<SignupPage> {
                           userName = value;
                         },
                       ),
-                      SizedBox(height: 16),
+                      SizedBox(height: 15),
                       TextFormField(
-                        decoration: InputDecoration(labelText: '이메일'),
+                        decoration: InputDecoration(labelText: 'Email'),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return '이메일을 입력하세요';
+                            return 'Please enter your email.';
                           }
                           return null;
                         },
@@ -203,13 +204,13 @@ class _SignupPageState extends State<SignupPage> {
                           userEmail = value;
                         },
                       ),
-                      SizedBox(height: 16),
+                      SizedBox(height: 15),
                       TextFormField(
-                        decoration: InputDecoration(labelText: '비밀번호'),
+                        decoration: InputDecoration(labelText: 'Password'),
                         obscureText: true,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return '비밀번호를 입력하세요';
+                            return 'Please enter your password.';
                           }
                           return null;
                         },
@@ -217,9 +218,9 @@ class _SignupPageState extends State<SignupPage> {
                           userPassword = value;
                         },
                       ),
-                      SizedBox(height: 16),
+                      SizedBox(height: 15),
                       DropdownButtonFormField<String>(
-                        decoration: InputDecoration(labelText: '성별'),
+                        decoration: InputDecoration(labelText: 'Gender'),
                         value: userGender,
                         onChanged: (value) {
                           setState(() {
@@ -233,17 +234,17 @@ class _SignupPageState extends State<SignupPage> {
                                 ))
                             .toList(),
                       ),
-                      SizedBox(height: 16),
+                      SizedBox(height: 15),
                       TextFormField(
-                        decoration: InputDecoration(labelText: '나이'),
+                        decoration: InputDecoration(labelText: 'Age'),
                         keyboardType: TextInputType.number,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return '나이를 입력하세요';
+                            return 'Please enter your age';
                           }
                           final n = num.tryParse(value);
                           if (n == null || n <= 0) {
-                            return '올바른 나이를 입력하세요';
+                            return 'Please enter proper age';
                           }
                           return null;
                         },
@@ -253,13 +254,26 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                       SizedBox(height: 20),
                       SizedBox(
-                        width: double.infinity,
-                        child: _isSubmitting
-                            ? Center(child: CircularProgressIndicator())
-                            : ElevatedButton(
-                                onPressed: _signup,
-                                child: Text('회원가입'),
-                              ),
+                        width: 340,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xff3498db),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 30, vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                          ),
+                          onPressed: _signup,
+                          child: Text(
+                            'Sign up',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
                       ),
                       SizedBox(height: 20),
                     ],

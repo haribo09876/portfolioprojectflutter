@@ -12,7 +12,7 @@ class IntroPage extends StatelessWidget {
           children: [
             SizedBox(height: 50),
             Text(
-              'Welcome to PPFA',
+              'Welcome to PPF',
               style: TextStyle(
                 fontSize: 40,
                 fontWeight: FontWeight.w600,

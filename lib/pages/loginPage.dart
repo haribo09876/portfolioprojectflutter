@@ -55,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               SizedBox(height: 50),
               Text(
-                'PPFA',
+                'PPF',
                 style: TextStyle(
                   fontSize: 40,
                   fontWeight: FontWeight.w600,
@@ -83,9 +83,39 @@ class _LoginPageState extends State<LoginPage> {
               _isLoading
                   ? CircularProgressIndicator()
                   : _buildButton('Log in', _handleLogin),
-              _buildButton('회원가입', () {
-                Navigator.pushNamed(context, AppRoutes.signup);
-              }, color: Color(0xff2ecc71)),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'New to PPF?',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Color.fromARGB(176, 176, 176, 176),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, AppRoutes.signup);
+                    },
+                    child: Text(
+                      ' Sign up ',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xff333333),
+                      ),
+                    ),
+                  ),
+                  Text(
+                    'now',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Color.fromARGB(176, 176, 176, 176),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
