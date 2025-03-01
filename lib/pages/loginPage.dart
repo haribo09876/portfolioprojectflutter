@@ -88,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'New to PPF?',
+                    'new to PPF?',
                     style: TextStyle(
                       fontSize: 15,
                       color: Color.fromARGB(176, 176, 176, 176),

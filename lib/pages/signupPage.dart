@@ -12,15 +12,14 @@ class SignupPage extends StatefulWidget {
 class _SignupPageState extends State<SignupPage> {
   final _formKey = GlobalKey<FormState>();
   final SignupService _signupService = SignupService();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
 
-  String userEmail = '';
-  String userPassword = '';
-  String userName = '';
   String userGender = 'Male';
-  int userAge = 0;
   int userMoney = 1000000;
   int userSpend = 0;
-
   bool _isSubmitting = false;
   File? _image;
 
@@ -28,6 +27,11 @@ class _SignupPageState extends State<SignupPage> {
     'Male': 'Male',
     'Female': 'Female',
   };
+
+  final RegExp emailRegex =
+      RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+  final RegExp nameRegex = RegExp(r"^[a-zA-Z가-힣0-9]{2,20}$");
+  final RegExp ageRegex = RegExp(r'^[1-9][0-9]?$|^120$');
 
   Future<void> _pickImage() async {
     final ImagePicker _picker = ImagePicker();
@@ -45,17 +49,79 @@ class _SignupPageState extends State<SignupPage> {
     return base64Encode(bytes);
   }
 
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Sign up error'),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Confirm'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showSuccessDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Sign up success'),
+          content: Text('Sign up completed successfully.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              },
+              child: Text('Confirm'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _signup() async {
     if (_formKey.currentState?.validate() ?? false) {
       setState(() {
         _isSubmitting = true;
       });
 
-      if (userEmail.isEmpty || userName.isEmpty) {
+      String userEmail = _emailController.text.trim();
+      String userPassword = _passwordController.text;
+      String userName = _nameController.text.trim();
+      int userAge = int.tryParse(_ageController.text) ?? 0;
+
+      if (!emailRegex.hasMatch(userEmail)) {
+        _showErrorDialog('Invalid email format.');
         setState(() {
           _isSubmitting = false;
         });
-        _showErrorDialog('Email or username cannot be empty.');
+        return;
+      }
+
+      if (!nameRegex.hasMatch(userName)) {
+        _showErrorDialog('Invalid username. Must be 2-20 characters.');
+        setState(() {
+          _isSubmitting = false;
+        });
+        return;
+      }
+
+      if (!ageRegex.hasMatch(userAge.toString())) {
+        _showErrorDialog('Invalid age. Must be between 1 and 120.');
+        setState(() {
+          _isSubmitting = false;
+        });
         return;
       }
 
@@ -63,19 +129,18 @@ class _SignupPageState extends State<SignupPage> {
           await _signupService.checkUser(userEmail, userName);
 
       if (checkUserResponse == null) {
+        _showErrorDialog('No response from server.');
         setState(() {
           _isSubmitting = false;
         });
-        _showErrorDialog('No response from server.');
         return;
       }
 
-      final status = checkUserResponse['status'];
-      if (status == 'exists') {
+      if (checkUserResponse['status'] == 'exists') {
+        _showErrorDialog('Email or username already exists.');
         setState(() {
           _isSubmitting = false;
         });
-        _showErrorDialog('Email or username already exists.');
         return;
       }
 
@@ -104,50 +169,69 @@ class _SignupPageState extends State<SignupPage> {
       if (createUserResponse['status'] == 'success') {
         _showSuccessDialog();
       } else {
-        final errorMessage =
-            createUserResponse['message'] ?? 'Sign up error occurred.';
-        _showErrorDialog(errorMessage);
+        _showErrorDialog(
+            createUserResponse['message'] ?? 'Sign up error occurred.');
       }
     }
   }
 
-  void _showErrorDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Error'),
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Confirm'),
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String hintText,
+    bool obscureText = false,
+    required String? Function(String?) validator,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Container(
+        width: 340,
+        child: TextFormField(
+          controller: controller,
+          obscureText: obscureText,
+          validator: validator,
+          decoration: InputDecoration(
+            hintText: hintText,
+            hintStyle: TextStyle(color: Color.fromARGB(176, 176, 176, 176)),
+            filled: true,
+            fillColor: Color.fromARGB(240, 240, 240, 240),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(50),
+              borderSide: BorderSide.none,
             ),
-          ],
-        );
-      },
+          ),
+        ),
+      ),
     );
   }
 
-  void _showSuccessDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: Text('Sign up completed successfully.'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
-              },
-              child: Text('Confirm'),
-            ),
-          ],
-        );
-      },
+  Widget _buildDropdownField({
+    required String value,
+    required void Function(String?) onChanged,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Container(
+        width: 340,
+        decoration: BoxDecoration(
+          color: Color.fromARGB(240, 240, 240, 240),
+          borderRadius: BorderRadius.circular(50),
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        child: DropdownButtonFormField<String>(
+          value: value,
+          onChanged: onChanged,
+          style: TextStyle(color: Color.fromARGB(176, 176, 176, 176)),
+          decoration: InputDecoration(
+            border: InputBorder.none,
+          ),
+          items: _genderOptions.entries.map((entry) {
+            return DropdownMenuItem<String>(
+              value: entry.key,
+              child: Text(entry.value),
+            );
+          }).toList(),
+        ),
+      ),
     );
   }
 
@@ -164,10 +248,11 @@ class _SignupPageState extends State<SignupPage> {
                 onTap: _pickImage,
                 child: CircleAvatar(
                   radius: 50,
-                  backgroundColor: Colors.grey[300],
+                  backgroundColor: Color.fromARGB(240, 240, 240, 240),
                   backgroundImage: _image != null ? FileImage(_image!) : null,
                   child: _image == null
-                      ? Icon(Icons.person, size: 50, color: Colors.grey[600])
+                      ? Icon(Icons.person,
+                          size: 50, color: Color.fromARGB(176, 176, 176, 176))
                       : null,
                 ),
               ),
@@ -179,98 +264,66 @@ class _SignupPageState extends State<SignupPage> {
                   key: _formKey,
                   child: Column(
                     children: <Widget>[
-                      TextFormField(
-                        decoration: InputDecoration(labelText: 'Username'),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your username.';
-                          }
-                          return null;
-                        },
-                        onChanged: (value) {
-                          userName = value;
-                        },
+                      _buildTextField(
+                        controller: _nameController,
+                        hintText: ' Username',
+                        validator: (value) =>
+                            value != null && nameRegex.hasMatch(value)
+                                ? null
+                                : 'Invalid username',
                       ),
-                      SizedBox(height: 15),
-                      TextFormField(
-                        decoration: InputDecoration(labelText: 'Email'),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your email.';
-                          }
-                          return null;
-                        },
-                        onChanged: (value) {
-                          userEmail = value;
-                        },
+                      _buildTextField(
+                        controller: _emailController,
+                        hintText: ' Email',
+                        validator: (value) =>
+                            value != null && emailRegex.hasMatch(value)
+                                ? null
+                                : 'Invalid email',
                       ),
-                      SizedBox(height: 15),
-                      TextFormField(
-                        decoration: InputDecoration(labelText: 'Password'),
+                      _buildTextField(
+                        controller: _passwordController,
+                        hintText: ' Password',
                         obscureText: true,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your password.';
-                          }
-                          return null;
-                        },
-                        onChanged: (value) {
-                          userPassword = value;
-                        },
+                        validator: (value) => value != null && value.length >= 6
+                            ? null
+                            : 'Password must be at least 6 characters',
                       ),
-                      SizedBox(height: 15),
-                      DropdownButtonFormField<String>(
-                        decoration: InputDecoration(labelText: 'Gender'),
+                      _buildTextField(
+                        controller: _ageController,
+                        hintText: ' Age',
+                        validator: (value) =>
+                            value != null && ageRegex.hasMatch(value)
+                                ? null
+                                : 'Invalid age',
+                      ),
+                      _buildDropdownField(
                         value: userGender,
                         onChanged: (value) {
                           setState(() {
                             userGender = value!;
                           });
                         },
-                        items: _genderOptions.entries
-                            .map((entry) => DropdownMenuItem(
-                                  child: Text(entry.value),
-                                  value: entry.key,
-                                ))
-                            .toList(),
-                      ),
-                      SizedBox(height: 15),
-                      TextFormField(
-                        decoration: InputDecoration(labelText: 'Age'),
-                        keyboardType: TextInputType.number,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your age';
-                          }
-                          final n = num.tryParse(value);
-                          if (n == null || n <= 0) {
-                            return 'Please enter proper age';
-                          }
-                          return null;
-                        },
-                        onChanged: (value) {
-                          userAge = int.parse(value);
-                        },
                       ),
                       SizedBox(height: 20),
                       SizedBox(
                         width: 340,
                         child: ElevatedButton(
+                          onPressed: _isSubmitting ? null : _signup,
+                          child: _isSubmitting
+                              ? CircularProgressIndicator(color: Colors.white)
+                              : Text(
+                                  'Sign up',
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.white),
+                                ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xff3498db),
                             padding: EdgeInsets.symmetric(
                                 horizontal: 30, vertical: 15),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(25),
-                            ),
-                          ),
-                          onPressed: _signup,
-                          child: Text(
-                            'Sign up',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.white,
                             ),
                           ),
                         ),
