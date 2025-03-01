@@ -91,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                     'new to PPF?',
                     style: TextStyle(
                       fontSize: 15,
-                      color: Color.fromARGB(176, 176, 176, 176),
+                      color: Color.fromRGBO(89, 89, 89, 89),
                     ),
                   ),
                   GestureDetector(
@@ -111,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
                     'now',
                     style: TextStyle(
                       fontSize: 15,
-                      color: Color.fromARGB(176, 176, 176, 176),
+                      color: Color.fromRGBO(89, 89, 89, 89),
                     ),
                   ),
                 ],
@@ -137,9 +137,9 @@ class _LoginPageState extends State<LoginPage> {
           obscureText: obscureText,
           decoration: InputDecoration(
             hintText: hintText,
-            hintStyle: TextStyle(color: Color.fromARGB(176, 176, 176, 176)),
+            hintStyle: TextStyle(color: Color.fromRGBO(89, 89, 89, 89)),
             filled: true,
-            fillColor: Color.fromARGB(240, 240, 240, 240),
+            fillColor: Color.fromARGB(242, 242, 242, 242),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(50),
               borderSide: BorderSide.none,

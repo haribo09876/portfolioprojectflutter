@@ -25,13 +25,37 @@ class MainPage extends StatelessWidget {
             child: Text('                   PPF'),
           ),
           automaticallyImplyLeading: false,
-          bottom: TabBar(
-            tabs: [
-              Tab(text: 'Home'),
-              Tab(text: 'Tweet'),
-              Tab(text: 'Insta'),
-              Tab(text: 'Shop'),
-            ],
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(48),
+            child: Center(
+              child: SizedBox(
+                width: 340,
+                height: 40,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(242, 242, 242, 242),
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  clipBehavior: Clip.hardEdge,
+                  child: TabBar(
+                    labelColor: Colors.white,
+                    unselectedLabelColor: Color.fromRGBO(52, 52, 52, 52),
+                    indicator: BoxDecoration(
+                      color: Color(0xff333333),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    labelPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                    tabs: [
+                      Tab(text: 'Home'),
+                      Tab(text: 'Tweet'),
+                      Tab(text: 'Insta'),
+                      Tab(text: 'Shop'),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
           actions: [
             if (userId == adminId)

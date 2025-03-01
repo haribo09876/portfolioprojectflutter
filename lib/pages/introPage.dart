@@ -25,7 +25,7 @@ class IntroPage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w400,
-                color: Color(0xff333333),
+                color: Color.fromRGBO(52, 52, 52, 52),
               ),
               textAlign: TextAlign.center,
             ),
