@@ -8,8 +8,14 @@ import 'tweetPage.dart';
 import 'instaPage.dart';
 import 'shopPage.dart';
 
-class MainPage extends StatelessWidget {
+class MainPage extends StatefulWidget {
+  @override
+  State<MainPage> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
   late String userId;
+
   String? adminId = dotenv.env['ADMIN_ID'];
 
   @override
