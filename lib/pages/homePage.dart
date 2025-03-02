@@ -11,114 +11,126 @@ class HomePage extends StatelessWidget {
     final vpnService = Provider.of<VPNService>(context);
 
     return Scaffold(
-      backgroundColor: Color(0xFF8A9DF9),
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
       body: SafeArea(
         child: weatherService.isLoading
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
+            ? Center(child: CircularProgressIndicator())
             : SingleChildScrollView(
                 child: Column(
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            weatherService.city,
-                            style: TextStyle(
-                              fontSize: 40,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white,
-                            ),
-                          ),
-                          SizedBox(height: 20),
-                          Icon(
-                            _getWeatherIcon(weatherService.currentWeather),
-                            size: 120,
-                            color: Colors.white,
-                          ),
-                          SizedBox(height: 15),
-                          Text(
-                            weatherService.currentWeather,
-                            style: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white,
-                            ),
-                          ),
-                          Text(
-                            '${(weatherService.currentTemp - 273.15).toStringAsFixed(1)} °C',
-                            style: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: 180,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: weatherService.days.length,
-                        itemBuilder: (context, index) {
-                          final day = weatherService.days[index];
-                          return Container(
-                            width: MediaQuery.of(context).size.width / 4,
-                            alignment: Alignment.center,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  _getWeatherIcon(day['weather'][0]['main']),
-                                  size: 50,
+                    Center(
+                      child: Card(
+                        elevation: 0,
+                        margin: EdgeInsets.all(15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        color: Color(0xFF44558C8),
+                        child: Container(
+                          width: 340,
+                          padding: const EdgeInsets.all(15.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(height: 10),
+                              Text(
+                                weatherService.city,
+                                style: TextStyle(
+                                  fontSize: 40,
+                                  fontWeight: FontWeight.w400,
                                   color: Colors.white,
                                 ),
-                                SizedBox(height: 5),
-                                Text(
-                                  day['weather'][0]['main'],
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white,
-                                  ),
+                              ),
+                              SizedBox(height: 15),
+                              Icon(
+                                _getWeatherIcon(weatherService.currentWeather),
+                                size: 120,
+                                color: Colors.white,
+                              ),
+                              SizedBox(height: 20),
+                              Text(
+                                weatherService.currentWeather,
+                                style: TextStyle(
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.white,
                                 ),
-                                Text(
-                                  '${(day['main']['temp'] - 273.15).toStringAsFixed(1)} °C',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white,
-                                  ),
+                              ),
+                              Text(
+                                '${(weatherService.currentTemp - 273.15).toStringAsFixed(1)} °C',
+                                style: TextStyle(
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.white,
                                 ),
-                                Text(
-                                  '${day['dt_txt'].substring(5, 7)}/${day['dt_txt'].substring(8, 10)}',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                              ),
+                              Container(
+                                height: 180,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: weatherService.days.length,
+                                  itemBuilder: (context, index) {
+                                    final day = weatherService.days[index];
+                                    return Container(
+                                      width:
+                                          MediaQuery.of(context).size.width / 5,
+                                      alignment: Alignment.center,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            _getWeatherIcon(
+                                                day['weather'][0]['main']),
+                                            size: 45,
+                                            color: Colors.white,
+                                          ),
+                                          SizedBox(height: 5),
+                                          Text(
+                                            day['weather'][0]['main'],
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          Text(
+                                            '${(day['main']['temp'] - 273.15).toStringAsFixed(1)} °C',
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          Text(
+                                            '${day['dt_txt'].substring(5, 7)}/${day['dt_txt'].substring(8, 10)}',
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          Text(
+                                            '${(DateTime.parse(day['dt_txt']).hour + 9) % 24} 시',
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
                                 ),
-                                Text(
-                                  '${(DateTime.parse(day['dt_txt']).hour + 9) % 24} 시',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                    SizedBox(height: 15),
-                    Container(
-                      padding: const EdgeInsets.all(8.0),
+                    SizedBox(
+                      width: 340,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -128,18 +140,18 @@ class HomePage extends StatelessWidget {
                                 await vpnService.connect();
                               },
                               style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.symmetric(vertical: 10),
+                                padding: EdgeInsets.symmetric(vertical: 15),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
+                                  borderRadius: BorderRadius.circular(50),
                                 ),
-                                backgroundColor: Colors.blueAccent,
-                                elevation: 5,
+                                backgroundColor: Color(0xFF44558C8),
+                                elevation: 0,
                               ),
                               child: Text(
-                                'VPN 연결',
+                                'VPN connect',
                                 style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
                                   color: Colors.white,
                                 ),
                               ),
@@ -152,18 +164,18 @@ class HomePage extends StatelessWidget {
                                 vpnService.disconnect();
                               },
                               style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.symmetric(vertical: 10),
+                                padding: EdgeInsets.symmetric(vertical: 15),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
+                                  borderRadius: BorderRadius.circular(50),
                                 ),
-                                backgroundColor: Colors.redAccent,
-                                elevation: 5,
+                                backgroundColor: Color(0xFFEE5E37),
+                                elevation: 0,
                               ),
                               child: Text(
-                                'VPN 연결해제',
+                                'VPN disconnect',
                                 style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
                                   color: Colors.white,
                                 ),
                               ),

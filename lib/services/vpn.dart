@@ -40,7 +40,6 @@ class VPNService with ChangeNotifier {
         _status = status;
       },
     );
-
     _initializeAfterLogin();
   }
 

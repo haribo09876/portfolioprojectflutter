@@ -79,11 +79,11 @@ class _LoginPageState extends State<LoginPage> {
                   style: TextStyle(color: Colors.red),
                 ),
               ],
-              SizedBox(height: 20),
+              SizedBox(height: 15),
               _isLoading
                   ? CircularProgressIndicator()
                   : _buildButton('Log in', _handleLogin),
-              SizedBox(height: 20),
+              SizedBox(height: 15),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -158,8 +158,11 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildButton(String text, VoidCallback onPressed,
-      {Color color = const Color(0xff3498db)}) {
+  Widget _buildButton(
+    String text,
+    VoidCallback onPressed, {
+    Color color = const Color(0xff4558C8),
+  }) {
     return Padding(
       padding: const EdgeInsets.only(top: 20),
       child: Container(

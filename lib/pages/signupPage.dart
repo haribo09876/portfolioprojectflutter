@@ -191,9 +191,9 @@ class _SignupPageState extends State<SignupPage> {
           validator: validator,
           decoration: InputDecoration(
             hintText: hintText,
-            hintStyle: TextStyle(color: Color.fromARGB(176, 176, 176, 176)),
+            hintStyle: TextStyle(color: Color.fromRGBO(89, 89, 89, 89)),
             filled: true,
-            fillColor: Color.fromARGB(240, 240, 240, 240),
+            fillColor: Color.fromARGB(242, 242, 242, 242),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(50),
               borderSide: BorderSide.none,
@@ -213,14 +213,14 @@ class _SignupPageState extends State<SignupPage> {
       child: Container(
         width: 340,
         decoration: BoxDecoration(
-          color: Color.fromARGB(240, 240, 240, 240),
+          color: Color.fromARGB(242, 242, 242, 242),
           borderRadius: BorderRadius.circular(50),
         ),
         padding: EdgeInsets.symmetric(horizontal: 20),
         child: DropdownButtonFormField<String>(
           value: value,
           onChanged: onChanged,
-          style: TextStyle(color: Color.fromARGB(176, 176, 176, 176)),
+          style: TextStyle(color: Color.fromRGBO(89, 89, 89, 89)),
           decoration: InputDecoration(
             border: InputBorder.none,
           ),
@@ -248,11 +248,11 @@ class _SignupPageState extends State<SignupPage> {
                 onTap: _pickImage,
                 child: CircleAvatar(
                   radius: 50,
-                  backgroundColor: Color.fromARGB(240, 240, 240, 240),
+                  backgroundColor: Color.fromARGB(242, 242, 242, 242),
                   backgroundImage: _image != null ? FileImage(_image!) : null,
                   child: _image == null
                       ? Icon(Icons.person,
-                          size: 50, color: Color.fromARGB(176, 176, 176, 176))
+                          size: 50, color: Color.fromRGBO(89, 89, 89, 89))
                       : null,
                 ),
               ),
@@ -319,7 +319,7 @@ class _SignupPageState extends State<SignupPage> {
                                       color: Colors.white),
                                 ),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xff3498db),
+                            backgroundColor: Color(0xff4558C8),
                             padding: EdgeInsets.symmetric(
                                 horizontal: 30, vertical: 15),
                             shape: RoundedRectangleBorder(
