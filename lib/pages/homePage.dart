@@ -21,7 +21,6 @@ class HomePage extends StatelessWidget {
                     Center(
                       child: Card(
                         elevation: 0,
-                        margin: EdgeInsets.all(15),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
@@ -129,6 +128,7 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                     ),
+                    SizedBox(height: 10),
                     SizedBox(
                       width: 340,
                       child: Row(

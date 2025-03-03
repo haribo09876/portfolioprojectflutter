@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import '../services/login.dart';
 import '../services/tweet.dart';
 
@@ -27,10 +28,8 @@ class _TweetPageState extends State<TweetPage> {
     setState(() {
       loading = true;
     });
-
     final tweetService = TweetService();
     final fetchedTweets = await tweetService.tweetRead();
-
     setState(() {
       tweets = fetchedTweets;
       loading = false;
@@ -39,10 +38,8 @@ class _TweetPageState extends State<TweetPage> {
 
   Future<void> _postTweet() async {
     if (_tweetController.text.isEmpty) return;
-
     final loginService = Provider.of<LoginService>(context, listen: false);
     final userId = loginService.userInfo?['id'] ?? '';
-
     try {
       await TweetService().tweetCreate(
         userId,
@@ -53,7 +50,6 @@ class _TweetPageState extends State<TweetPage> {
     } catch (error) {
       print('Error posting tweet: $error');
     }
-
     setState(() {
       _tweetController.clear();
       _imageFile = null;
@@ -476,7 +472,6 @@ class _TweetPageState extends State<TweetPage> {
                     child: Container(
                       width: 340,
                       child: Card(
-                        margin: EdgeInsets.all(8.0),
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
@@ -484,50 +479,72 @@ class _TweetPageState extends State<TweetPage> {
                         child: GestureDetector(
                           onTap: () => _showTweetDetailDialog(tweet),
                           child: ListTile(
-                            contentPadding: EdgeInsets.all(16.0),
-                            leading: tweet['userImgURL'] != null &&
-                                    tweet['userImgURL'] != ''
-                                ? CircleAvatar(
-                                    backgroundImage:
-                                        NetworkImage(tweet['userImgURL']!),
-                                    radius: 25,
-                                  )
-                                : CircleAvatar(
-                                    child: Icon(Icons.account_circle_outlined,
-                                        color: Colors.grey, size: 30),
-                                    radius: 25,
-                                  ),
-                            title: Text(
-                              tweet['username'],
-                              style: TextStyle(
-                                  fontSize: 25, fontWeight: FontWeight.w400),
+                            contentPadding: EdgeInsets.all(10),
+                            title: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    tweet['userImgURL'] != null &&
+                                            tweet['userImgURL'] != ''
+                                        ? CircleAvatar(
+                                            backgroundImage: NetworkImage(
+                                                tweet['userImgURL']!),
+                                            radius: 20,
+                                          )
+                                        : CircleAvatar(
+                                            child: Icon(
+                                                Icons.account_circle_outlined,
+                                                color: Colors.grey,
+                                                size: 30),
+                                            radius: 20,
+                                          ),
+                                    SizedBox(width: 20),
+                                    Text(
+                                      tweet['username'],
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                    Spacer(), // 날짜를 오른쪽으로 정렬
+                                    Text(
+                                      DateFormat('d MMM, yyyy         ').format(
+                                        DateTime.parse(tweet['createdAt'])
+                                            .toLocal(),
+                                      ),
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400,
+                                        color: Color.fromRGBO(52, 52, 52, 52),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                if (tweet['photo'] != null)
-                                  SizedBox(height: 10),
+                                SizedBox(height: 15),
+                                Text(
+                                  tweet['tweet'],
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                if (tweet['photo'] != null) SizedBox(height: 5),
                                 if (tweet['photo'] != null)
                                   ClipRRect(
-                                    borderRadius: BorderRadius.circular(12),
+                                    borderRadius: BorderRadius.circular(15),
                                     child: Image.network(
                                       tweet['photo'],
                                       width: double.infinity,
-                                      height: 150,
+                                      height: 200,
                                       fit: BoxFit.cover,
                                     ),
                                   ),
-                                SizedBox(height: 10),
-                                Text(
-                                  tweet['tweet'],
-                                  style: TextStyle(fontSize: 18),
-                                ),
-                                SizedBox(height: 6),
-                                Text(
-                                  tweet['timestamp'] ?? '',
-                                  style: TextStyle(
-                                      fontSize: 12, color: Colors.grey),
-                                ),
                               ],
                             ),
                             isThreeLine: true,
@@ -541,7 +558,7 @@ class _TweetPageState extends State<TweetPage> {
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showTweetDialog,
-        backgroundColor: Colors.blue,
+        backgroundColor: Color(0xFF44558C8),
         child: Icon(Icons.add, color: Colors.white),
       ),
     );

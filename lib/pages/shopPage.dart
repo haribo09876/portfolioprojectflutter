@@ -602,7 +602,7 @@ class _ShopPageState extends State<ShopPage> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5),
                     ),
-                    elevation: 5,
+                    elevation: 0,
                     child: InkWell(
                       onTap: () => _showItemDetailDialog(item),
                       child: Column(

@@ -28,7 +28,7 @@ class _MainPageState extends State<MainPage> {
       child: Scaffold(
         appBar: AppBar(
           title: Center(
-            child: Text('                   PPF'),
+            child: Text('                           PPF'),
           ),
           automaticallyImplyLeading: false,
           bottom: PreferredSize(

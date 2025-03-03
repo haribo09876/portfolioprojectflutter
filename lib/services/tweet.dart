@@ -53,6 +53,7 @@ class TweetService {
                   'photo': tweet['tweetImgURL'],
                   'userImgURL': tweet['userImgURL'],
                   'userId': tweet['userId'],
+                  'createdAt': tweet['createdAt'],
                 })
             .toList();
       } else {
