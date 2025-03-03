@@ -79,6 +79,8 @@ class _TweetPageState extends State<TweetPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Color.fromARGB(242, 242, 242, 242),
+          elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
@@ -211,22 +213,46 @@ class _TweetPageState extends State<TweetPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Color.fromARGB(242, 242, 242, 242),
+          elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
           title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text(
-                tweet['username'],
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
-              ),
-              IconButton(
-                icon: Icon(Icons.close, color: Colors.black54),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
+              Row(
+                children: [
+                  Text(
+                    tweet['username'],
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Text(
+                    DateFormat('d MMM, yyyy     ').format(
+                      DateTime.parse(tweet['createdAt']).toLocal(),
+                    ),
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w400,
+                      color: Color.fromRGBO(52, 52, 52, 52),
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  IconButton(
+                    icon: Icon(
+                      Icons.close,
+                      color: Color.fromRGBO(52, 52, 52, 52),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              )
             ],
           ),
           content: SizedBox(
@@ -235,29 +261,26 @@ class _TweetPageState extends State<TweetPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (tweet['photo'] != null)
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.network(
-                      tweet['photo'],
-                      width: double.infinity,
-                      height: 150,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                SizedBox(height: 30),
                 Align(
                   alignment: Alignment.topLeft,
                   child: Text(
                     tweet['tweet'],
-                    style: TextStyle(fontSize: 20),
+                    style: TextStyle(
+                      fontSize: 15,
+                    ),
                   ),
                 ),
                 SizedBox(height: 10),
-                Text(
-                  tweet['timestamp'] ?? '',
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
-                ),
+                if (tweet['photo'] != null)
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: Image.network(
+                      tweet['photo'],
+                      width: double.infinity,
+                      height: 200,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 SizedBox(height: 20),
                 if (tweet['userId'] ==
                     Provider.of<LoginService>(context, listen: false)
@@ -266,14 +289,20 @@ class _TweetPageState extends State<TweetPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.edit_outlined, color: Colors.blue),
+                        icon: Icon(
+                          Icons.edit_outlined,
+                          color: Color(0xFF44558C8),
+                        ),
                         onPressed: () {
                           Navigator.of(context).pop();
                           _showEditTweetDialog(tweet);
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.delete_outline, color: Colors.red),
+                        icon: Icon(
+                          Icons.delete_outline,
+                          color: Color(0xFFEE5E37),
+                        ),
                         onPressed: () {
                           Navigator.of(context).pop();
                           _showDeleteConfirmationDialog(tweet['id']);
@@ -472,6 +501,7 @@ class _TweetPageState extends State<TweetPage> {
                     child: Container(
                       width: 340,
                       child: Card(
+                        color: Color.fromARGB(242, 242, 242, 242),
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
@@ -479,7 +509,7 @@ class _TweetPageState extends State<TweetPage> {
                         child: GestureDetector(
                           onTap: () => _showTweetDetailDialog(tweet),
                           child: ListTile(
-                            contentPadding: EdgeInsets.all(10),
+                            contentPadding: EdgeInsets.all(15),
                             title: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -503,18 +533,18 @@ class _TweetPageState extends State<TweetPage> {
                                     Text(
                                       tweet['username'],
                                       style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w400,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w500,
                                       ),
                                     ),
-                                    Spacer(), // 날짜를 오른쪽으로 정렬
+                                    Spacer(),
                                     Text(
-                                      DateFormat('d MMM, yyyy         ').format(
+                                      DateFormat('d MMM, yyyy     ').format(
                                         DateTime.parse(tweet['createdAt'])
                                             .toLocal(),
                                       ),
                                       style: TextStyle(
-                                        fontSize: 12,
+                                        fontSize: 10,
                                         fontWeight: FontWeight.w400,
                                         color: Color.fromRGBO(52, 52, 52, 52),
                                       ),
@@ -559,6 +589,7 @@ class _TweetPageState extends State<TweetPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: _showTweetDialog,
         backgroundColor: Color(0xFF44558C8),
+        shape: CircleBorder(),
         child: Icon(Icons.add, color: Colors.white),
       ),
     );

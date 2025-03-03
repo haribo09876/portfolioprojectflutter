@@ -599,8 +599,9 @@ class _ShopPageState extends State<ShopPage> {
                 itemBuilder: (context, index) {
                   final item = items[index];
                   return Card(
+                    color: Color.fromARGB(242, 242, 242, 242),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(15),
                     ),
                     elevation: 0,
                     child: InkWell(
@@ -680,7 +681,8 @@ class _ShopPageState extends State<ShopPage> {
                 _imageFile = null;
                 _showItemDialog();
               },
-              backgroundColor: Colors.blue,
+              backgroundColor: Color(0xFF44558C8),
+              shape: CircleBorder(),
               child: Icon(Icons.add, color: Colors.white),
             )
           : null,

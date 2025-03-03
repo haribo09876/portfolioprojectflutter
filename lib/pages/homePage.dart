@@ -11,7 +11,6 @@ class HomePage extends StatelessWidget {
     final vpnService = Provider.of<VPNService>(context);
 
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 255, 255, 255),
       body: SafeArea(
         child: weatherService.isLoading
             ? Center(child: CircularProgressIndicator())
@@ -140,7 +139,7 @@ class HomePage extends StatelessWidget {
                                 await vpnService.connect();
                               },
                               style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.symmetric(vertical: 15),
+                                padding: EdgeInsets.symmetric(vertical: 10),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(50),
                                 ),
@@ -148,9 +147,9 @@ class HomePage extends StatelessWidget {
                                 elevation: 0,
                               ),
                               child: Text(
-                                'VPN connect',
+                                'Start VPN',
                                 style: TextStyle(
-                                  fontSize: 15,
+                                  fontSize: 20,
                                   fontWeight: FontWeight.w400,
                                   color: Colors.white,
                                 ),
@@ -164,7 +163,7 @@ class HomePage extends StatelessWidget {
                                 vpnService.disconnect();
                               },
                               style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.symmetric(vertical: 15),
+                                padding: EdgeInsets.symmetric(vertical: 10),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(50),
                                 ),
@@ -172,9 +171,9 @@ class HomePage extends StatelessWidget {
                                 elevation: 0,
                               ),
                               child: Text(
-                                'VPN disconnect',
+                                'Stop VPN',
                                 style: TextStyle(
-                                  fontSize: 15,
+                                  fontSize: 20,
                                   fontWeight: FontWeight.w400,
                                   color: Colors.white,
                                 ),

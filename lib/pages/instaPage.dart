@@ -442,7 +442,8 @@ class _InstaPageState extends State<InstaPage> {
         onPressed: () {
           _showInstaDialog();
         },
-        backgroundColor: Colors.blue,
+        backgroundColor: Color(0xFF44558C8),
+        shape: CircleBorder(),
         child: Icon(Icons.add, color: Colors.white),
       ),
     );
