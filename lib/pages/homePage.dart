@@ -25,7 +25,7 @@ class HomePage extends StatelessWidget {
                         ),
                         color: Color(0xFF44558C8),
                         child: Container(
-                          width: 340,
+                          width: 360,
                           padding: const EdgeInsets.all(15.0),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -127,9 +127,9 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 15),
                     SizedBox(
-                      width: 340,
+                      width: 360,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [

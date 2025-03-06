@@ -27,15 +27,20 @@ class _MainPageState extends State<MainPage> {
       length: 4,
       child: Scaffold(
         appBar: AppBar(
-          title: Center(
-            child: Text('                           PPF'),
-          ),
           automaticallyImplyLeading: false,
+          flexibleSpace: Center(
+            child: Text(
+              'PPF',
+              style: TextStyle(
+                fontSize: 20,
+              ),
+            ),
+          ),
           bottom: PreferredSize(
             preferredSize: Size.fromHeight(48),
             child: Center(
               child: SizedBox(
-                width: 340,
+                width: 360,
                 height: 40,
                 child: Container(
                   decoration: BoxDecoration(
@@ -51,7 +56,7 @@ class _MainPageState extends State<MainPage> {
                       borderRadius: BorderRadius.circular(50),
                     ),
                     indicatorSize: TabBarIndicatorSize.tab,
-                    labelPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                    labelPadding: EdgeInsets.symmetric(horizontal: 15),
                     tabs: [
                       Tab(text: 'Home'),
                       Tab(text: 'Tweet'),
@@ -107,12 +112,12 @@ class _MainPageState extends State<MainPage> {
                     false;
 
                 if (shouldLogout) {
-                  // Perform logout
                   await loginService.logoutUser();
                   Navigator.pushReplacementNamed(context, AppRoutes.login);
                 }
               },
             ),
+            SizedBox(width: 5),
           ],
         ),
         body: TabBarView(
