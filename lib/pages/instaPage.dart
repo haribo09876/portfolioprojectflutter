@@ -377,30 +377,77 @@ class _InstaPageState extends State<InstaPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Color.fromARGB(242, 242, 242, 242),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
-          title: Text('Delete Insta', style: TextStyle(fontSize: 22)),
+          title: Text('Delete insta',
+              style: TextStyle(
+                fontSize: 20,
+              )),
           content: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.9,
-            height: MediaQuery.of(context).size.height * 0.3,
-            child: Center(
-              child: Text('Are you sure you want to delete this insta?'),
+            width: 360,
+            height: 120,
+            child: Text(
+              'Are you sure you want to delete this insta?',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+              ),
             ),
           ),
           actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancel', style: TextStyle(color: Colors.black54)),
-            ),
-            TextButton(
-              onPressed: () async {
-                await _deleteInsta(instaId);
-                Navigator.of(context).pop();
-              },
-              child: Text('Delete', style: TextStyle(color: Colors.red)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      await _deleteInsta(instaId);
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      backgroundColor: Color(0xFF44558C8),
+                      elevation: 0,
+                    ),
+                    child: Text(
+                      'Conirm',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      backgroundColor: Color(0xFFEE5E37),
+                      elevation: 0,
+                    ),
+                    child: Text(
+                      'Cancel',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         );
@@ -411,32 +458,47 @@ class _InstaPageState extends State<InstaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: fetchInstas,
-        child: loading
-            ? Center(child: CircularProgressIndicator())
-            : GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
+      body: Center(
+        child: Container(
+          width: 360,
+          child: Column(
+            children: [
+              SizedBox(height: 5),
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: fetchInstas,
+                  child: loading
+                      ? Center(child: CircularProgressIndicator())
+                      : GridView.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            crossAxisSpacing: 0,
+                            mainAxisSpacing: 0,
+                          ),
+                          itemCount: instas.length,
+                          itemBuilder: (context, index) {
+                            final insta = instas[index];
+                            return GestureDetector(
+                              onTap: () => _showInstaDetailDialog(insta),
+                              child: Image.network(
+                                insta['photo'] ?? '',
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    color: Colors.grey[200],
+                                    child: Center(child: Text('No Image')),
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                        ),
                 ),
-                itemCount: instas.length,
-                itemBuilder: (context, index) {
-                  final insta = instas[index];
-                  return GestureDetector(
-                    onTap: () => _showInstaDetailDialog(insta),
-                    child: Image.network(
-                      insta['photo'] ?? '',
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: Colors.grey[200],
-                          child: Center(child: Text('No Image')),
-                        );
-                      },
-                    ),
-                  );
-                },
               ),
+            ],
+          ),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
