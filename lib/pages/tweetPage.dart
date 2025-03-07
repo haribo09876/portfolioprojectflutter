@@ -163,7 +163,7 @@ class _TweetPageState extends State<TweetPage> {
                     Stack(
                       children: [
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(15),
                           child: Image.file(
                             _imageFile!,
                             fit: BoxFit.contain,
@@ -446,104 +446,132 @@ class _TweetPageState extends State<TweetPage> {
               style: TextStyle(
                 fontSize: 20,
               )),
-          content: SizedBox(
-            width: 360,
-            height: 480,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: controller,
-                  decoration: InputDecoration(
-                    hintText: 'Update your tweet',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+          content: SingleChildScrollView(
+            child: SizedBox(
+              width: 360,
+              height: 480,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: controller,
+                    decoration: InputDecoration(
+                      hintText: 'Update your tweet',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                    maxLines: null,
+                    keyboardType: TextInputType.multiline,
+                  ),
+                  SizedBox(height: 10),
+                  if (_newImageFile != null || existingImageUrl != null)
+                    Stack(
+                      children: [
+                        if (_newImageFile != null)
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: Image.file(
+                              _newImageFile!,
+                              height: 200,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        else if (existingImageUrl != null)
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: Image.network(
+                              existingImageUrl!,
+                              height: 200,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        Positioned(
+                          right: 10,
+                          top: 10,
+                          child: IconButton(
+                            icon:
+                                Icon(Icons.cancel, color: Colors.red, size: 30),
+                            onPressed: () {
+                              setState(() {
+                                _newImageFile = null;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFFEE5E37),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
+                    onPressed: () {
+                      _pickImage();
+                    },
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Center(
+                        child: Text(
+                          'Add photo',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                  maxLines: null,
-                  keyboardType: TextInputType.multiline,
-                ),
-                SizedBox(height: 10),
-                if (_newImageFile != null || existingImageUrl != null)
-                  Stack(
-                    children: [
-                      if (_newImageFile != null)
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.file(
-                            _newImageFile!,
-                            height: 200,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF44558C8),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
+                    onPressed: () async {
+                      final tweetService = TweetService();
+                      final userId =
+                          Provider.of<LoginService>(context, listen: false)
+                                  .userInfo?['id'] ??
+                              '';
+                      String? imageUrl =
+                          _newImageFile != null ? null : existingImageUrl;
+                      await tweetService.tweetUpdate(
+                        tweet['id'],
+                        userId,
+                        controller.text,
+                        _newImageFile != null
+                            ? XFile(_newImageFile!.path)
+                            : null,
+                      );
+                      fetchTweets();
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                    },
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Center(
+                        child: Text(
+                          'Update',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
                           ),
-                        )
-                      else if (existingImageUrl != null)
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.network(
-                            existingImageUrl!,
-                            height: 200,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      Positioned(
-                        right: 10,
-                        top: 10,
-                        child: IconButton(
-                          icon: Icon(Icons.cancel, color: Colors.red, size: 30),
-                          onPressed: () {
-                            setState(() {
-                              _newImageFile = null;
-                            });
-                          },
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.photo, color: Colors.blue),
-                      onPressed: _pickImage,
-                    ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
-                      onPressed: () async {
-                        final tweetService = TweetService();
-                        final userId =
-                            Provider.of<LoginService>(context, listen: false)
-                                    .userInfo?['id'] ??
-                                '';
-                        String? imageUrl =
-                            _newImageFile != null ? null : existingImageUrl;
-                        await tweetService.tweetUpdate(
-                          tweet['id'],
-                          userId,
-                          controller.text,
-                          _newImageFile != null
-                              ? XFile(_newImageFile!.path)
-                              : null,
-                        );
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pop();
-                        fetchTweets();
-                      },
-                      child: Text(
-                        'Update',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );

@@ -193,7 +193,7 @@ class HomePage extends StatelessWidget {
   IconData _getWeatherIcon(String weather) {
     switch (weather) {
       case 'Clouds':
-        return WeatherIcons.cloudy;
+        return WeatherIcons.cloud;
       case 'Clear':
         return WeatherIcons.day_sunny;
       case 'Mist':
@@ -210,6 +210,8 @@ class HomePage extends StatelessWidget {
         return WeatherIcons.showers;
       case 'Thunderstorm':
         return WeatherIcons.thunderstorm;
+      case 'Haze':
+        return WeatherIcons.day_haze;
       default:
         return WeatherIcons.na;
     }
