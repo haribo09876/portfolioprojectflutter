@@ -583,94 +583,113 @@ class _ShopPageState extends State<ShopPage> {
     final loginService = Provider.of<LoginService>(context, listen: false);
     userId = loginService.userInfo?['id'] ?? '';
     return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: _refresh,
-        child: loading
-            ? Center(child: CircularProgressIndicator())
-            : GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  childAspectRatio: 0.7,
-                ),
-                padding: EdgeInsets.all(10),
-                itemCount: items.length,
-                itemBuilder: (context, index) {
-                  final item = items[index];
-                  return Card(
-                    color: Color.fromARGB(242, 242, 242, 242),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    elevation: 0,
-                    child: InkWell(
-                      onTap: () => _showItemDetailDialog(item),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(5),
-                              ),
-                              child: item['photo'] != null
-                                  ? Image.network(
-                                      item['photo'] ?? '',
-                                      width: double.infinity,
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
-                                        return Center(
-                                            child:
-                                                Text('Failed to load image'));
-                                      },
-                                    )
-                                  : Container(
-                                      color: Colors.grey[200],
-                                      child: Center(
-                                        child: Icon(Icons.image,
-                                            size: 50, color: Colors.grey),
-                                      ),
-                                    ),
-                            ),
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
+      body: Center(
+        child: Container(
+          width: 360,
+          child: Column(
+            children: [
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: _refresh,
+                  child: loading
+                      ? Center(child: CircularProgressIndicator())
+                      : GridView.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 0,
+                            mainAxisSpacing: 0,
+                            childAspectRatio: 0.65,
                           ),
-                          Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(height: 5),
-                                Text(
-                                  item['itemTitle'] ?? 'No Title',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                SizedBox(height: 5),
-                                Row(
+                          itemCount: items.length,
+                          itemBuilder: (context, index) {
+                            final item = items[index];
+                            return Card(
+                              color: Color.fromARGB(242, 242, 242, 242),
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: InkWell(
+                                onTap: () => _showItemDetailDialog(item),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Spacer(),
-                                    Text(
-                                      '${NumberFormat('###,###,###').format(item['itemPrice'] ?? 0)}원 ',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.grey[700],
+                                    Expanded(
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(15),
+                                        ),
+                                        child: item['photo'] != null
+                                            ? Image.network(
+                                                item['photo'] ?? '',
+                                                width: double.infinity,
+                                                fit: BoxFit.cover,
+                                                errorBuilder: (context, error,
+                                                    stackTrace) {
+                                                  return Center(
+                                                    child: Text(
+                                                      'Failed to load image',
+                                                    ),
+                                                  );
+                                                },
+                                              )
+                                            : Container(
+                                                color: Color.fromARGB(
+                                                    255, 255, 255, 255),
+                                                child: Center(
+                                                  child: Icon(
+                                                    Icons.image,
+                                                    size: 50,
+                                                    color: Color.fromARGB(
+                                                        242, 242, 242, 242),
+                                                  ),
+                                                ),
+                                              ),
                                       ),
                                     ),
+                                    Padding(
+                                      padding: EdgeInsets.all(10),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            item['itemTitle'] ?? 'No Title',
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                          Row(
+                                            children: [
+                                              Spacer(),
+                                              Text(
+                                                '${NumberFormat('###,###,###').format(item['itemPrice'] ?? 0)}원 ',
+                                                style: TextStyle(
+                                                  fontSize: 15,
+                                                  color: Color.fromRGBO(
+                                                      52, 52, 52, 52),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    )
                                   ],
                                 ),
-                                SizedBox(height: 5),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  );
-                },
+                              ),
+                            );
+                          },
+                        ),
+                ),
               ),
+              SizedBox(height: 5),
+            ],
+          ),
+        ),
       ),
       floatingActionButton: (userId == adminId)
           ? FloatingActionButton(

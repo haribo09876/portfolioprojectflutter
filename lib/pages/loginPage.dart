@@ -72,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                 hintText: ' Password',
                 obscureText: true,
               ),
-              SizedBox(height: 100),
+              SizedBox(height: 125),
               if (_errorMessage != null) ...[
                 Text(
                   _errorMessage!,
@@ -83,38 +83,32 @@ class _LoginPageState extends State<LoginPage> {
               _isLoading
                   ? CircularProgressIndicator()
                   : _buildButton('Log in', _handleLogin),
-              SizedBox(height: 15),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'new to PPF?',
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Color.fromRGBO(89, 89, 89, 89),
-                    ),
+              SizedBox(height: 10),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                  elevation: 0,
+                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, AppRoutes.signup);
-                    },
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, AppRoutes.signup);
+                },
+                child: SizedBox(
+                  width: 300,
+                  child: Center(
                     child: Text(
-                      ' Sign up ',
+                      'Sign up',
                       style: TextStyle(
+                        color: Color.fromRGBO(52, 52, 52, 52),
                         fontSize: 15,
                         fontWeight: FontWeight.w400,
-                        color: Color(0xff333333),
                       ),
                     ),
                   ),
-                  Text(
-                    'now',
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Color.fromRGBO(89, 89, 89, 89),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ],
           ),
@@ -129,9 +123,9 @@ class _LoginPageState extends State<LoginPage> {
     bool obscureText = false,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.symmetric(vertical: 5),
       child: Container(
-        width: 340,
+        width: 360,
         child: TextField(
           controller: controller,
           obscureText: obscureText,
@@ -166,7 +160,7 @@ class _LoginPageState extends State<LoginPage> {
     return Padding(
       padding: const EdgeInsets.only(top: 20),
       child: Container(
-        width: 340,
+        width: 360,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             backgroundColor: color,

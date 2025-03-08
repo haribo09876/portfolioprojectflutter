@@ -31,7 +31,7 @@ class IntroPage extends StatelessWidget {
             ),
             SizedBox(height: 250),
             SizedBox(
-              width: 340,
+              width: 360,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xff4558C8),

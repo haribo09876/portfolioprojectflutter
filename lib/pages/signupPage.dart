@@ -184,7 +184,7 @@ class _SignupPageState extends State<SignupPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Container(
-        width: 340,
+        width: 360,
         child: TextFormField(
           controller: controller,
           obscureText: obscureText,
@@ -211,7 +211,7 @@ class _SignupPageState extends State<SignupPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Container(
-        width: 340,
+        width: 360,
         decoration: BoxDecoration(
           color: Color.fromARGB(242, 242, 242, 242),
           borderRadius: BorderRadius.circular(50),
@@ -306,7 +306,7 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                       SizedBox(height: 20),
                       SizedBox(
-                        width: 340,
+                        width: 360,
                         child: ElevatedButton(
                           onPressed: _isSubmitting ? null : _signup,
                           child: _isSubmitting

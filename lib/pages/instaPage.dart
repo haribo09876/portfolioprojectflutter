@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:intl/intl.dart';
 import '../services/login.dart';
 import '../services/insta.dart';
 
@@ -13,9 +15,10 @@ class InstaPage extends StatefulWidget {
 class _InstaPageState extends State<InstaPage> {
   final TextEditingController _instaController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
-  File? _imageFile;
+  String? adminId = dotenv.env['ADMIN_ID'];
   List<Map<String, dynamic>> instas = [];
   bool loading = false;
+  File? _imageFile;
 
   @override
   void initState() {
@@ -175,73 +178,169 @@ class _InstaPageState extends State<InstaPage> {
   }
 
   void _showInstaDetailDialog(Map<String, dynamic> insta) {
-    final loginService = Provider.of<LoginService>(context, listen: false);
-    final userId = loginService.userInfo?['id'] ?? '';
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Color.fromARGB(242, 242, 242, 242),
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                insta['username'] ?? 'Unknown User',
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
-              ),
-              IconButton(
-                icon: Icon(Icons.close, color: Colors.black54),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (insta['photo'] != null)
-                Image.network(insta['photo'], fit: BoxFit.cover)
-              else
-                Container(
-                  color: Colors.grey[200],
-                  height: 200,
-                  width: double.infinity,
-                  child: Center(child: Text('No Image')),
-                ),
-              SizedBox(height: 5),
-              Text(
-                insta['instaContents'] ?? 'No Content',
-                textAlign: TextAlign.left,
-              ),
-              SizedBox(height: 20),
-              if (insta['userId'] == userId)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.edit_outlined, color: Colors.blue),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        _showEditInstaDialog(insta);
-                      },
+          content: SizedBox(
+            width: 360,
+            height: 480,
+            child: Container(
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Row(
+                          children: [
+                            insta['userImgURL'] != null &&
+                                    insta['userImgURL'] != ''
+                                ? CircleAvatar(
+                                    backgroundImage:
+                                        NetworkImage(insta['userImgURL']!),
+                                    radius: 20,
+                                  )
+                                : CircleAvatar(
+                                    child: Icon(Icons.account_circle_outlined,
+                                        color: Colors.grey, size: 24),
+                                    radius: 20,
+                                  ),
+                            SizedBox(width: 10),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                insta['username'],
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: Icon(
+                              Icons.close,
+                              color: Color.fromRGBO(52, 52, 52, 52),
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (insta['photo'] != null)
+                            Image.network(insta['photo'], fit: BoxFit.cover)
+                          else
+                            Container(
+                              color: Colors.grey[200],
+                              height: 200,
+                              width: double.infinity,
+                              child: Center(child: Text('No image')),
+                            ),
+                          SizedBox(height: 10),
+                          Text(
+                            insta['insta'] ?? 'No contents',
+                            textAlign: TextAlign.left,
+                          ),
+                          SizedBox(height: 5),
+                          Text(
+                            DateFormat('d MMM, yyyy').format(
+                              DateTime.parse(insta['createdAt']).toLocal(),
+                            ),
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w400,
+                              color: Color.fromRGBO(52, 52, 52, 52),
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          if (insta['userId'] ==
+                                  Provider.of<LoginService>(context,
+                                          listen: false)
+                                      .userInfo?['id'] ||
+                              Provider.of<LoginService>(context, listen: false)
+                                      .userInfo?['id'] ==
+                                  adminId)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      _showEditInstaDialog(insta);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(50),
+                                      ),
+                                      backgroundColor: Color(0xFF44558C8),
+                                      elevation: 0,
+                                    ),
+                                    child: Text(
+                                      'Edit',
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                Expanded(
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      _showDeleteConfirmationDialog(
+                                          insta['id']);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(50),
+                                      ),
+                                      backgroundColor: Color(0xFFEE5E37),
+                                      elevation: 0,
+                                    ),
+                                    child: Text(
+                                      'Delete',
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                        ],
+                      ),
                     ),
-                    IconButton(
-                      icon: Icon(Icons.delete_outline, color: Colors.red),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        _showDeleteConfirmationDialog(insta['id']);
-                      },
-                    ),
-                  ],
-                ),
-            ],
+                  ),
+                ],
+              ),
+            ),
           ),
         );
       },
@@ -379,7 +478,7 @@ class _InstaPageState extends State<InstaPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Color.fromARGB(242, 242, 242, 242),
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
@@ -390,11 +489,13 @@ class _InstaPageState extends State<InstaPage> {
           content: SizedBox(
             width: 360,
             height: 120,
-            child: Text(
-              'Are you sure you want to delete this insta?',
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w400,
+            child: Center(
+              child: Text(
+                'Are you sure you want to delete this insta?',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
             ),
           ),
@@ -436,7 +537,7 @@ class _InstaPageState extends State<InstaPage> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50),
                       ),
-                      backgroundColor: Color(0xFFEE5E37),
+                      backgroundColor: Color.fromARGB(242, 242, 242, 242),
                       elevation: 0,
                     ),
                     child: Text(
@@ -444,7 +545,7 @@ class _InstaPageState extends State<InstaPage> {
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w400,
-                        color: Colors.white,
+                        color: Color.fromRGBO(52, 52, 52, 52),
                       ),
                     ),
                   ),
@@ -460,6 +561,7 @@ class _InstaPageState extends State<InstaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
       body: Center(
         child: Container(
           width: 360,

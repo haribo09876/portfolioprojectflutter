@@ -586,7 +586,7 @@ class _TweetPageState extends State<TweetPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Color.fromARGB(242, 242, 242, 242),
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
@@ -645,7 +645,7 @@ class _TweetPageState extends State<TweetPage> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50),
                       ),
-                      backgroundColor: Color(0xFFEE5E37),
+                      backgroundColor: Color.fromARGB(242, 242, 242, 242),
                       elevation: 0,
                     ),
                     child: Text(
@@ -653,7 +653,7 @@ class _TweetPageState extends State<TweetPage> {
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w400,
-                        color: Colors.white,
+                        color: Color.fromRGBO(52, 52, 52, 52),
                       ),
                     ),
                   ),

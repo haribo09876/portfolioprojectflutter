@@ -53,6 +53,7 @@ class InstaService {
                   'photo': insta['instaImgURL'],
                   'userImgURL': insta['userImgURL'],
                   'userId': insta['userId'],
+                  'createdAt': insta['createdAt'],
                 })
             .toList();
       } else {
