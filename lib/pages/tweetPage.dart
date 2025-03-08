@@ -255,7 +255,7 @@ class _TweetPageState extends State<TweetPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Color.fromARGB(242, 242, 242, 242),
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
@@ -437,7 +437,7 @@ class _TweetPageState extends State<TweetPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Color.fromARGB(242, 242, 242, 242),
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
@@ -506,7 +506,8 @@ class _TweetPageState extends State<TweetPage> {
                   SizedBox(height: 10),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFEE5E37),
+                      backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                      elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50),
                       ),
@@ -520,7 +521,7 @@ class _TweetPageState extends State<TweetPage> {
                         child: Text(
                           'Add photo',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: Color.fromRGBO(52, 52, 52, 52),
                             fontSize: 15,
                             fontWeight: FontWeight.w400,
                           ),
@@ -528,10 +529,11 @@ class _TweetPageState extends State<TweetPage> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 5),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFF44558C8),
+                      elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50),
                       ),
@@ -670,6 +672,7 @@ class _TweetPageState extends State<TweetPage> {
     final currentUserId = loginService.userInfo?['id'] ?? '';
 
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
       body: loading
           ? Center(child: CircularProgressIndicator())
           : RefreshIndicator(

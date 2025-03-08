@@ -26,6 +26,7 @@ class _MainPageState extends State<MainPage> {
     return DefaultTabController(
       length: 4,
       child: Scaffold(
+        backgroundColor: Color.fromARGB(255, 255, 255, 255),
         appBar: AppBar(
           automaticallyImplyLeading: false,
           flexibleSpace: Center(

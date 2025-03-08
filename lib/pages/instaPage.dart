@@ -182,8 +182,10 @@ class _InstaPageState extends State<InstaPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Color.fromARGB(242, 242, 242, 242),
+          elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(15),
           ),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -11,6 +11,7 @@ class HomePage extends StatelessWidget {
     final vpnService = Provider.of<VPNService>(context);
 
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
       body: SafeArea(
         child: weatherService.isLoading
             ? Center(child: CircularProgressIndicator())
