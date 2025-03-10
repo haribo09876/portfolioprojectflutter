@@ -343,7 +343,6 @@ class _ShopPageState extends State<ShopPage> {
                         IconButton(
                           icon: Icon(Icons.delete_outline, color: Colors.red),
                           onPressed: () {
-                            Navigator.of(context).pop();
                             _showDeleteConfirmationDialog(item['itemId']);
                           },
                         ),
@@ -505,30 +504,80 @@ class _ShopPageState extends State<ShopPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(15),
           ),
-          title: Text('Delete Item', style: TextStyle(fontSize: 22)),
+          title: Text('Delete Item',
+              style: TextStyle(
+                fontSize: 20,
+              )),
           content: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.9,
-            height: MediaQuery.of(context).size.height * 0.3,
+            width: 360,
+            height: 120,
             child: Center(
-              child: Text('Are you sure you want to delete this item?'),
+              child: Text(
+                'Are you sure you want to delete this item?',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
             ),
           ),
           actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancel', style: TextStyle(color: Colors.black54)),
-            ),
-            TextButton(
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF44558C8),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+              ),
               onPressed: () async {
                 await _deleteItem(itemId);
                 Navigator.of(context).pop();
+                Navigator.of(context).pop();
               },
-              child: Text('Delete', style: TextStyle(color: Colors.red)),
+              child: SizedBox(
+                width: double.infinity,
+                child: Center(
+                  child: Text(
+                    'Confirm',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 5),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: SizedBox(
+                width: double.infinity,
+                child: Center(
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                      color: Color.fromRGBO(52, 52, 52, 52),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         );
