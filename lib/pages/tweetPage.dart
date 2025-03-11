@@ -174,7 +174,7 @@ class _TweetPageState extends State<TweetPage> {
                       width: double.infinity,
                       child: Center(
                         child: Text(
-                          'Add photo',
+                          'Add Image',
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w400,
@@ -298,30 +298,14 @@ class _TweetPageState extends State<TweetPage> {
                           ],
                         ),
                       ),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            DateFormat('d MMM, yyyy').format(
-                              DateTime.parse(tweet['createdAt']).toLocal(),
-                            ),
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w400,
-                              color: Color.fromRGBO(52, 52, 52, 52),
-                            ),
-                          ),
-                          SizedBox(width: 10),
-                          IconButton(
-                            icon: Icon(
-                              Icons.close,
-                              color: Color.fromRGBO(52, 52, 52, 52),
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ],
+                      IconButton(
+                        icon: Icon(
+                          Icons.close,
+                          color: Color.fromRGBO(52, 52, 52, 52),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
                       ),
                     ],
                   ),
@@ -347,7 +331,7 @@ class _TweetPageState extends State<TweetPage> {
                                 fit: BoxFit.contain,
                               ),
                             ),
-                          SizedBox(height: 20),
+                          SizedBox(height: 10),
                           if (tweet['userId'] ==
                                   Provider.of<LoginService>(context,
                                           listen: false)
@@ -355,31 +339,50 @@ class _TweetPageState extends State<TweetPage> {
                               Provider.of<LoginService>(context, listen: false)
                                       .userInfo?['id'] ==
                                   adminId)
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFF44558C8),
-                                elevation: 0,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(50),
+                            Row(
+                              children: [
+                                Spacer(),
+                                Text(
+                                  DateFormat('MMM d, yyyy, h:mm a').format(
+                                    DateTime.parse(tweet['createdAt'])
+                                        .toLocal(),
+                                  ),
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w400,
+                                    color: Color.fromRGBO(52, 52, 52, 52),
+                                  ),
                                 ),
+                              ],
+                            ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF44558C8),
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
                               ),
-                              onPressed: () {
-                                _showEditTweetDialog(tweet);
-                              },
-                              child: SizedBox(
-                                width: double.infinity,
-                                child: Center(
-                                  child: Text(
-                                    'Edit',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.white,
-                                    ),
+                            ),
+                            onPressed: () {
+                              _showEditTweetDialog(tweet);
+                            },
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: Center(
+                                child: Text(
+                                  'Edit',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.white,
                                   ),
                                 ),
                               ),
                             ),
+                          ),
                           SizedBox(height: 5),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
@@ -406,6 +409,7 @@ class _TweetPageState extends State<TweetPage> {
                               ),
                             ),
                           ),
+                          SizedBox(height: 5),
                         ],
                       ),
                     ),
@@ -442,10 +446,12 @@ class _TweetPageState extends State<TweetPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
-          title: Text('Edit tweet',
-              style: TextStyle(
-                fontSize: 20,
-              )),
+          title: Text(
+            'Edit tweet',
+            style: TextStyle(
+              fontSize: 20,
+            ),
+          ),
           content: SingleChildScrollView(
             child: SizedBox(
               width: 360,
@@ -492,8 +498,11 @@ class _TweetPageState extends State<TweetPage> {
                           right: 10,
                           top: 10,
                           child: IconButton(
-                            icon:
-                                Icon(Icons.cancel, color: Colors.red, size: 30),
+                            icon: Icon(
+                              Icons.cancel,
+                              color: Colors.red,
+                              size: 30,
+                            ),
                             onPressed: () {
                               setState(() {
                                 _newImageFile = null;
@@ -519,7 +528,7 @@ class _TweetPageState extends State<TweetPage> {
                       width: double.infinity,
                       child: Center(
                         child: Text(
-                          'Add photo',
+                          'Add image',
                           style: TextStyle(
                             color: Color.fromRGBO(52, 52, 52, 52),
                             fontSize: 15,
@@ -567,6 +576,32 @@ class _TweetPageState extends State<TweetPage> {
                             color: Colors.white,
                             fontSize: 15,
                             fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 5),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Center(
+                        child: Text(
+                          'Cancel',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                            color: Color.fromRGBO(52, 52, 52, 52),
                           ),
                         ),
                       ),
@@ -725,18 +760,6 @@ class _TweetPageState extends State<TweetPage> {
                                         fontWeight: FontWeight.w400,
                                       ),
                                     ),
-                                    Spacer(),
-                                    Text(
-                                      DateFormat('d MMM, yyyy     ').format(
-                                        DateTime.parse(tweet['createdAt'])
-                                            .toLocal(),
-                                      ),
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w400,
-                                        color: Color.fromRGBO(52, 52, 52, 52),
-                                      ),
-                                    ),
                                   ],
                                 ),
                               ],
@@ -751,7 +774,9 @@ class _TweetPageState extends State<TweetPage> {
                                     fontSize: 15,
                                   ),
                                 ),
-                                SizedBox(height: 10),
+                                SizedBox(
+                                  height: 10,
+                                ),
                                 if (tweet['photo'] != null) SizedBox(height: 5),
                                 if (tweet['photo'] != null)
                                   ClipRRect(
@@ -763,6 +788,28 @@ class _TweetPageState extends State<TweetPage> {
                                       fit: BoxFit.cover,
                                     ),
                                   ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  children: [
+                                    Spacer(),
+                                    Text(
+                                      DateFormat('MMM d, yyyy, h:mm a').format(
+                                        DateTime.parse(tweet['createdAt'])
+                                            .toLocal(),
+                                      ),
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w400,
+                                        color: Color.fromRGBO(52, 52, 52, 52),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
                               ],
                             ),
                             isThreeLine: true,

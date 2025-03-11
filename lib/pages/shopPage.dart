@@ -321,7 +321,7 @@ class _ShopPageState extends State<ShopPage> {
                       await _purchaseItem(item);
                       _showPurchaseConfirmationDialog();
                     },
-                    child: Text('Buy'),
+                    child: Text('Purchase'),
                   ),
                   if (userId == adminId) ...[
                     SizedBox(height: 10),

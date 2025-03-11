@@ -87,61 +87,142 @@ class _InstaPageState extends State<InstaPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Color.fromARGB(255, 255, 255, 255),
+          elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
-          title: Text('Create Insta Post',
-              style: TextStyle(fontWeight: FontWeight.bold)),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (_imageFile != null)
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 10),
-                    child: Image.file(_imageFile!, fit: BoxFit.cover),
-                  ),
-                TextButton(
-                  onPressed: () async {
-                    await _pickImage();
-                    Navigator.of(context).pop();
-                    _showInstaDialog();
-                  },
-                  child: Text('Add Image'),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Post insta',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w400,
                 ),
-                TextField(
-                  controller: _instaController,
-                  decoration: InputDecoration(
-                    hintText: 'Write a caption...',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.close,
+                  color: Color.fromRGBO(52, 52, 52, 52),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+          content: SizedBox(
+            width: 360,
+            height: 480,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (_imageFile != null)
+                    Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
+                          child: Image.file(
+                            _imageFile!,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        Positioned(
+                          right: 5,
+                          top: 5,
+                          child: IconButton(
+                            icon:
+                                Icon(Icons.cancel, color: Colors.red, size: 30),
+                            onPressed: () {
+                              setState(() {
+                                _imageFile = null;
+                              });
+                              Navigator.of(context).pop();
+                              _showInstaDialog();
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  SizedBox(height: 20),
+                  Container(
+                    height: 120,
+                    child: SingleChildScrollView(
+                      child: TextField(
+                        controller: _instaController,
+                        decoration: InputDecoration(
+                          hintText: 'What’s happening?',
+                          hintStyle: TextStyle(
+                            color: Color.fromRGBO(52, 52, 52, 52),
+                          ),
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 15),
+                        ),
+                        maxLines: null,
+                        keyboardType: TextInputType.multiline,
+                      ),
                     ),
                   ),
-                  maxLines: null,
-                ),
-              ],
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
+                    onPressed: () async {
+                      await _pickImage();
+                      Navigator.of(context).pop();
+                      _showInstaDialog();
+                    },
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Center(
+                        child: Text(
+                          'Add image',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                            color: Color.fromRGBO(52, 52, 52, 52),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 5),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF44558C8),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
+                    onPressed: () {
+                      _postInsta();
+                      Navigator.of(context).pop();
+                    },
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Center(
+                        child: Text(
+                          'Post',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  _imageFile = null;
-                });
-                Navigator.of(context).pop();
-                _showInstaDialog();
-              },
-              child: Text('Remove Image'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _postInsta();
-              },
-              child: Text('Post'),
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-            ),
-          ],
         );
       },
     );
@@ -264,18 +345,27 @@ class _InstaPageState extends State<InstaPage> {
                             insta['insta'] ?? 'No contents',
                             textAlign: TextAlign.left,
                           ),
-                          SizedBox(height: 5),
-                          Text(
-                            DateFormat('d MMM, yyyy').format(
-                              DateTime.parse(insta['createdAt']).toLocal(),
-                            ),
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w400,
-                              color: Color.fromRGBO(52, 52, 52, 52),
-                            ),
+                          SizedBox(
+                            height: 10,
                           ),
-                          SizedBox(height: 20),
+                          Row(
+                            children: [
+                              Spacer(),
+                              Text(
+                                DateFormat('MMM d, yyyy, h:mm a').format(
+                                  DateTime.parse(insta['createdAt']).toLocal(),
+                                ),
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w400,
+                                  color: Color.fromRGBO(52, 52, 52, 52),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
                           if (insta['userId'] ==
                                   Provider.of<LoginService>(context,
                                           listen: false)
@@ -292,7 +382,6 @@ class _InstaPageState extends State<InstaPage> {
                                 ),
                               ),
                               onPressed: () {
-                                Navigator.of(context).pop();
                                 _showEditInstaDialog(insta);
                               },
                               child: SizedBox(
@@ -366,107 +455,174 @@ class _InstaPageState extends State<InstaPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
+          elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
-          title: Text('Edit Insta', style: TextStyle(fontSize: 22)),
-          content: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.9,
-            height: MediaQuery.of(context).size.height * 0.6,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: controller,
-                  decoration: InputDecoration(
-                    hintText: 'Update your insta',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+          title: Text(
+            'Edit insta',
+            style: TextStyle(
+              fontSize: 20,
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: SizedBox(
+              width: 360,
+              height: 480,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: controller,
+                    decoration: InputDecoration(
+                      hintText: 'Update your insta',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                    maxLines: null,
+                    keyboardType: TextInputType.multiline,
+                  ),
+                  SizedBox(height: 10),
+                  if (_newImageFile != null || existingImageUrl != null)
+                    Stack(
+                      children: [
+                        if (_newImageFile != null)
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: Image.file(
+                              _newImageFile!,
+                              height: 200,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        else if (existingImageUrl != null)
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: Image.network(
+                              existingImageUrl!,
+                              height: 200,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        Positioned(
+                          right: 10,
+                          top: 10,
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.cancel,
+                              color: Colors.red,
+                              size: 30,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _newImageFile = null;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
+                    onPressed: () {
+                      _pickImage();
+                    },
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Center(
+                        child: Text(
+                          'Add image',
+                          style: TextStyle(
+                            color: Color.fromRGBO(52, 52, 52, 52),
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                  maxLines: null,
-                  keyboardType: TextInputType.multiline,
-                ),
-                SizedBox(height: 10),
-                if (_newImageFile != null || existingImageUrl != null)
-                  Stack(
-                    children: [
-                      if (_newImageFile != null)
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.file(
-                            _newImageFile!,
-                            height: 200,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
+                  SizedBox(height: 5),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF44558C8),
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
+                    onPressed: () async {
+                      final instaService = InstaService();
+                      final userId =
+                          Provider.of<LoginService>(context, listen: false)
+                                  .userInfo?['id'] ??
+                              '';
+                      String? imageUrl =
+                          _newImageFile != null ? null : existingImageUrl;
+                      await instaService.instaUpdate(
+                        insta['id'],
+                        userId,
+                        controller.text,
+                        _newImageFile != null
+                            ? XFile(_newImageFile!.path)
+                            : null,
+                      );
+                      fetchInstas();
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                    },
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Center(
+                        child: Text(
+                          'Update',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
                           ),
-                        )
-                      else if (existingImageUrl != null)
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.network(
-                            existingImageUrl!,
-                            height: 200,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      Positioned(
-                        right: 10,
-                        top: 10,
-                        child: IconButton(
-                          icon: Icon(Icons.cancel, color: Colors.red, size: 30),
-                          onPressed: () {
-                            setState(() {
-                              _newImageFile = null;
-                            });
-                          },
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.photo, color: Colors.blue),
-                      onPressed: _pickImage,
+                  SizedBox(height: 5),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
                     ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Center(
+                        child: Text(
+                          'Cancel',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                            color: Color.fromRGBO(52, 52, 52, 52),
+                          ),
                         ),
                       ),
-                      onPressed: () async {
-                        final instaService = InstaService();
-                        final userId =
-                            Provider.of<LoginService>(context, listen: false)
-                                    .userInfo?['id'] ??
-                                '';
-                        String? imageUrl =
-                            _newImageFile != null ? null : existingImageUrl;
-                        await instaService.instaUpdate(
-                          insta['id'],
-                          userId,
-                          controller.text,
-                          _newImageFile != null
-                              ? XFile(_newImageFile!.path)
-                              : null,
-                        );
-                        Navigator.of(context).pop();
-                        fetchInstas();
-                      },
-                      child: Text(
-                        'Update',
-                        style: TextStyle(color: Colors.white),
-                      ),
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
           ),
         );
