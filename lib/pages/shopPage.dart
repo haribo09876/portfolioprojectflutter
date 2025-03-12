@@ -66,11 +66,9 @@ class _ShopPageState extends State<ShopPage> {
         _imageFile != null ? XFile(_imageFile!.path) : null,
       );
       print('Item posted successfully');
-      Navigator.of(context).pop();
     } catch (error) {
       print('Error posting item: $error');
     }
-
     setState(() {
       _itemTitleController.clear();
       _itemController.clear();
@@ -102,16 +100,26 @@ class _ShopPageState extends State<ShopPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
+          elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(15),
           ),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Post Item',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+              Text(
+                'Post item',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
               IconButton(
-                icon: Icon(Icons.close, color: Colors.black54),
+                icon: Icon(
+                  Icons.close,
+                  color: Color.fromRGBO(52, 52, 52, 52),
+                ),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -119,91 +127,144 @@ class _ShopPageState extends State<ShopPage> {
             ],
           ),
           content: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.9,
-            height: MediaQuery.of(context).size.height * 0.6,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: _itemTitleController,
-                  decoration: InputDecoration(
-                    hintText: 'Item Title',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
+            width: 360,
+            height: 480,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    child: Column(
+                      children: [
+                        TextField(
+                          controller: _itemTitleController,
+                          decoration: InputDecoration(
+                            hintText: 'Item title',
+                            hintStyle: TextStyle(
+                              color: Color.fromRGBO(52, 52, 52, 52),
+                            ),
+                            border: OutlineInputBorder(),
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 12, horizontal: 15),
+                          ),
+                          maxLines: null,
+                          keyboardType: TextInputType.multiline,
+                        ),
+                        SizedBox(height: 10),
+                        TextField(
+                          controller: _itemController,
+                          decoration: InputDecoration(
+                            hintText: 'Item Contents',
+                            hintStyle: TextStyle(
+                              color: Color.fromRGBO(52, 52, 52, 52),
+                            ),
+                            border: OutlineInputBorder(),
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 12, horizontal: 15),
+                          ),
+                          maxLines: null,
+                          keyboardType: TextInputType.multiline,
+                        ),
+                        SizedBox(height: 10),
+                        TextField(
+                          controller: _itemPriceController,
+                          decoration: InputDecoration(
+                            hintText: 'Item Price',
+                            hintStyle: TextStyle(
+                              color: Color.fromRGBO(52, 52, 52, 52),
+                            ),
+                            border: OutlineInputBorder(),
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 12, horizontal: 15),
+                          ),
+                          maxLines: null,
+                          keyboardType: TextInputType.multiline,
+                        ),
+                      ],
                     ),
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 12, horizontal: 15),
                   ),
-                ),
-                SizedBox(height: 10),
-                TextField(
-                  controller: _itemController,
-                  decoration: InputDecoration(
-                    hintText: 'Item Contents',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
+                  SizedBox(height: 20),
+                  if (_imageFile != null)
+                    Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
+                          child: Image.file(
+                            _imageFile!,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        Positioned(
+                          right: 5,
+                          top: 5,
+                          child: IconButton(
+                            icon:
+                                Icon(Icons.cancel, color: Colors.red, size: 30),
+                            onPressed: () {
+                              setState(() {
+                                _imageFile = null;
+                              });
+                              _cancelImageAttachment();
+                              Navigator.of(context).pop();
+                              _showItemDialog();
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 12, horizontal: 15),
-                  ),
-                  maxLines: null,
-                  keyboardType: TextInputType.multiline,
-                ),
-                SizedBox(height: 10),
-                TextField(
-                  controller: _itemPriceController,
-                  decoration: InputDecoration(
-                    hintText: 'Item Price',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
                     ),
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 12, horizontal: 15),
-                  ),
-                  keyboardType: TextInputType.number,
-                ),
-                SizedBox(height: 10),
-                if (_imageFile != null)
-                  Stack(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(5),
-                        child: Image.file(
-                          _imageFile!,
-                          height: 200,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
+                    onPressed: () {
+                      _pickImage();
+                    },
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Center(
+                        child: Text(
+                          'Add Image',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                            color: Color.fromRGBO(52, 52, 52, 52),
+                          ),
                         ),
                       ),
-                      Positioned(
-                        right: 10,
-                        top: 10,
-                        child: IconButton(
-                          icon: Icon(Icons.cancel, color: Colors.red, size: 30),
-                          onPressed: () {
-                            _cancelImageAttachment();
-                            Navigator.of(context).pop();
-                            _showItemDialog();
-                          },
+                    ),
+                  ),
+                  SizedBox(height: 5),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF44558C8),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
+                    onPressed: () {
+                      _postItem();
+                      Navigator.of(context).pop();
+                    },
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Center(
+                        child: Text(
+                          'Post',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ElevatedButton(
-                      onPressed: _pickImage,
-                      child: Text('Pick Image'),
-                    ),
-                    ElevatedButton(
-                      onPressed: _postItem,
-                      child: Text('Post Item'),
-                    ),
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
@@ -797,8 +858,8 @@ class _ShopPageState extends State<ShopPage> {
                                           Text(
                                             item['itemTitle'] ?? 'No Title',
                                             style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w500,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w400,
                                             ),
                                           ),
                                           SizedBox(
