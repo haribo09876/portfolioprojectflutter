@@ -589,39 +589,57 @@ class _ShopPageState extends State<ShopPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return Dialog(
+        return AlertDialog(
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
+          elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(15),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(height: 50),
-                Center(
-                  child: Text(
-                    'Thank you for your purchase!',
-                    style: TextStyle(fontSize: 18),
-                  ),
+          title: Text('Purchase item',
+              style: TextStyle(
+                fontSize: 20,
+              )),
+          content: SizedBox(
+            width: 360,
+            height: 120,
+            child: Center(
+              child: Text(
+                'Thank you for your purchase!',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
                 ),
-                SizedBox(height: 30),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pop();
-                      },
-                      child: Text('OK'),
-                    ),
-                  ],
-                ),
-              ],
+              ),
             ),
           ),
+          actions: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              },
+              child: SizedBox(
+                width: double.infinity,
+                child: Center(
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                      color: Color.fromRGBO(52, 52, 52, 52),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         );
       },
     );
@@ -649,7 +667,7 @@ class _ShopPageState extends State<ShopPage> {
                             crossAxisCount: 2,
                             crossAxisSpacing: 0,
                             mainAxisSpacing: 0,
-                            childAspectRatio: 0.65,
+                            childAspectRatio: 0.6,
                           ),
                           itemCount: items.length,
                           itemBuilder: (context, index) {
@@ -708,7 +726,7 @@ class _ShopPageState extends State<ShopPage> {
                                             item['itemTitle'] ?? 'No Title',
                                             style: TextStyle(
                                               fontSize: 15,
-                                              fontWeight: FontWeight.w400,
+                                              fontWeight: FontWeight.w500,
                                             ),
                                           ),
                                           Row(
