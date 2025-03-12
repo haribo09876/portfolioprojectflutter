@@ -91,27 +91,87 @@ class _MainPageState extends State<MainPage> {
                       barrierDismissible: false,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text('Log out'),
-                          content: Text('Are you sure you want to log out?'),
-                          actions: <Widget>[
-                            TextButton(
-                              child: Text('Log out'),
-                              onPressed: () {
+                          backgroundColor: Color.fromARGB(255, 255, 255, 255),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          title: Text(
+                            'Log out',
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
+                          content: SizedBox(
+                            width: 360,
+                            height: 120,
+                            child: Center(
+                              child: Text(
+                                'Are you sure you want to log out?',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                          ),
+                          actions: [
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xFFEE5E37),
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                              ),
+                              onPressed: () async {
                                 Navigator.of(context).pop(true);
                               },
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: Center(
+                                  child: Text(
+                                    'Log out',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
-                            TextButton(
-                              child: Text('Cancel'),
+                            SizedBox(height: 5),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    Color.fromARGB(242, 242, 242, 242),
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                              ),
                               onPressed: () {
                                 Navigator.of(context).pop(false);
                               },
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: Center(
+                                  child: Text(
+                                    'Cancel',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400,
+                                      color: Color.fromRGBO(52, 52, 52, 52),
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
                           ],
                         );
                       },
                     ) ??
                     false;
-
                 if (shouldLogout) {
                   await loginService.logoutUser();
                   Navigator.pushReplacementNamed(context, AppRoutes.login);

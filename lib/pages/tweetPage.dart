@@ -332,84 +332,83 @@ class _TweetPageState extends State<TweetPage> {
                               ),
                             ),
                           SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Spacer(),
+                              Text(
+                                DateFormat('MMM d, yyyy, h:mm a').format(
+                                  DateTime.parse(tweet['createdAt']).toLocal(),
+                                ),
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w400,
+                                  color: Color.fromRGBO(52, 52, 52, 52),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
                           if (tweet['userId'] ==
                                   Provider.of<LoginService>(context,
                                           listen: false)
                                       .userInfo?['id'] ||
                               Provider.of<LoginService>(context, listen: false)
                                       .userInfo?['id'] ==
-                                  adminId)
-                            Row(
-                              children: [
-                                Spacer(),
-                                Text(
-                                  DateFormat('MMM d, yyyy, h:mm a').format(
-                                    DateTime.parse(tweet['createdAt'])
-                                        .toLocal(),
-                                  ),
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w400,
-                                    color: Color.fromRGBO(52, 52, 52, 52),
-                                  ),
+                                  adminId) ...[
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xFF44558C8),
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50),
                                 ),
-                              ],
-                            ),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFF44558C8),
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50),
                               ),
-                            ),
-                            onPressed: () {
-                              _showEditTweetDialog(tweet);
-                            },
-                            child: SizedBox(
-                              width: double.infinity,
-                              child: Center(
-                                child: Text(
-                                  'Edit',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.white,
+                              onPressed: () {
+                                _showEditTweetDialog(tweet);
+                              },
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: Center(
+                                  child: Text(
+                                    'Edit',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                          SizedBox(height: 5),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFFEE5E37),
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50),
+                            SizedBox(height: 5),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xFFEE5E37),
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
                               ),
-                            ),
-                            onPressed: () {
-                              _showDeleteConfirmationDialog(tweet['id']);
-                            },
-                            child: SizedBox(
-                              width: double.infinity,
-                              child: Center(
-                                child: Text(
-                                  'Delete',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.white,
+                              onPressed: () {
+                                _showDeleteConfirmationDialog(tweet['id']);
+                              },
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: Center(
+                                  child: Text(
+                                    'Delete',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                          SizedBox(height: 5),
+                          ],
                         ],
                       ),
                     ),
@@ -824,6 +823,7 @@ class _TweetPageState extends State<TweetPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: _showTweetDialog,
         backgroundColor: Color(0xFF44558C8),
+        elevation: 0,
         shape: CircleBorder(),
         child: Icon(Icons.add, color: Colors.white),
       ),

@@ -258,99 +258,171 @@ class _ShopPageState extends State<ShopPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return Dialog(
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(15),
           ),
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(item['itemTitle'] ?? 'No Title',
-                          style: TextStyle(
-                              fontSize: 22, fontWeight: FontWeight.w400)),
-                      IconButton(
-                        icon: Icon(Icons.close, color: Colors.black54),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10),
-                  if (item['photo'] != null) ...[
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(5),
-                      child: Image.network(
-                        item['photo'],
-                        height: 200,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Center(child: Text('Failed to load image'));
-                        },
+          content: SizedBox(
+            width: 360,
+            height: 480,
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        item['itemTitle'] ?? 'No Title',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
                     ),
-                  ],
-                  SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Spacer(),
-                      Text(
-                        '${NumberFormat('###,###,###').format(item['itemPrice'] ?? 0)}원 ',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.grey[700],
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10),
-                  Text(item['itemContents'] ?? 'No Contents',
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.w400)),
-                  SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: () async {
-                      await _purchaseItem(item);
-                      _showPurchaseConfirmationDialog();
-                    },
-                    child: Text('Purchase'),
-                  ),
-                  if (userId == adminId) ...[
-                    SizedBox(height: 10),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                          icon: Icon(Icons.edit_outlined, color: Colors.blue),
+                          icon: Icon(
+                            Icons.close,
+                            color: Color.fromRGBO(52, 52, 52, 52),
+                          ),
                           onPressed: () {
-                            _itemTitleController.text = item['itemTitle'] ?? '';
-                            _itemController.text = item['itemContents'] ?? '';
-                            _itemPriceController.text =
-                                item['itemPrice']?.toString() ?? '';
-                            _imageFile = null;
                             Navigator.of(context).pop();
-                            _showEditDialog(item['itemId']);
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.delete_outline, color: Colors.red),
-                          onPressed: () {
-                            _showDeleteConfirmationDialog(item['itemId']);
                           },
                         ),
                       ],
                     ),
                   ],
-                ],
-              ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (item['photo'] != null)
+                          Image.network(item['photo'], fit: BoxFit.cover)
+                        else
+                          Container(
+                            color: Colors.grey[200],
+                            height: 200,
+                            width: double.infinity,
+                            child: Center(child: Text('No image')),
+                          ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            '${NumberFormat('###,###,###').format(item['itemPrice'] ?? 0)}원',
+                            style: TextStyle(
+                                fontSize: 18, color: Colors.grey[700]),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          item['itemContents'] ?? 'No Contents',
+                          style: TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.w400),
+                        ),
+                        SizedBox(height: 10),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF44558C8),
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                            onPressed: () async {
+                              await _purchaseItem(item);
+                              _showPurchaseConfirmationDialog();
+                            },
+                            child: Text(
+                              'Purchase',
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.white),
+                            ),
+                          ),
+                        ),
+                        if (userId == adminId) ...[
+                          SizedBox(
+                            height: 5,
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF44558C8),
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                            onPressed: () {
+                              _itemTitleController.text =
+                                  item['itemTitle'] ?? '';
+                              _itemController.text = item['itemContents'] ?? '';
+                              _itemPriceController.text =
+                                  item['itemPrice']?.toString() ?? '';
+                              _imageFile = null;
+                              Navigator.of(context).pop();
+                              _showEditDialog(item['itemId']);
+                            },
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: Center(
+                                child: Text(
+                                  'Edit',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFFEE5E37),
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                            onPressed: () {
+                              _showDeleteConfirmationDialog(item['itemId']);
+                            },
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: Center(
+                                child: Text(
+                                  'Delete',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         );
@@ -729,6 +801,9 @@ class _ShopPageState extends State<ShopPage> {
                                               fontWeight: FontWeight.w500,
                                             ),
                                           ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
                                           Row(
                                             children: [
                                               Spacer(),
@@ -768,6 +843,7 @@ class _ShopPageState extends State<ShopPage> {
                 _showItemDialog();
               },
               backgroundColor: Color(0xFF44558C8),
+              elevation: 0,
               shape: CircleBorder(),
               child: Icon(Icons.add, color: Colors.white),
             )

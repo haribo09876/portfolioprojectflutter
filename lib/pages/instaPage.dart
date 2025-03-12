@@ -340,7 +340,9 @@ class _InstaPageState extends State<InstaPage> {
                               width: double.infinity,
                               child: Center(child: Text('No image')),
                             ),
-                          SizedBox(height: 10),
+                          SizedBox(
+                            height: 10,
+                          ),
                           Text(
                             insta['insta'] ?? 'No contents',
                             textAlign: TextAlign.left,
@@ -372,7 +374,7 @@ class _InstaPageState extends State<InstaPage> {
                                       .userInfo?['id'] ||
                               Provider.of<LoginService>(context, listen: false)
                                       .userInfo?['id'] ==
-                                  adminId)
+                                  adminId) ...[
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Color(0xFF44558C8),
@@ -398,32 +400,33 @@ class _InstaPageState extends State<InstaPage> {
                                 ),
                               ),
                             ),
-                          SizedBox(height: 5),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFFEE5E37),
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50),
+                            SizedBox(height: 5),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xFFEE5E37),
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
                               ),
-                            ),
-                            onPressed: () {
-                              _showDeleteConfirmationDialog(insta['id']);
-                            },
-                            child: SizedBox(
-                              width: double.infinity,
-                              child: Center(
-                                child: Text(
-                                  'Delete',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.white,
+                              onPressed: () {
+                                _showDeleteConfirmationDialog(insta['id']);
+                              },
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: Center(
+                                  child: Text(
+                                    'Delete',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
+                          ],
                         ],
                       ),
                     ),
@@ -768,6 +771,7 @@ class _InstaPageState extends State<InstaPage> {
           _showInstaDialog();
         },
         backgroundColor: Color(0xFF44558C8),
+        elevation: 0,
         shape: CircleBorder(),
         child: Icon(Icons.add, color: Colors.white),
       ),
