@@ -191,7 +191,9 @@ class _SignupPageState extends State<SignupPage> {
           validator: validator,
           decoration: InputDecoration(
             hintText: hintText,
-            hintStyle: TextStyle(color: Color.fromRGBO(89, 89, 89, 89)),
+            hintStyle: TextStyle(
+              color: Color.fromRGBO(52, 52, 52, 52),
+            ),
             filled: true,
             fillColor: Color.fromARGB(242, 242, 242, 242),
             border: OutlineInputBorder(
@@ -220,7 +222,9 @@ class _SignupPageState extends State<SignupPage> {
         child: DropdownButtonFormField<String>(
           value: value,
           onChanged: onChanged,
-          style: TextStyle(color: Color.fromRGBO(89, 89, 89, 89)),
+          style: TextStyle(
+            color: Color.fromRGBO(52, 52, 52, 52),
+          ),
           decoration: InputDecoration(
             border: InputBorder.none,
           ),
@@ -252,7 +256,7 @@ class _SignupPageState extends State<SignupPage> {
                   backgroundImage: _image != null ? FileImage(_image!) : null,
                   child: _image == null
                       ? Icon(Icons.person,
-                          size: 50, color: Color.fromRGBO(89, 89, 89, 89))
+                          size: 50, color: Color.fromRGBO(52, 52, 52, 52))
                       : null,
                 ),
               ),
