@@ -755,7 +755,7 @@ class _UserPageState extends State<UserPage> {
                             ),
                     ),
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 15),
                   Text(
                     user['userName'] ?? 'No userName',
                     style: TextStyle(
@@ -776,7 +776,6 @@ class _UserPageState extends State<UserPage> {
               ),
             ],
           ),
-          SizedBox(height: 5),
           Row(
             children: [
               Spacer(),

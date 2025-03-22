@@ -873,7 +873,7 @@ class _ShopPageState extends State<ShopPage> {
                                           Text(
                                             item['itemTitle'] ?? 'No Title',
                                             style: TextStyle(
-                                              fontSize: 18,
+                                              fontSize: 20,
                                               fontWeight: FontWeight.w400,
                                             ),
                                           ),

@@ -28,6 +28,8 @@ class _MainPageState extends State<MainPage> {
       child: Scaffold(
         backgroundColor: Color.fromARGB(255, 255, 255, 255),
         appBar: AppBar(
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
+          elevation: 0,
           automaticallyImplyLeading: false,
           flexibleSpace: Center(
             child: Text(
@@ -35,6 +37,7 @@ class _MainPageState extends State<MainPage> {
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w500,
+                color: Color(0xff333333),
               ),
             ),
           ),
@@ -73,19 +76,28 @@ class _MainPageState extends State<MainPage> {
           actions: [
             if (userId == adminId)
               IconButton(
-                icon: Icon(Icons.book_outlined),
+                icon: Icon(
+                  Icons.book_outlined,
+                  color: Color.fromRGBO(52, 52, 52, 52),
+                ),
                 onPressed: () {
                   Navigator.pushNamed(context, AppRoutes.dashboard);
                 },
               ),
             IconButton(
-              icon: Icon(Icons.person_2_outlined),
+              icon: Icon(
+                Icons.person_2_outlined,
+                color: Color.fromRGBO(52, 52, 52, 52),
+              ),
               onPressed: () {
                 Navigator.pushNamed(context, AppRoutes.user);
               },
             ),
             IconButton(
-              icon: Icon(Icons.logout_outlined),
+              icon: Icon(
+                Icons.logout_outlined,
+                color: Color.fromRGBO(52, 52, 52, 52),
+              ),
               onPressed: () async {
                 bool shouldLogout = await showDialog<bool>(
                       context: context,
