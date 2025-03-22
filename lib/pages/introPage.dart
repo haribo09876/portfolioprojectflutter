@@ -24,8 +24,8 @@ class IntroPage extends StatelessWidget {
               'Portfolio Project with Flutter and AWS',
               style: TextStyle(
                 fontSize: 15,
-                fontWeight: FontWeight.w400,
-                color: Color.fromRGBO(52, 52, 52, 52),
+                fontWeight: FontWeight.w500,
+                color: Color.fromRGBO(89, 89, 89, 89),
               ),
               textAlign: TextAlign.center,
             ),
@@ -34,7 +34,8 @@ class IntroPage extends StatelessWidget {
               width: 360,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xff4558C8),
+                  backgroundColor: Color(0xff4A7FF7),
+                  elevation: 0,
                   padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50),
@@ -47,7 +48,7 @@ class IntroPage extends StatelessWidget {
                   'Get started',
                   style: TextStyle(
                     fontSize: 15,
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w500,
                     color: Colors.white,
                   ),
                 ),

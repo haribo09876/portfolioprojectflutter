@@ -24,55 +24,55 @@ class HomePage extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
-                        color: Color(0xFF44558C8),
+                        color: Color.fromARGB(255, 255, 255, 255),
                         child: Container(
                           width: 360,
                           padding: const EdgeInsets.all(15.0),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SizedBox(height: 10),
                               Text(
                                 weatherService.city,
                                 style: TextStyle(
                                   fontSize: 40,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey[700],
                                 ),
                               ),
                               SizedBox(height: 15),
                               Icon(
                                 _getWeatherIcon(weatherService.currentWeather),
-                                size: 120,
-                                color: Colors.white,
+                                size: 100,
+                                color: Colors.grey[700],
                               ),
-                              SizedBox(height: 20),
+                              SizedBox(height: 15),
                               Text(
                                 weatherService.currentWeather,
                                 style: TextStyle(
                                   fontSize: 30,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey[700],
                                 ),
                               ),
                               Text(
                                 '${(weatherService.currentTemp - 273.15).toStringAsFixed(1)} °C',
                                 style: TextStyle(
                                   fontSize: 30,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey[700],
                                 ),
                               ),
+                              SizedBox(height: 15),
                               Container(
-                                height: 180,
+                                height: 150,
                                 child: ListView.builder(
                                   scrollDirection: Axis.horizontal,
                                   itemCount: weatherService.days.length,
                                   itemBuilder: (context, index) {
                                     final day = weatherService.days[index];
                                     return Container(
-                                      width:
-                                          MediaQuery.of(context).size.width / 5,
+                                      width: MediaQuery.of(context).size.width /
+                                          5.4,
                                       alignment: Alignment.center,
                                       child: Column(
                                         mainAxisAlignment:
@@ -82,39 +82,39 @@ class HomePage extends StatelessWidget {
                                             _getWeatherIcon(
                                                 day['weather'][0]['main']),
                                             size: 45,
-                                            color: Colors.white,
+                                            color: Colors.grey[700],
                                           ),
                                           SizedBox(height: 5),
                                           Text(
                                             day['weather'][0]['main'],
                                             style: TextStyle(
                                               fontSize: 15,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.white,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.grey[700],
                                             ),
                                           ),
                                           Text(
                                             '${(day['main']['temp'] - 273.15).toStringAsFixed(1)} °C',
                                             style: TextStyle(
                                               fontSize: 15,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.white,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.grey[700],
                                             ),
                                           ),
                                           Text(
                                             '${day['dt_txt'].substring(5, 7)}/${day['dt_txt'].substring(8, 10)}',
                                             style: TextStyle(
                                               fontSize: 15,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.white,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.grey[700],
                                             ),
                                           ),
                                           Text(
                                             '${(DateTime.parse(day['dt_txt']).hour + 9) % 24} 시',
                                             style: TextStyle(
                                               fontSize: 15,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.white,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.grey[700],
                                             ),
                                           ),
                                         ],
@@ -128,13 +128,12 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(height: 15),
                     SizedBox(
                       width: 360,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      child: Column(
                         children: [
-                          Expanded(
+                          SizedBox(
+                            width: 360,
                             child: ElevatedButton(
                               onPressed: () async {
                                 await vpnService.connect();
@@ -144,21 +143,22 @@ class HomePage extends StatelessWidget {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(50),
                                 ),
-                                backgroundColor: Color(0xFF44558C8),
+                                backgroundColor: Color(0xFF12AC79),
                                 elevation: 0,
                               ),
                               child: Text(
                                 'Start VPN',
                                 style: TextStyle(
                                   fontSize: 20,
-                                  fontWeight: FontWeight.w400,
+                                  fontWeight: FontWeight.w500,
                                   color: Colors.white,
                                 ),
                               ),
                             ),
                           ),
-                          SizedBox(width: 10),
-                          Expanded(
+                          SizedBox(height: 15),
+                          SizedBox(
+                            width: 360,
                             child: ElevatedButton(
                               onPressed: () {
                                 vpnService.disconnect();
@@ -168,14 +168,14 @@ class HomePage extends StatelessWidget {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(50),
                                 ),
-                                backgroundColor: Color(0xFFEE5E37),
+                                backgroundColor: Color(0xFFF04452),
                                 elevation: 0,
                               ),
                               child: Text(
                                 'Stop VPN',
                                 style: TextStyle(
                                   fontSize: 20,
-                                  fontWeight: FontWeight.w400,
+                                  fontWeight: FontWeight.w500,
                                   color: Colors.white,
                                 ),
                               ),

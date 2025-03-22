@@ -93,7 +93,7 @@ class _TweetPageState extends State<TweetPage> {
                 'Post tweet',
                 style: TextStyle(
                   fontSize: 20,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
               IconButton(
@@ -167,7 +167,8 @@ class _TweetPageState extends State<TweetPage> {
                   SizedBox(height: 10),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(176, 176, 176, 176),
+                      backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                      elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50),
                       ),
@@ -179,11 +180,11 @@ class _TweetPageState extends State<TweetPage> {
                       width: double.infinity,
                       child: Center(
                         child: Text(
-                          'Add Image',
+                          'Add image',
                           style: TextStyle(
                             fontSize: 15,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                            color: Color.fromRGBO(52, 52, 52, 52),
                           ),
                         ),
                       ),
@@ -192,7 +193,8 @@ class _TweetPageState extends State<TweetPage> {
                   SizedBox(height: 5),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF44558C8),
+                      backgroundColor: Color(0xFF12AC79),
+                      elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50),
                       ),
@@ -209,7 +211,7 @@ class _TweetPageState extends State<TweetPage> {
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 15,
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
@@ -296,7 +298,7 @@ class _TweetPageState extends State<TweetPage> {
                                 tweet['username'],
                                 style: TextStyle(
                                   fontSize: 20,
-                                  fontWeight: FontWeight.w400,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ),
@@ -346,7 +348,7 @@ class _TweetPageState extends State<TweetPage> {
                                 ),
                                 style: TextStyle(
                                   fontSize: 10,
-                                  fontWeight: FontWeight.w400,
+                                  fontWeight: FontWeight.w500,
                                   color: Color.fromRGBO(52, 52, 52, 52),
                                 ),
                               ),
@@ -380,7 +382,7 @@ class _TweetPageState extends State<TweetPage> {
                                     'Edit',
                                     style: TextStyle(
                                       fontSize: 15,
-                                      fontWeight: FontWeight.w400,
+                                      fontWeight: FontWeight.w500,
                                       color: Colors.white,
                                     ),
                                   ),
@@ -390,7 +392,7 @@ class _TweetPageState extends State<TweetPage> {
                             SizedBox(height: 5),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFFEE5E37),
+                                backgroundColor: Color(0xFFF04452),
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(50),
@@ -406,7 +408,7 @@ class _TweetPageState extends State<TweetPage> {
                                     'Delete',
                                     style: TextStyle(
                                       fontSize: 15,
-                                      fontWeight: FontWeight.w400,
+                                      fontWeight: FontWeight.w500,
                                       color: Colors.white,
                                     ),
                                   ),
@@ -536,7 +538,7 @@ class _TweetPageState extends State<TweetPage> {
                           style: TextStyle(
                             color: Color.fromRGBO(52, 52, 52, 52),
                             fontSize: 15,
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
@@ -579,7 +581,7 @@ class _TweetPageState extends State<TweetPage> {
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 15,
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
@@ -604,7 +606,7 @@ class _TweetPageState extends State<TweetPage> {
                           'Cancel',
                           style: TextStyle(
                             fontSize: 15,
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.w500,
                             color: Color.fromRGBO(52, 52, 52, 52),
                           ),
                         ),
@@ -641,7 +643,7 @@ class _TweetPageState extends State<TweetPage> {
                 'Are you sure you want to delete this tweet?',
                 style: TextStyle(
                   fontSize: 15,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),
@@ -667,7 +669,7 @@ class _TweetPageState extends State<TweetPage> {
                     'Confirm',
                     style: TextStyle(
                       fontSize: 15,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w500,
                       color: Colors.white,
                     ),
                   ),
@@ -693,7 +695,7 @@ class _TweetPageState extends State<TweetPage> {
                     'Cancel',
                     style: TextStyle(
                       fontSize: 15,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w500,
                       color: Color.fromRGBO(52, 52, 52, 52),
                     ),
                   ),
@@ -728,96 +730,108 @@ class _TweetPageState extends State<TweetPage> {
                     child: Container(
                       width: 360,
                       child: Card(
-                        color: Color.fromARGB(242, 242, 242, 242),
+                        color: Color.fromARGB(255, 255, 255, 255),
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
-                        child: GestureDetector(
-                          onTap: () => _showTweetDetailDialog(tweet),
-                          child: ListTile(
-                            contentPadding: EdgeInsets.all(15),
-                            title: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
+                        child: Column(
+                          children: [
+                            GestureDetector(
+                              onTap: () => _showTweetDetailDialog(tweet),
+                              child: ListTile(
+                                contentPadding: EdgeInsets.all(15),
+                                title: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    tweet['userImgURL'] != null &&
-                                            tweet['userImgURL'] != ''
-                                        ? CircleAvatar(
-                                            backgroundImage: NetworkImage(
-                                                tweet['userImgURL']!),
-                                            radius: 20,
-                                          )
-                                        : CircleAvatar(
-                                            child: Icon(
-                                                Icons.account_circle_outlined,
-                                                color: Colors.grey,
-                                                size: 30),
-                                            radius: 20,
+                                    Row(
+                                      children: [
+                                        tweet['userImgURL'] != null &&
+                                                tweet['userImgURL'] != ''
+                                            ? CircleAvatar(
+                                                backgroundImage: NetworkImage(
+                                                    tweet['userImgURL']!),
+                                                radius: 20,
+                                              )
+                                            : CircleAvatar(
+                                                child: Icon(
+                                                    Icons
+                                                        .account_circle_outlined,
+                                                    color: Colors.grey,
+                                                    size: 30),
+                                                radius: 20,
+                                              ),
+                                        SizedBox(width: 15),
+                                        Text(
+                                          tweet['username'],
+                                          style: TextStyle(
+                                            fontSize: 20,
                                           ),
-                                    SizedBox(width: 15),
-                                    Text(
-                                      tweet['username'],
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w400,
-                                      ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
-                              ],
-                            ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(height: 15),
-                                Text(
-                                  tweet['tweet'],
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                if (tweet['photo'] != null) SizedBox(height: 5),
-                                if (tweet['photo'] != null)
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(15),
-                                    child: Image.network(
-                                      tweet['photo'],
-                                      width: double.infinity,
-                                      height: 200,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Spacer(),
+                                    SizedBox(height: 15),
                                     Text(
-                                      DateFormat('MMM d, yyyy, h:mm a').format(
-                                        DateTime.parse(tweet['createdAt'])
-                                            .toLocal(),
-                                      ),
+                                      tweet['tweet'],
                                       style: TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w400,
-                                        color: Color.fromRGBO(52, 52, 52, 52),
+                                        fontSize: 15,
                                       ),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    if (tweet['photo'] != null)
+                                      SizedBox(height: 5),
+                                    if (tweet['photo'] != null)
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(15),
+                                        child: Image.network(
+                                          tweet['photo'],
+                                          width: double.infinity,
+                                          height: 200,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Row(
+                                      children: [
+                                        Spacer(),
+                                        Text(
+                                          DateFormat('MMM d, yyyy, h:mm a')
+                                              .format(
+                                            DateTime.parse(tweet['createdAt'])
+                                                .toLocal(),
+                                          ),
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.w500,
+                                            color:
+                                                Color.fromRGBO(52, 52, 52, 52),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      width: 10,
                                     ),
                                   ],
                                 ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                              ],
+                                isThreeLine: true,
+                              ),
                             ),
-                            isThreeLine: true,
-                          ),
+                            Divider(
+                              color: Color.fromARGB(242, 242, 242, 242),
+                              thickness: 1,
+                              height: 1,
+                            ),
+                          ],
                         ),
                       ),
                     ),

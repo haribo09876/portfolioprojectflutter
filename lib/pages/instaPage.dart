@@ -174,7 +174,8 @@ class _InstaPageState extends State<InstaPage> {
                   SizedBox(height: 10),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(176, 176, 176, 176),
+                      backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                      elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50),
                       ),
@@ -192,7 +193,7 @@ class _InstaPageState extends State<InstaPage> {
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w400,
-                            color: Colors.white,
+                            color: Color.fromRGBO(52, 52, 52, 52),
                           ),
                         ),
                       ),
@@ -201,7 +202,8 @@ class _InstaPageState extends State<InstaPage> {
                   SizedBox(height: 5),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF44558C8),
+                      backgroundColor: Color(0xFF12AC79),
+                      elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50),
                       ),

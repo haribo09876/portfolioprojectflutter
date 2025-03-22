@@ -34,6 +34,7 @@ class _MainPageState extends State<MainPage> {
               'PPF',
               style: TextStyle(
                 fontSize: 20,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ),
@@ -109,7 +110,6 @@ class _MainPageState extends State<MainPage> {
                                 'Are you sure you want to log out?',
                                 style: TextStyle(
                                   fontSize: 15,
-                                  fontWeight: FontWeight.w400,
                                 ),
                               ),
                             ),
@@ -117,7 +117,7 @@ class _MainPageState extends State<MainPage> {
                           actions: [
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFFEE5E37),
+                                backgroundColor: Color(0xFFF04452),
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(50),
@@ -133,7 +133,7 @@ class _MainPageState extends State<MainPage> {
                                     'Log out',
                                     style: TextStyle(
                                       fontSize: 15,
-                                      fontWeight: FontWeight.w400,
+                                      fontWeight: FontWeight.w500,
                                       color: Colors.white,
                                     ),
                                   ),
@@ -160,7 +160,7 @@ class _MainPageState extends State<MainPage> {
                                     'Cancel',
                                     style: TextStyle(
                                       fontSize: 15,
-                                      fontWeight: FontWeight.w400,
+                                      fontWeight: FontWeight.w500,
                                       color: Color.fromRGBO(52, 52, 52, 52),
                                     ),
                                   ),

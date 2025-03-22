@@ -104,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                       style: TextStyle(
                         color: Color.fromRGBO(52, 52, 52, 52),
                         fontSize: 15,
-                        fontWeight: FontWeight.w400,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
@@ -155,7 +155,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget _buildButton(
     String text,
     VoidCallback onPressed, {
-    Color color = const Color(0xff4558C8),
+    Color color = const Color(0xff4A7FF7),
   }) {
     return Padding(
       padding: const EdgeInsets.only(top: 20),
@@ -164,6 +164,7 @@ class _LoginPageState extends State<LoginPage> {
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             backgroundColor: color,
+            elevation: 0,
             padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(25),
@@ -174,7 +175,7 @@ class _LoginPageState extends State<LoginPage> {
             text,
             style: TextStyle(
               fontSize: 15,
-              fontWeight: FontWeight.w400,
+              fontWeight: FontWeight.w500,
               color: Colors.white,
             ),
           ),

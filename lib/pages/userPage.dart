@@ -727,102 +727,126 @@ class _UserPageState extends State<UserPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              GestureDetector(
-                child: Container(
-                  width: 80,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    color: Colors.grey,
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                  child: user['userImgURL'] != null
-                      ? ClipOval(
-                          child: Image.network(
-                            user['userImgURL']!,
-                            width: 80,
-                            height: 80,
-                            fit: BoxFit.cover,
-                          ),
-                        )
-                      : Icon(
-                          Icons.account_circle,
-                          size: 40,
-                          color: Colors.white,
-                        ),
-                ),
-              ),
-              SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                user['userName'] ?? 'No userName',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              Text(
-                                user['userEmail'] ?? 'No userEmail',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w300,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Text(
-                          '${NumberFormat('###,###,###').format((user['userMoney'] - user['userSpend']) ?? 0)}원  ',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.grey[700],
-                          ),
-                        ),
-                      ],
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.edit_outlined,
-                        size: 17,
+              Column(
+                children: [
+                  GestureDetector(
+                    child: Container(
+                      width: 120,
+                      height: 120,
+                      decoration: BoxDecoration(
+                        color: Colors.grey,
+                        borderRadius: BorderRadius.circular(60),
                       ),
-                      onPressed: () {
-                        userUpdateDialog(userPassword, userName, userGender,
-                            userAge, userImgURL);
-                      },
+                      child: user['userImgURL'] != null
+                          ? ClipOval(
+                              child: Image.network(
+                                user['userImgURL']!,
+                                width: 120,
+                                height: 120,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : Icon(
+                              Icons.account_circle,
+                              size: 60,
+                              color: Colors.white,
+                            ),
                     ),
-                  ],
-                ),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    user['userName'] ?? 'No userName',
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.w500,
+                      color: Color.fromRGBO(52, 52, 52, 52),
+                    ),
+                  ),
+                  Text(
+                    user['userEmail'] ?? 'No userEmail',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: Color.fromRGBO(89, 89, 89, 89),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-          SizedBox(height: 20),
+          SizedBox(height: 5),
+          Row(
+            children: [
+              Spacer(),
+              Text(
+                '${NumberFormat('###,###,###').format((user['userMoney'] - user['userSpend']) ?? 0)}원',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                  color: Color.fromRGBO(52, 52, 52, 52),
+                ),
+                textAlign: TextAlign.right,
+              ),
+              SizedBox(width: 10),
+            ],
+          ),
           sectionTweet(tweetData),
           SizedBox(height: 20),
           sectionInsta(instaData),
           SizedBox(height: 20),
           sectionPurchase(purchaseData),
           SizedBox(height: 20),
-          TextButton(
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color(0xFF44558C8),
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(50),
+              ),
+            ),
+            onPressed: () {
+              userUpdateDialog(
+                  userPassword, userName, userGender, userAge, userImgURL);
+            },
+            child: SizedBox(
+              width: 360,
+              child: Center(
+                child: Text(
+                  'Edit account',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 5),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color(0xFFF04452),
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(50),
+              ),
+            ),
             onPressed: () {
               userDeleteDialog();
             },
-            child: Text(
-              'Delete Account',
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
-                color: Colors.red,
+            child: SizedBox(
+              width: 360,
+              child: Center(
+                child: Text(
+                  'Delete account',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
           ),
