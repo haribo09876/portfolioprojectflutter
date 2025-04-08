@@ -97,50 +97,115 @@ class _UserPageState extends State<UserPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Tweet Detail'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(tweetContents),
-              if (tweetImgURL != null)
-                Image.network(
-                  tweetImgURL,
-                  width: 100,
-                  height: 100,
-                  fit: BoxFit.cover,
-                ),
-            ],
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
           ),
-          actions: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.edit_outlined),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    tweetUpdateDialog(tweetId, tweetContents);
-                  },
-                ),
-                IconButton(
-                  icon: Icon(Icons.delete_outline),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    tweetDeleteDialog(tweetId);
-                  },
-                ),
-              ],
-            ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                child: Text('Close'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+          content: SizedBox(
+            width: 360,
+            height: 480,
+            child: Container(
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          Icons.close,
+                          color: Color.fromRGBO(52, 52, 52, 52),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            tweetContents,
+                            style: TextStyle(fontSize: 15),
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          if (tweetImgURL != null)
+                            ClipRRect(
+                              child: Image.network(
+                                tweetImgURL,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF44558C8),
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                            onPressed: () {
+                              tweetUpdateDialog(tweetId, tweetContents);
+                            },
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: Center(
+                                child: Text(
+                                  'Edit',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFFF04452),
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                            onPressed: () {
+                              tweetDeleteDialog(tweetId);
+                            },
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: Center(
+                                child: Text(
+                                  'Delete',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
+          ),
         );
       },
     );
@@ -152,48 +217,117 @@ class _UserPageState extends State<UserPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Insta Detail'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.network(
-                instaImgURL,
-                width: 100,
-                height: 100,
-                fit: BoxFit.cover,
-              ),
-              SizedBox(height: 8),
-              Text(instaContents.isNotEmpty ? instaContents : 'No Content'),
-            ],
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
           ),
-          actions: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.edit_outlined),
-                  onPressed: () {
-                    instaUpdateDialog(instaId, instaContents);
-                  },
-                ),
-                IconButton(
-                  icon: Icon(Icons.delete_outline),
-                  onPressed: () {
-                    instaDeleteDialog(instaId);
-                  },
-                ),
-              ],
-            ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                child: Text('Close'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+          content: SizedBox(
+            width: 360,
+            height: 480,
+            child: Container(
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          Icons.close,
+                          color: Color.fromRGBO(52, 52, 52, 52),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (instaImgURL != null)
+                            Image.network(instaImgURL, fit: BoxFit.cover)
+                          else
+                            Container(
+                              color: Colors.grey[200],
+                              height: 200,
+                              width: double.infinity,
+                              child: Center(child: Text('No image')),
+                            ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            instaContents ?? 'No contents',
+                            textAlign: TextAlign.left,
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF44558C8),
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                            onPressed: () {
+                              instaUpdateDialog(instaId, instaContents);
+                            },
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: Center(
+                                child: Text(
+                                  'Edit',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFFEE5E37),
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                            onPressed: () {
+                              instaDeleteDialog(instaId);
+                            },
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: Center(
+                                child: Text(
+                                  'Delete',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
+          ),
         );
       },
     );
@@ -212,54 +346,117 @@ class _UserPageState extends State<UserPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(itemTitle),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.network(
-                itemImgURL,
-                width: 200,
-                height: 200,
-                fit: BoxFit.cover,
-              ),
-              SizedBox(height: 8),
-              Text(itemContents.isNotEmpty ? itemContents : 'No Content'),
-              SizedBox(height: 8),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  '${NumberFormat('###,###,###').format(itemPrice)}원',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ],
+          backgroundColor: Colors.white,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
           ),
-          actions: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          content: SizedBox(
+            width: 360,
+            height: 480,
+            child: Column(
               children: [
-                purchaseStatus == 1
-                    ? TextButton(
-                        child: Text('Refund'),
-                        onPressed: () {
-                          purchaseUpdateDialog(purchaseId, itemPrice);
-                        },
-                      )
-                    : Text('Refund Completed',
-                        style: TextStyle(color: Colors.red)),
-                TextButton(
-                  child: Text('Close'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        itemTitle ?? 'No Title',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(
+                            Icons.close,
+                            color: Color.fromRGBO(52, 52, 52, 52),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (itemImgURL != null)
+                          Image.network(itemImgURL, fit: BoxFit.cover)
+                        else
+                          Container(
+                            color: Colors.grey[200],
+                            height: 200,
+                            width: double.infinity,
+                            child: Center(child: Text('No image')),
+                          ),
+                        SizedBox(height: 10),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            '${NumberFormat('###,###,###').format(itemPrice)}원',
+                            style: TextStyle(
+                                fontSize: 18, color: Colors.grey[700]),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          itemContents ?? 'No Contents',
+                          style: TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.w400),
+                        ),
+                        SizedBox(height: 30),
+                        if (purchaseStatus == 1)
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xFFF04452),
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                              ),
+                              onPressed: () {
+                                purchaseUpdateDialog(purchaseId, itemPrice);
+                              },
+                              child: Text(
+                                'Refund',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          )
+                        else
+                          Center(
+                            child: Text(
+                              'Refund Completed',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFFF04452),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),
-          ],
+          ),
         );
       },
     );
@@ -568,22 +765,80 @@ class _UserPageState extends State<UserPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirm'),
-          content: Text('Are you sure to refund this Item?'),
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Text('Refund Item',
+              style: TextStyle(
+                fontSize: 20,
+              )),
+          content: SizedBox(
+            width: 360,
+            height: 120,
+            child: Center(
+              child: Text(
+                'Are you sure you want to refund this item?',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+          ),
           actions: [
-            TextButton(
-              child: Text('Confirm'),
-              onPressed: () {
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF44558C8),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+              ),
+              onPressed: () async {
                 purchaseUpdate(purchaseId, itemPrice);
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
+              child: SizedBox(
+                width: double.infinity,
+                child: Center(
+                  child: Text(
+                    'Confirm',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
             ),
-            TextButton(
-              child: Text('Cancel'),
+            SizedBox(height: 5),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
+              child: SizedBox(
+                width: double.infinity,
+                child: Center(
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                      color: Color.fromRGBO(52, 52, 52, 52),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         );
@@ -596,21 +851,80 @@ class _UserPageState extends State<UserPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirm'),
-          content: Text('Are you sure to delete this Account?'),
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Text('Delete account',
+              style: TextStyle(
+                fontSize: 20,
+              )),
+          content: SizedBox(
+            width: 360,
+            height: 120,
+            child: Center(
+              child: Text(
+                'Are you sure you want to delete this account?',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+          ),
           actions: [
-            TextButton(
-              child: Text('Confirm'),
-              onPressed: () {
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF44558C8),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+              ),
+              onPressed: () async {
                 userDelete();
                 Navigator.of(context).pop();
               },
+              child: SizedBox(
+                width: double.infinity,
+                child: Center(
+                  child: Text(
+                    'Confirm',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
             ),
-            TextButton(
-              child: Text('Cancel'),
+            SizedBox(height: 5),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
+              child: SizedBox(
+                width: double.infinity,
+                child: Center(
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                      color: Color.fromRGBO(52, 52, 52, 52),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         );
@@ -623,22 +937,80 @@ class _UserPageState extends State<UserPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirm'),
-          content: Text('Are you sure you want to delete this Tweet?'),
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Text('Delete tweet',
+              style: TextStyle(
+                fontSize: 20,
+              )),
+          content: SizedBox(
+            width: 360,
+            height: 120,
+            child: Center(
+              child: Text(
+                'Are you sure you want to delete this tweet?',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ),
           actions: [
-            TextButton(
-              child: Text('Confirm'),
-              onPressed: () {
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF44558C8),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+              ),
+              onPressed: () async {
                 tweetDelete(tweetId);
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
+              child: SizedBox(
+                width: double.infinity,
+                child: Center(
+                  child: Text(
+                    'Confirm',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
             ),
-            TextButton(
-              child: Text('Cancel'),
+            SizedBox(height: 5),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
+              child: SizedBox(
+                width: double.infinity,
+                child: Center(
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: Color.fromRGBO(52, 52, 52, 52),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         );
@@ -651,22 +1023,81 @@ class _UserPageState extends State<UserPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirm'),
-          content: Text('Are you sure to delete this Insta?'),
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Text('Delete insta',
+              style: TextStyle(
+                fontSize: 20,
+              )),
+          content: SizedBox(
+            width: 360,
+            height: 120,
+            child: Center(
+              child: Text(
+                'Are you sure you want to delete this insta?',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+          ),
           actions: [
-            TextButton(
-              child: Text('Confirm'),
-              onPressed: () {
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF44558C8),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+              ),
+              onPressed: () async {
                 instaDelete(instaId);
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
+              child: SizedBox(
+                width: double.infinity,
+                child: Center(
+                  child: Text(
+                    'Confirm',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
             ),
-            TextButton(
-              child: Text('Cancel'),
+            SizedBox(height: 5),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
+              child: SizedBox(
+                width: double.infinity,
+                child: Center(
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                      color: Color.fromRGBO(52, 52, 52, 52),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         );
@@ -796,7 +1227,7 @@ class _UserPageState extends State<UserPage> {
           sectionInsta(instaData),
           SizedBox(height: 20),
           sectionPurchase(purchaseData),
-          SizedBox(height: 20),
+          SizedBox(height: 30),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Color(0xFF44558C8),
@@ -859,30 +1290,30 @@ class _UserPageState extends State<UserPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10.0),
+          padding: const EdgeInsets.symmetric(vertical: 5),
           child: Row(
             children: [
               Text(
                 'My Tweet   ',
                 style: TextStyle(
                   fontSize: 20,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.black,
+                  fontWeight: FontWeight.w500,
+                  color: Color.fromRGBO(52, 52, 52, 52),
                 ),
               ),
               Text(
                 '${tweetData.length}',
                 style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.blue,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xFF44558C8),
                 ),
               ),
             ],
           ),
         ),
         Container(
-          height: 80,
+          height: 100,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: tweetData.length,
@@ -897,19 +1328,23 @@ class _UserPageState extends State<UserPage> {
                       context, tweetContents, tweetImgURL, tweetId);
                 },
                 child: Container(
-                  width: 120,
-                  height: 80,
-                  margin: EdgeInsets.only(right: 2),
-                  padding: EdgeInsets.all(8),
+                  width: 150,
+                  height: 100,
+                  margin: EdgeInsets.only(right: 1),
+                  padding: EdgeInsets.all(5),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey, width: 1),
+                    border: Border.all(
+                      color: Color.fromARGB(176, 176, 176, 176),
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(15),
                   ),
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
                       tweet['tweetContents'] ?? '',
-                      style: TextStyle(color: Colors.black, fontSize: 12),
-                      maxLines: 2,
+                      style: TextStyle(color: Colors.black, fontSize: 15),
+                      maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -934,16 +1369,16 @@ class _UserPageState extends State<UserPage> {
                 'My Insta   ',
                 style: TextStyle(
                   fontSize: 20,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.black,
+                  fontWeight: FontWeight.w500,
+                  color: Color.fromRGBO(52, 52, 52, 52),
                 ),
               ),
               Text(
                 '${instaData.length}',
                 style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.blue,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xFF44558C8),
                 ),
               ),
             ],
@@ -996,16 +1431,16 @@ class _UserPageState extends State<UserPage> {
                 'My Purchase   ',
                 style: TextStyle(
                   fontSize: 20,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.black,
+                  fontWeight: FontWeight.w500,
+                  color: Color.fromRGBO(52, 52, 52, 52),
                 ),
               ),
               Text(
                 '${purchaseData.length}',
                 style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.blue,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xFF44558C8),
                 ),
               ),
             ],
@@ -1029,17 +1464,20 @@ class _UserPageState extends State<UserPage> {
                   purchaseDetailDialog(context, itemTitle, itemImgURL,
                       itemContents, purchaseId, itemPrice, purchaseStatus);
                 },
-                child: Container(
-                  width: 100,
-                  height: 150,
-                  margin: EdgeInsets.only(right: 1),
-                  color: Colors.grey,
-                  child: purchase['itemImgURL'] != null
-                      ? Image.network(
-                          purchase['itemImgURL'],
-                          fit: BoxFit.cover,
-                        )
-                      : Icon(Icons.camera_alt_outlined),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: Container(
+                    width: 100,
+                    height: 150,
+                    margin: EdgeInsets.only(right: 1),
+                    color: Colors.grey,
+                    child: purchase['itemImgURL'] != null
+                        ? Image.network(
+                            purchase['itemImgURL'],
+                            fit: BoxFit.cover,
+                          )
+                        : Icon(Icons.camera_alt_outlined),
+                  ),
                 ),
               );
             },
