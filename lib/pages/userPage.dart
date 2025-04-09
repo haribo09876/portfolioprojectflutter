@@ -55,7 +55,6 @@ class _UserPageState extends State<UserPage> {
       String userGender, dynamic userAge, XFile? userImgFile) async {
     await UserService().userUpdate(
         userPassword, userName, userGender, userAge, userImgFile, userId);
-
     _fetchData();
   }
 
