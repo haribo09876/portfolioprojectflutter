@@ -160,13 +160,13 @@ class _InstaPageState extends State<InstaPage> {
                           filled: true,
                           fillColor: Color.fromARGB(242, 242, 242, 242),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(50),
+                            borderRadius: BorderRadius.circular(15),
                             borderSide: BorderSide.none,
                           ),
                           contentPadding: EdgeInsets.symmetric(
                               vertical: 12, horizontal: 15),
                         ),
-                        maxLines: null,
+                        maxLines: 4,
                         keyboardType: TextInputType.multiline,
                       ),
                     ),

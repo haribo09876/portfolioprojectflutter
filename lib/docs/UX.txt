@@ -1,0 +1,7 @@
+- language = English
+- theme = bright, white
+- card, shadow = 0
+- width = 360
+- radius = 15, 50
+- color = RGBO(52, 89, 176), ARGB(242, 255)
+- Confirm, Post, Update, Delete, Cancel
