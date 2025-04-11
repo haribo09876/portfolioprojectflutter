@@ -434,190 +434,196 @@ class _TweetPageState extends State<TweetPage> {
     File? _newImageFile = null;
     String? existingImageUrl = tweet['photo'];
 
-    void _pickImage() async {
+    void refreshState() {
+      if (mounted) setState(() {});
+    }
+
+    Future<void> _pickImage() async {
       final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
-        setState(() {
-          _newImageFile = File(pickedFile.path);
-        });
+        _newImageFile = File(pickedFile.path);
+        existingImageUrl = null;
+        refreshState();
       }
     }
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Color.fromARGB(255, 255, 255, 255),
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          title: Text(
-            'Edit tweet',
-            style: TextStyle(
-              fontSize: 20,
+        return StatefulBuilder(builder: (context, setModalState) {
+          return AlertDialog(
+            backgroundColor: Color.fromARGB(255, 255, 255, 255),
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
             ),
-          ),
-          content: SingleChildScrollView(
-            child: SizedBox(
-              width: 360,
-              height: 480,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    controller: controller,
-                    decoration: InputDecoration(
-                      hintText: 'Update your tweet',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                    ),
-                    maxLines: null,
-                    keyboardType: TextInputType.multiline,
-                  ),
-                  SizedBox(height: 10),
-                  if (_newImageFile != null || existingImageUrl != null)
-                    Stack(
-                      children: [
-                        if (_newImageFile != null)
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Image.file(
-                              _newImageFile!,
-                              height: 200,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            ),
-                          )
-                        else if (existingImageUrl != null)
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Image.network(
-                              existingImageUrl!,
-                              height: 200,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        Positioned(
-                          right: 10,
-                          top: 10,
-                          child: IconButton(
-                            icon: Icon(
-                              Icons.cancel,
-                              color: Colors.red,
-                              size: 30,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _newImageFile = null;
-                              });
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  SizedBox(height: 10),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(242, 242, 242, 242),
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                    ),
-                    onPressed: () {
-                      _pickImage();
-                    },
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: Center(
-                        child: Text(
-                          'Add image',
-                          style: TextStyle(
-                            color: Color.fromRGBO(52, 52, 52, 52),
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 5),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF44558C8),
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                    ),
-                    onPressed: () async {
-                      final tweetService = TweetService();
-                      final userId =
-                          Provider.of<LoginService>(context, listen: false)
-                                  .userInfo?['id'] ??
-                              '';
-                      String? imageUrl =
-                          _newImageFile != null ? null : existingImageUrl;
-                      await tweetService.tweetUpdate(
-                        tweet['id'],
-                        userId,
-                        controller.text,
-                        _newImageFile != null
-                            ? XFile(_newImageFile!.path)
-                            : null,
-                      );
-                      fetchTweets();
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
-                    },
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: Center(
-                        child: Text(
-                          'Update',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 5),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(242, 242, 242, 242),
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: Center(
-                        child: Text(
-                          'Cancel',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
-                            color: Color.fromRGBO(52, 52, 52, 52),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+            title: Text(
+              'Edit tweet',
+              style: TextStyle(
+                fontSize: 20,
               ),
             ),
-          ),
-        );
+            content: SingleChildScrollView(
+              child: SizedBox(
+                width: 360,
+                height: 480,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: controller,
+                      decoration: InputDecoration(
+                        hintText: 'Update your tweet',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                      ),
+                      maxLines: null,
+                      keyboardType: TextInputType.multiline,
+                    ),
+                    SizedBox(height: 10),
+                    if (_newImageFile != null || existingImageUrl != null)
+                      Stack(
+                        children: [
+                          if (_newImageFile != null)
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Image.file(
+                                _newImageFile!,
+                                height: 200,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          else if (existingImageUrl != null)
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Image.network(
+                                existingImageUrl!,
+                                height: 200,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          Positioned(
+                            right: 10,
+                            top: 10,
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.cancel,
+                                color: Colors.red,
+                                size: 30,
+                              ),
+                              onPressed: () {
+                                setModalState(() {
+                                  _newImageFile = null;
+                                  existingImageUrl = null;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    SizedBox(height: 10),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                      ),
+                      onPressed: () async {
+                        await _pickImage();
+                        setModalState(() {});
+                      },
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Center(
+                          child: Text(
+                            'Add image',
+                            style: TextStyle(
+                              color: Color.fromRGBO(52, 52, 52, 52),
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFF4558C8),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                      ),
+                      onPressed: () async {
+                        final tweetService = TweetService();
+                        final userId =
+                            Provider.of<LoginService>(context, listen: false)
+                                    .userInfo?['id'] ??
+                                '';
+                        await tweetService.tweetUpdate(
+                          tweet['id'],
+                          userId,
+                          controller.text,
+                          _newImageFile != null
+                              ? XFile(_newImageFile!.path)
+                              : null,
+                        );
+                        fetchTweets();
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                      },
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Center(
+                          child: Text(
+                            'Update',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Center(
+                          child: Text(
+                            'Cancel',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                              color: Color.fromRGBO(52, 52, 52, 52),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
       },
     );
   }
