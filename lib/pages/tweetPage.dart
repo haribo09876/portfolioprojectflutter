@@ -121,19 +121,11 @@ class _TweetPageState extends State<TweetPage> {
                         controller: _tweetController,
                         decoration: InputDecoration(
                           hintText: 'What’s happening?',
-                          hintStyle: TextStyle(
-                            color: Color.fromRGBO(52, 52, 52, 52),
-                          ),
-                          filled: true,
-                          fillColor: Color.fromARGB(242, 242, 242, 242),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
-                            borderSide: BorderSide.none,
                           ),
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 12, horizontal: 15),
                         ),
-                        maxLines: 4,
+                        maxLines: 3,
                         keyboardType: TextInputType.multiline,
                       ),
                     ),
@@ -478,7 +470,7 @@ class _TweetPageState extends State<TweetPage> {
                           borderRadius: BorderRadius.circular(15),
                         ),
                       ),
-                      maxLines: null,
+                      maxLines: 3,
                       keyboardType: TextInputType.multiline,
                     ),
                     SizedBox(height: 10),

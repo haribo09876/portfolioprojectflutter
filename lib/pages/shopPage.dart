@@ -452,7 +452,6 @@ class _ShopPageState extends State<ShopPage> {
                               _itemPriceController.text =
                                   item['itemPrice']?.toString() ?? '';
                               _imageFile = null;
-                              Navigator.of(context).pop();
                               _showEditDialog(item['itemId']);
                             },
                             child: SizedBox(
@@ -513,116 +512,210 @@ class _ShopPageState extends State<ShopPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
+          elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(15),
           ),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Edit Item',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-              IconButton(
-                icon: Icon(Icons.close, color: Colors.black54),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+              Text(
+                'Edit item',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
             ],
           ),
           content: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.9,
-            height: MediaQuery.of(context).size.height * 0.6,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: _itemTitleController,
-                  decoration: InputDecoration(
-                    hintText: 'Item Title',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
+            width: 360,
+            height: 480,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    child: Column(
+                      children: [
+                        TextField(
+                          controller: _itemTitleController,
+                          decoration: InputDecoration(
+                            hintText: 'Update item title',
+                            hintStyle: TextStyle(
+                              color: Color.fromRGBO(52, 52, 52, 52),
+                            ),
+                            filled: true,
+                            fillColor: Color.fromARGB(242, 242, 242, 242),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide.none,
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 12, horizontal: 15),
+                          ),
+                          maxLines: 2,
+                          keyboardType: TextInputType.multiline,
+                        ),
+                        SizedBox(height: 10),
+                        TextField(
+                          controller: _itemPriceController,
+                          decoration: InputDecoration(
+                            hintText: 'Update item price',
+                            hintStyle: TextStyle(
+                              color: Color.fromRGBO(52, 52, 52, 52),
+                            ),
+                            filled: true,
+                            fillColor: Color.fromARGB(242, 242, 242, 242),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide.none,
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 12, horizontal: 15),
+                          ),
+                          maxLines: 1,
+                          keyboardType: TextInputType.multiline,
+                        ),
+                        SizedBox(height: 10),
+                        TextField(
+                          controller: _itemController,
+                          decoration: InputDecoration(
+                            hintText: 'Update item contents',
+                            hintStyle: TextStyle(
+                              color: Color.fromRGBO(52, 52, 52, 52),
+                            ),
+                            filled: true,
+                            fillColor: Color.fromARGB(242, 242, 242, 242),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide.none,
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 12, horizontal: 15),
+                          ),
+                          maxLines: 7,
+                          keyboardType: TextInputType.multiline,
+                        ),
+                      ],
                     ),
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 12, horizontal: 15),
                   ),
-                ),
-                SizedBox(height: 10),
-                TextField(
-                  controller: _itemController,
-                  decoration: InputDecoration(
-                    hintText: 'Item Contents',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
+                  if (_imageFile != null)
+                    Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
+                          child: Image.file(
+                            _imageFile!,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        Positioned(
+                          right: 5,
+                          top: 5,
+                          child: IconButton(
+                            icon:
+                                Icon(Icons.cancel, color: Colors.red, size: 30),
+                            onPressed: () {
+                              setState(() {
+                                _imageFile = null;
+                              });
+                              _cancelImageAttachment();
+                              Navigator.of(context).pop();
+                              _showEditDialog(itemId);
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 12, horizontal: 15),
-                  ),
-                  maxLines: null,
-                  keyboardType: TextInputType.multiline,
-                ),
-                SizedBox(height: 10),
-                TextField(
-                  controller: _itemPriceController,
-                  decoration: InputDecoration(
-                    hintText: 'Item Price',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
                     ),
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 12, horizontal: 15),
-                  ),
-                  keyboardType: TextInputType.number,
-                ),
-                SizedBox(height: 10),
-                if (_imageFile != null)
-                  Stack(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(5),
-                        child: Image.file(
-                          _imageFile!,
-                          height: 200,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
+                    onPressed: () async {
+                      await _pickImage();
+                    },
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Center(
+                        child: Text(
+                          'Add image',
+                          style: TextStyle(
+                            color: Color.fromRGBO(52, 52, 52, 52),
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
-                      Positioned(
-                        right: 10,
-                        top: 10,
-                        child: IconButton(
-                          icon: Icon(Icons.cancel, color: Colors.red, size: 30),
-                          onPressed: () {
-                            _cancelImageAttachment();
-                            Navigator.of(context).pop();
-                            _showEditDialog(itemId);
-                          },
+                    ),
+                  ),
+                  SizedBox(height: 5),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF4558C8),
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
+                    onPressed: () {
+                      _editItem(
+                        itemId,
+                        _itemTitleController.text,
+                        _itemController.text,
+                        double.tryParse(_itemPriceController.text) ?? 0.0,
+                      );
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                    },
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Center(
+                        child: Text(
+                          'Update',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ElevatedButton(
-                      onPressed: _pickEditImage,
-                      child: Text('Pick Image'),
+                  SizedBox(height: 5),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        _editItem(
-                          itemId,
-                          _itemTitleController.text,
-                          _itemController.text,
-                          double.tryParse(_itemPriceController.text) ?? 0.0,
-                        );
-                        Navigator.of(context).pop();
-                      },
-                      child: Text('Update Item'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Center(
+                        child: Text(
+                          'Cancel',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                            color: Color.fromRGBO(52, 52, 52, 52),
+                          ),
+                        ),
+                      ),
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
           ),
         );
