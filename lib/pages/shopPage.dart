@@ -112,7 +112,7 @@ class _ShopPageState extends State<ShopPage> {
                 'Post item',
                 style: TextStyle(
                   fontSize: 20,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
               IconButton(
@@ -140,17 +140,9 @@ class _ShopPageState extends State<ShopPage> {
                           controller: _itemTitleController,
                           decoration: InputDecoration(
                             hintText: 'Item title',
-                            hintStyle: TextStyle(
-                              color: Color.fromRGBO(52, 52, 52, 52),
-                            ),
-                            filled: true,
-                            fillColor: Color.fromARGB(242, 242, 242, 242),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
-                              borderSide: BorderSide.none,
                             ),
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 12, horizontal: 15),
                           ),
                           maxLines: 2,
                           keyboardType: TextInputType.multiline,
@@ -160,17 +152,9 @@ class _ShopPageState extends State<ShopPage> {
                           controller: _itemPriceController,
                           decoration: InputDecoration(
                             hintText: 'Item price',
-                            hintStyle: TextStyle(
-                              color: Color.fromRGBO(52, 52, 52, 52),
-                            ),
-                            filled: true,
-                            fillColor: Color.fromARGB(242, 242, 242, 242),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
-                              borderSide: BorderSide.none,
                             ),
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 12, horizontal: 15),
                           ),
                           maxLines: 1,
                           keyboardType: TextInputType.multiline,
@@ -180,19 +164,11 @@ class _ShopPageState extends State<ShopPage> {
                           controller: _itemController,
                           decoration: InputDecoration(
                             hintText: 'Item contents',
-                            hintStyle: TextStyle(
-                              color: Color.fromRGBO(52, 52, 52, 52),
-                            ),
-                            filled: true,
-                            fillColor: Color.fromARGB(242, 242, 242, 242),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
-                              borderSide: BorderSide.none,
                             ),
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 12, horizontal: 15),
                           ),
-                          maxLines: 7,
+                          maxLines: 5,
                           keyboardType: TextInputType.multiline,
                         ),
                       ],
@@ -274,7 +250,7 @@ class _ShopPageState extends State<ShopPage> {
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 15,
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
@@ -355,7 +331,7 @@ class _ShopPageState extends State<ShopPage> {
                         item['itemTitle'] ?? 'No Title',
                         style: TextStyle(
                           fontSize: 20,
-                          fontWeight: FontWeight.w400,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
@@ -407,7 +383,7 @@ class _ShopPageState extends State<ShopPage> {
                         Text(
                           item['itemContents'] ?? 'No Contents',
                           style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.w400),
+                              fontSize: 15, fontWeight: FontWeight.w500),
                         ),
                         SizedBox(height: 10),
                         SizedBox(
@@ -428,7 +404,7 @@ class _ShopPageState extends State<ShopPage> {
                               'Purchase',
                               style: TextStyle(
                                   fontSize: 15,
-                                  fontWeight: FontWeight.w400,
+                                  fontWeight: FontWeight.w500,
                                   color: Colors.white),
                             ),
                           ),
@@ -461,7 +437,7 @@ class _ShopPageState extends State<ShopPage> {
                                   'Edit',
                                   style: TextStyle(
                                     fontSize: 15,
-                                    fontWeight: FontWeight.w400,
+                                    fontWeight: FontWeight.w500,
                                     color: Colors.white,
                                   ),
                                 ),
@@ -487,7 +463,7 @@ class _ShopPageState extends State<ShopPage> {
                                   'Delete',
                                   style: TextStyle(
                                     fontSize: 15,
-                                    fontWeight: FontWeight.w400,
+                                    fontWeight: FontWeight.w500,
                                     color: Colors.white,
                                   ),
                                 ),
@@ -524,7 +500,7 @@ class _ShopPageState extends State<ShopPage> {
                 'Edit item',
                 style: TextStyle(
                   fontSize: 20,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ],
@@ -543,17 +519,9 @@ class _ShopPageState extends State<ShopPage> {
                           controller: _itemTitleController,
                           decoration: InputDecoration(
                             hintText: 'Update item title',
-                            hintStyle: TextStyle(
-                              color: Color.fromRGBO(52, 52, 52, 52),
-                            ),
-                            filled: true,
-                            fillColor: Color.fromARGB(242, 242, 242, 242),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
-                              borderSide: BorderSide.none,
                             ),
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 12, horizontal: 15),
                           ),
                           maxLines: 2,
                           keyboardType: TextInputType.multiline,
@@ -563,17 +531,9 @@ class _ShopPageState extends State<ShopPage> {
                           controller: _itemPriceController,
                           decoration: InputDecoration(
                             hintText: 'Update item price',
-                            hintStyle: TextStyle(
-                              color: Color.fromRGBO(52, 52, 52, 52),
-                            ),
-                            filled: true,
-                            fillColor: Color.fromARGB(242, 242, 242, 242),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
-                              borderSide: BorderSide.none,
                             ),
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 12, horizontal: 15),
                           ),
                           maxLines: 1,
                           keyboardType: TextInputType.multiline,
@@ -583,19 +543,11 @@ class _ShopPageState extends State<ShopPage> {
                           controller: _itemController,
                           decoration: InputDecoration(
                             hintText: 'Update item contents',
-                            hintStyle: TextStyle(
-                              color: Color.fromRGBO(52, 52, 52, 52),
-                            ),
-                            filled: true,
-                            fillColor: Color.fromARGB(242, 242, 242, 242),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
-                              borderSide: BorderSide.none,
                             ),
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 12, horizontal: 15),
                           ),
-                          maxLines: 7,
+                          maxLines: 5,
                           keyboardType: TextInputType.multiline,
                         ),
                       ],
@@ -763,7 +715,7 @@ class _ShopPageState extends State<ShopPage> {
                 'Are you sure you want to delete this item?',
                 style: TextStyle(
                   fontSize: 15,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),
@@ -789,7 +741,7 @@ class _ShopPageState extends State<ShopPage> {
                     'Confirm',
                     style: TextStyle(
                       fontSize: 15,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w500,
                       color: Colors.white,
                     ),
                   ),
@@ -815,7 +767,7 @@ class _ShopPageState extends State<ShopPage> {
                     'Cancel',
                     style: TextStyle(
                       fontSize: 15,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w500,
                       color: Color.fromRGBO(52, 52, 52, 52),
                     ),
                   ),
@@ -850,7 +802,7 @@ class _ShopPageState extends State<ShopPage> {
                 'Thank you for your purchase!',
                 style: TextStyle(
                   fontSize: 15,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),
@@ -875,7 +827,7 @@ class _ShopPageState extends State<ShopPage> {
                     'Cancel',
                     style: TextStyle(
                       fontSize: 15,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w500,
                       color: Color.fromRGBO(52, 52, 52, 52),
                     ),
                   ),
@@ -967,7 +919,7 @@ class _ShopPageState extends State<ShopPage> {
                                             item['itemTitle'] ?? 'No Title',
                                             style: TextStyle(
                                               fontSize: 20,
-                                              fontWeight: FontWeight.w400,
+                                              fontWeight: FontWeight.w500,
                                             ),
                                           ),
                                           SizedBox(

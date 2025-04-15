@@ -287,7 +287,7 @@ class _UserPageState extends State<UserPage> {
                                   'Edit',
                                   style: TextStyle(
                                     fontSize: 15,
-                                    fontWeight: FontWeight.w400,
+                                    fontWeight: FontWeight.w500,
                                     color: Colors.white,
                                   ),
                                 ),
@@ -313,7 +313,7 @@ class _UserPageState extends State<UserPage> {
                                   'Delete',
                                   style: TextStyle(
                                     fontSize: 15,
-                                    fontWeight: FontWeight.w400,
+                                    fontWeight: FontWeight.w500,
                                     color: Colors.white,
                                   ),
                                 ),
@@ -364,7 +364,7 @@ class _UserPageState extends State<UserPage> {
                         itemTitle ?? 'No Title',
                         style: TextStyle(
                           fontSize: 20,
-                          fontWeight: FontWeight.w400,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
@@ -412,7 +412,7 @@ class _UserPageState extends State<UserPage> {
                         Text(
                           itemContents ?? 'No Contents',
                           style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.w400),
+                              fontSize: 15, fontWeight: FontWeight.w500),
                         ),
                         SizedBox(height: 30),
                         if (purchaseStatus == 1)
@@ -433,7 +433,7 @@ class _UserPageState extends State<UserPage> {
                                 'Refund',
                                 style: TextStyle(
                                   fontSize: 15,
-                                  fontWeight: FontWeight.w400,
+                                  fontWeight: FontWeight.w500,
                                   color: Colors.white,
                                 ),
                               ),
@@ -781,7 +781,7 @@ class _UserPageState extends State<UserPage> {
                 'Are you sure you want to refund this item?',
                 style: TextStyle(
                   fontSize: 15,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),
@@ -807,7 +807,7 @@ class _UserPageState extends State<UserPage> {
                     'Confirm',
                     style: TextStyle(
                       fontSize: 15,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w500,
                       color: Colors.white,
                     ),
                   ),
@@ -833,7 +833,7 @@ class _UserPageState extends State<UserPage> {
                     'Cancel',
                     style: TextStyle(
                       fontSize: 15,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w500,
                       color: Color.fromRGBO(52, 52, 52, 52),
                     ),
                   ),
@@ -868,7 +868,7 @@ class _UserPageState extends State<UserPage> {
                 'Are you sure you want to delete this account?',
                 style: TextStyle(
                   fontSize: 15,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),
@@ -893,7 +893,7 @@ class _UserPageState extends State<UserPage> {
                     'Confirm',
                     style: TextStyle(
                       fontSize: 15,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w500,
                       color: Colors.white,
                     ),
                   ),
@@ -919,7 +919,7 @@ class _UserPageState extends State<UserPage> {
                     'Cancel',
                     style: TextStyle(
                       fontSize: 15,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w500,
                       color: Color.fromRGBO(52, 52, 52, 52),
                     ),
                   ),
@@ -1040,7 +1040,7 @@ class _UserPageState extends State<UserPage> {
                 'Are you sure you want to delete this insta?',
                 style: TextStyle(
                   fontSize: 15,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),
@@ -1066,7 +1066,7 @@ class _UserPageState extends State<UserPage> {
                     'Confirm',
                     style: TextStyle(
                       fontSize: 15,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w500,
                       color: Colors.white,
                     ),
                   ),
@@ -1092,7 +1092,7 @@ class _UserPageState extends State<UserPage> {
                     'Cancel',
                     style: TextStyle(
                       fontSize: 15,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w500,
                       color: Color.fromRGBO(52, 52, 52, 52),
                     ),
                   ),

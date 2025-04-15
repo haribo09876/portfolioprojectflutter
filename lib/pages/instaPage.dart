@@ -98,7 +98,7 @@ class _InstaPageState extends State<InstaPage> {
                 'Post insta',
                 style: TextStyle(
                   fontSize: 20,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
               IconButton(
@@ -184,7 +184,7 @@ class _InstaPageState extends State<InstaPage> {
                           'Add image',
                           style: TextStyle(
                             fontSize: 15,
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.w500,
                             color: Color.fromRGBO(52, 52, 52, 52),
                           ),
                         ),
@@ -212,7 +212,7 @@ class _InstaPageState extends State<InstaPage> {
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 15,
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
@@ -299,7 +299,7 @@ class _InstaPageState extends State<InstaPage> {
                                 insta['username'],
                                 style: TextStyle(
                                   fontSize: 20,
-                                  fontWeight: FontWeight.w400,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ),
@@ -358,7 +358,7 @@ class _InstaPageState extends State<InstaPage> {
                                 ),
                                 style: TextStyle(
                                   fontSize: 10,
-                                  fontWeight: FontWeight.w400,
+                                  fontWeight: FontWeight.w500,
                                   color: Color.fromRGBO(52, 52, 52, 52),
                                 ),
                               ),
@@ -392,7 +392,7 @@ class _InstaPageState extends State<InstaPage> {
                                     'Edit',
                                     style: TextStyle(
                                       fontSize: 15,
-                                      fontWeight: FontWeight.w400,
+                                      fontWeight: FontWeight.w500,
                                       color: Colors.white,
                                     ),
                                   ),
@@ -418,7 +418,7 @@ class _InstaPageState extends State<InstaPage> {
                                     'Delete',
                                     style: TextStyle(
                                       fontSize: 15,
-                                      fontWeight: FontWeight.w400,
+                                      fontWeight: FontWeight.w500,
                                       color: Colors.white,
                                     ),
                                   ),
@@ -555,7 +555,7 @@ class _InstaPageState extends State<InstaPage> {
                             style: TextStyle(
                               color: Color.fromRGBO(52, 52, 52, 52),
                               fontSize: 15,
-                              fontWeight: FontWeight.w400,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
@@ -598,7 +598,7 @@ class _InstaPageState extends State<InstaPage> {
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 15,
-                              fontWeight: FontWeight.w400,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
@@ -623,7 +623,7 @@ class _InstaPageState extends State<InstaPage> {
                             'Cancel',
                             style: TextStyle(
                               fontSize: 15,
-                              fontWeight: FontWeight.w400,
+                              fontWeight: FontWeight.w500,
                               color: Color.fromRGBO(52, 52, 52, 52),
                             ),
                           ),
@@ -662,7 +662,7 @@ class _InstaPageState extends State<InstaPage> {
                 'Are you sure you want to delete this insta?',
                 style: TextStyle(
                   fontSize: 15,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),
@@ -688,7 +688,7 @@ class _InstaPageState extends State<InstaPage> {
                     'Confirm',
                     style: TextStyle(
                       fontSize: 15,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w500,
                       color: Colors.white,
                     ),
                   ),
@@ -714,7 +714,7 @@ class _InstaPageState extends State<InstaPage> {
                     'Cancel',
                     style: TextStyle(
                       fontSize: 15,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w500,
                       color: Color.fromRGBO(52, 52, 52, 52),
                     ),
                   ),
