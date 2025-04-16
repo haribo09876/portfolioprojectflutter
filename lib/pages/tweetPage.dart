@@ -121,8 +121,19 @@ class _TweetPageState extends State<TweetPage> {
                         controller: _tweetController,
                         decoration: InputDecoration(
                           hintText: 'What’s happening?',
-                          border: OutlineInputBorder(
+                          enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
+                            borderSide: BorderSide(
+                              color: Colors.grey,
+                              width: 1.5,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: BorderSide(
+                              color: Color(0xFF44558C8),
+                              width: 1.5,
+                            ),
                           ),
                         ),
                         maxLines: 3,
@@ -466,8 +477,19 @@ class _TweetPageState extends State<TweetPage> {
                       controller: controller,
                       decoration: InputDecoration(
                         hintText: 'Update your tweet',
-                        border: OutlineInputBorder(
+                        enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
+                          borderSide: BorderSide(
+                            color: Colors.grey,
+                            width: 1.5,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: BorderSide(
+                            color: Color(0xFF44558C8),
+                            width: 1.5,
+                          ),
                         ),
                       ),
                       maxLines: 3,

@@ -154,8 +154,19 @@ class _InstaPageState extends State<InstaPage> {
                         controller: _instaController,
                         decoration: InputDecoration(
                           hintText: 'What’s happening?',
-                          border: OutlineInputBorder(
+                          enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
+                            borderSide: BorderSide(
+                              color: Colors.grey,
+                              width: 1.5,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: BorderSide(
+                              color: Color(0xFF44558C8),
+                              width: 1.5,
+                            ),
                           ),
                         ),
                         maxLines: 3,
@@ -484,8 +495,19 @@ class _InstaPageState extends State<InstaPage> {
                       controller: controller,
                       decoration: InputDecoration(
                         hintText: 'Update your insta',
-                        border: OutlineInputBorder(
+                        enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
+                          borderSide: BorderSide(
+                            color: Colors.grey,
+                            width: 1.5,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: BorderSide(
+                            color: Color(0xFF44558C8),
+                            width: 1.5,
+                          ),
                         ),
                       ),
                       maxLines: 3,

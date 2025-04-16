@@ -140,8 +140,19 @@ class _ShopPageState extends State<ShopPage> {
                           controller: _itemTitleController,
                           decoration: InputDecoration(
                             hintText: 'Item title',
-                            border: OutlineInputBorder(
+                            enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide(
+                                color: Colors.grey,
+                                width: 1.5,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide(
+                                color: Color(0xFF44558C8),
+                                width: 1.5,
+                              ),
                             ),
                           ),
                           maxLines: 2,
@@ -152,8 +163,19 @@ class _ShopPageState extends State<ShopPage> {
                           controller: _itemPriceController,
                           decoration: InputDecoration(
                             hintText: 'Item price',
-                            border: OutlineInputBorder(
+                            enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide(
+                                color: Colors.grey,
+                                width: 1.5,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide(
+                                color: Color(0xFF44558C8),
+                                width: 1.5,
+                              ),
                             ),
                           ),
                           maxLines: 1,
@@ -164,8 +186,19 @@ class _ShopPageState extends State<ShopPage> {
                           controller: _itemController,
                           decoration: InputDecoration(
                             hintText: 'Item contents',
-                            border: OutlineInputBorder(
+                            enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide(
+                                color: Colors.grey,
+                                width: 1.5,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide(
+                                color: Color(0xFF44558C8),
+                                width: 1.5,
+                              ),
                             ),
                           ),
                           maxLines: 5,
@@ -519,8 +552,19 @@ class _ShopPageState extends State<ShopPage> {
                           controller: _itemTitleController,
                           decoration: InputDecoration(
                             hintText: 'Update item title',
-                            border: OutlineInputBorder(
+                            enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide(
+                                color: Colors.grey,
+                                width: 1.5,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide(
+                                color: Color(0xFF44558C8),
+                                width: 1.5,
+                              ),
                             ),
                           ),
                           maxLines: 2,
@@ -531,8 +575,19 @@ class _ShopPageState extends State<ShopPage> {
                           controller: _itemPriceController,
                           decoration: InputDecoration(
                             hintText: 'Update item price',
-                            border: OutlineInputBorder(
+                            enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide(
+                                color: Colors.grey,
+                                width: 1.5,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide(
+                                color: Color(0xFF44558C8),
+                                width: 1.5,
+                              ),
                             ),
                           ),
                           maxLines: 1,
@@ -543,8 +598,19 @@ class _ShopPageState extends State<ShopPage> {
                           controller: _itemController,
                           decoration: InputDecoration(
                             hintText: 'Update item contents',
-                            border: OutlineInputBorder(
+                            enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide(
+                                color: Colors.grey,
+                                width: 1.5,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide(
+                                color: Color(0xFF44558C8),
+                                width: 1.5,
+                              ),
                             ),
                           ),
                           maxLines: 5,
