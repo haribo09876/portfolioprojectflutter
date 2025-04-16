@@ -228,7 +228,6 @@ class _ShopPageState extends State<ShopPage> {
                               setState(() {
                                 _imageFile = null;
                               });
-                              _cancelImageAttachment();
                               Navigator.of(context).pop();
                               _showItemDialog();
                             },
@@ -245,8 +244,10 @@ class _ShopPageState extends State<ShopPage> {
                         borderRadius: BorderRadius.circular(50),
                       ),
                     ),
-                    onPressed: () {
-                      _pickImage();
+                    onPressed: () async {
+                      await _pickImage();
+                      Navigator.of(context).pop();
+                      _showItemDialog();
                     },
                     child: SizedBox(
                       width: double.infinity,
@@ -316,15 +317,6 @@ class _ShopPageState extends State<ShopPage> {
       fetchItems();
     } catch (error) {
       print('Error updating item: $error');
-    }
-  }
-
-  Future<void> _pickEditImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _imageFile = File(pickedFile.path);
-      });
     }
   }
 
