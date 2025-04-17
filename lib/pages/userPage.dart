@@ -412,7 +412,9 @@ class _UserPageState extends State<UserPage> {
                         Text(
                           itemContents ?? 'No Contents',
                           style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.w500),
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                         SizedBox(height: 30),
                         if (purchaseStatus == 1)
@@ -444,8 +446,8 @@ class _UserPageState extends State<UserPage> {
                             child: Text(
                               'Refund Completed',
                               style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500,
                                 color: Color(0xFFF04452),
                               ),
                             ),
