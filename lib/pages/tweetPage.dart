@@ -466,10 +466,10 @@ class _TweetPageState extends State<TweetPage> {
                 fontSize: 20,
               ),
             ),
-            content: SingleChildScrollView(
-              child: SizedBox(
-                width: 360,
-                height: 480,
+            content: SizedBox(
+              width: 360,
+              height: 480,
+              child: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [

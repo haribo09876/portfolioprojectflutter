@@ -18,11 +18,11 @@ class _ShopPageState extends State<ShopPage> {
   final TextEditingController _itemController = TextEditingController();
   final TextEditingController _itemPriceController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
-  late String userId;
-  List<Map<String, dynamic>> items = [];
   String? adminId = dotenv.env['ADMIN_ID'];
-  File? _imageFile;
+  List<Map<String, dynamic>> items = [];
   bool loading = false;
+  File? _imageFile;
+  late String userId;
 
   @override
   void initState() {
@@ -300,7 +300,7 @@ class _ShopPageState extends State<ShopPage> {
   }
 
   Future<void> _editItem(String itemId, String itemTitle, String itemContents,
-      double itemPrice) async {
+      double itemPrice, File? _newImageFile) async {
     final loginService = Provider.of<LoginService>(context, listen: false);
     final userId = loginService.userInfo?['id'] ?? '';
 
@@ -311,7 +311,7 @@ class _ShopPageState extends State<ShopPage> {
         itemTitle,
         itemContents,
         itemPrice,
-        _imageFile != null ? XFile(_imageFile!.path) : null,
+        _newImageFile != null ? XFile(_newImageFile!.path) : null,
       );
       print('Item updated successfully');
       fetchItems();
@@ -453,7 +453,7 @@ class _ShopPageState extends State<ShopPage> {
                               _itemPriceController.text =
                                   item['itemPrice']?.toString() ?? '';
                               _imageFile = null;
-                              _showEditDialog(item['itemId']);
+                              _showEditDialog(item, item['itemId']);
                             },
                             child: SizedBox(
                               width: double.infinity,
@@ -508,227 +508,250 @@ class _ShopPageState extends State<ShopPage> {
     );
   }
 
-  void _showEditDialog(String itemId) {
+  void _showEditDialog(Map<String, dynamic> item, String itemId) {
+    File? _newImageFile;
+    String? existingImageUrl = item['photo'];
+
+    void refreshState() {
+      if (mounted) setState(() {});
+    }
+
+    Future<void> _pickImage() async {
+      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        _newImageFile = File(pickedFile.path);
+        existingImageUrl = null;
+        refreshState();
+      }
+    }
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Color.fromARGB(255, 255, 255, 255),
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Edit item',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-          content: SizedBox(
-            width: 360,
-            height: 480,
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    child: Column(
-                      children: [
-                        TextField(
-                          controller: _itemTitleController,
-                          decoration: InputDecoration(
-                            hintText: 'Update item title',
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
-                              borderSide: BorderSide(
-                                color: Colors.grey,
-                                width: 1.5,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
-                              borderSide: BorderSide(
-                                color: Color(0xFF44558C8),
-                                width: 1.5,
-                              ),
-                            ),
-                          ),
-                          maxLines: 2,
-                          keyboardType: TextInputType.multiline,
-                        ),
-                        SizedBox(height: 10),
-                        TextField(
-                          controller: _itemPriceController,
-                          decoration: InputDecoration(
-                            hintText: 'Update item price',
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
-                              borderSide: BorderSide(
-                                color: Colors.grey,
-                                width: 1.5,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
-                              borderSide: BorderSide(
-                                color: Color(0xFF44558C8),
-                                width: 1.5,
-                              ),
-                            ),
-                          ),
-                          maxLines: 1,
-                          keyboardType: TextInputType.multiline,
-                        ),
-                        SizedBox(height: 10),
-                        TextField(
-                          controller: _itemController,
-                          decoration: InputDecoration(
-                            hintText: 'Update item contents',
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
-                              borderSide: BorderSide(
-                                color: Colors.grey,
-                                width: 1.5,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
-                              borderSide: BorderSide(
-                                color: Color(0xFF44558C8),
-                                width: 1.5,
-                              ),
-                            ),
-                          ),
-                          maxLines: 5,
-                          keyboardType: TextInputType.multiline,
-                        ),
-                      ],
-                    ),
-                  ),
-                  if (_imageFile != null)
-                    Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(15),
-                          child: Image.file(
-                            _imageFile!,
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                        Positioned(
-                          right: 5,
-                          top: 5,
-                          child: IconButton(
-                            icon:
-                                Icon(Icons.cancel, color: Colors.red, size: 30),
-                            onPressed: () {
-                              setState(() {
-                                _imageFile = null;
-                              });
-                              _cancelImageAttachment();
-                              Navigator.of(context).pop();
-                              _showEditDialog(itemId);
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  SizedBox(height: 10),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(242, 242, 242, 242),
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                    ),
-                    onPressed: () async {
-                      await _pickImage();
-                    },
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: Center(
-                        child: Text(
-                          'Add image',
-                          style: TextStyle(
-                            color: Color.fromRGBO(52, 52, 52, 52),
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 5),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF4558C8),
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                    ),
-                    onPressed: () {
-                      _editItem(
-                        itemId,
-                        _itemTitleController.text,
-                        _itemController.text,
-                        double.tryParse(_itemPriceController.text) ?? 0.0,
-                      );
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
-                    },
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: Center(
-                        child: Text(
-                          'Update',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 5),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(242, 242, 242, 242),
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: Center(
-                        child: Text(
-                          'Cancel',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
-                            color: Color.fromRGBO(52, 52, 52, 52),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+        return StatefulBuilder(builder: (context, setModalState) {
+          return AlertDialog(
+            backgroundColor: Color.fromARGB(255, 255, 255, 255),
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            title: Text(
+              'Edit item',
+              style: TextStyle(
+                fontSize: 20,
               ),
             ),
-          ),
-        );
+            content: SizedBox(
+              width: 360,
+              height: 480,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: _itemTitleController,
+                      decoration: InputDecoration(
+                        hintText: 'Update item title',
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: BorderSide(
+                            color: Colors.grey,
+                            width: 1.5,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: BorderSide(
+                            color: Color(0xFF44558C8),
+                            width: 1.5,
+                          ),
+                        ),
+                      ),
+                      maxLines: 2,
+                      keyboardType: TextInputType.multiline,
+                    ),
+                    SizedBox(height: 10),
+                    TextField(
+                      controller: _itemPriceController,
+                      decoration: InputDecoration(
+                        hintText: 'Update item price',
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: BorderSide(
+                            color: Colors.grey,
+                            width: 1.5,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: BorderSide(
+                            color: Color(0xFF44558C8),
+                            width: 1.5,
+                          ),
+                        ),
+                      ),
+                      maxLines: 1,
+                      keyboardType: TextInputType.multiline,
+                    ),
+                    SizedBox(height: 10),
+                    TextField(
+                      controller: _itemController,
+                      decoration: InputDecoration(
+                        hintText: 'Update item contents',
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: BorderSide(
+                            color: Colors.grey,
+                            width: 1.5,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: BorderSide(
+                            color: Color(0xFF44558C8),
+                            width: 1.5,
+                          ),
+                        ),
+                      ),
+                      maxLines: 5,
+                      keyboardType: TextInputType.multiline,
+                    ),
+                    SizedBox(height: 10),
+                    if (_newImageFile != null || existingImageUrl != null)
+                      Stack(
+                        children: [
+                          if (_newImageFile != null)
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Image.file(
+                                _newImageFile!,
+                                height: 200,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          else if (existingImageUrl != null)
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Image.network(
+                                existingImageUrl!,
+                                height: 200,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          Positioned(
+                            right: 10,
+                            top: 10,
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.cancel,
+                                color: Colors.red,
+                                size: 30,
+                              ),
+                              onPressed: () {
+                                setModalState(() {
+                                  _newImageFile = null;
+                                  existingImageUrl = null;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    SizedBox(height: 10),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                      ),
+                      onPressed: () async {
+                        await _pickImage();
+                        setModalState(() {});
+                      },
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Center(
+                          child: Text(
+                            'Add image',
+                            style: TextStyle(
+                              color: Color.fromRGBO(52, 52, 52, 52),
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFF4558C8),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                      ),
+                      onPressed: () {
+                        _editItem(
+                          itemId,
+                          _itemTitleController.text,
+                          _itemController.text,
+                          double.tryParse(_itemPriceController.text) ?? 0.0,
+                          _newImageFile,
+                        );
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                      },
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Center(
+                          child: Text(
+                            'Update',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Center(
+                          child: Text(
+                            'Cancel',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                              color: Color.fromRGBO(52, 52, 52, 52),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
       },
     );
   }

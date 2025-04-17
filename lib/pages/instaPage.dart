@@ -484,36 +484,13 @@ class _InstaPageState extends State<InstaPage> {
                 fontSize: 20,
               ),
             ),
-            content: SingleChildScrollView(
-              child: SizedBox(
-                width: 360,
-                height: 480,
+            content: SizedBox(
+              width: 360,
+              height: 480,
+              child: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    TextField(
-                      controller: controller,
-                      decoration: InputDecoration(
-                        hintText: 'Update your insta',
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          borderSide: BorderSide(
-                            color: Colors.grey,
-                            width: 1.5,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          borderSide: BorderSide(
-                            color: Color(0xFF44558C8),
-                            width: 1.5,
-                          ),
-                        ),
-                      ),
-                      maxLines: 3,
-                      keyboardType: TextInputType.multiline,
-                    ),
-                    SizedBox(height: 10),
                     if (_newImageFile != null || existingImageUrl != null)
                       Stack(
                         children: [
@@ -557,6 +534,29 @@ class _InstaPageState extends State<InstaPage> {
                         ],
                       ),
                     SizedBox(height: 10),
+                    TextField(
+                      controller: controller,
+                      decoration: InputDecoration(
+                        hintText: 'Update your insta',
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: BorderSide(
+                            color: Colors.grey,
+                            width: 1.5,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: BorderSide(
+                            color: Color(0xFF44558C8),
+                            width: 1.5,
+                          ),
+                        ),
+                      ),
+                      maxLines: 3,
+                      keyboardType: TextInputType.multiline,
+                    ),
+                    SizedBox(height: 10),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color.fromARGB(242, 242, 242, 242),
@@ -598,7 +598,6 @@ class _InstaPageState extends State<InstaPage> {
                             Provider.of<LoginService>(context, listen: false)
                                     .userInfo?['id'] ??
                                 '';
-
                         await instaService.instaUpdate(
                           insta['id'],
                           userId,
@@ -607,7 +606,6 @@ class _InstaPageState extends State<InstaPage> {
                               ? XFile(_newImageFile!.path)
                               : null,
                         );
-
                         fetchInstas();
                         Navigator.of(context).pop();
                         Navigator.of(context).pop();
