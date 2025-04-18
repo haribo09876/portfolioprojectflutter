@@ -103,7 +103,7 @@ class _ShopPageState extends State<ShopPage> {
           backgroundColor: Color.fromARGB(255, 255, 255, 255),
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(20),
           ),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -141,14 +141,14 @@ class _ShopPageState extends State<ShopPage> {
                           decoration: InputDecoration(
                             hintText: 'Item title',
                             enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
+                              borderRadius: BorderRadius.circular(20),
                               borderSide: BorderSide(
                                 color: Colors.grey,
                                 width: 1.5,
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
+                              borderRadius: BorderRadius.circular(20),
                               borderSide: BorderSide(
                                 color: Color(0xFF44558C8),
                                 width: 1.5,
@@ -164,14 +164,14 @@ class _ShopPageState extends State<ShopPage> {
                           decoration: InputDecoration(
                             hintText: 'Item price',
                             enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
+                              borderRadius: BorderRadius.circular(20),
                               borderSide: BorderSide(
                                 color: Colors.grey,
                                 width: 1.5,
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
+                              borderRadius: BorderRadius.circular(20),
                               borderSide: BorderSide(
                                 color: Color(0xFF44558C8),
                                 width: 1.5,
@@ -187,14 +187,14 @@ class _ShopPageState extends State<ShopPage> {
                           decoration: InputDecoration(
                             hintText: 'Item contents',
                             enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
+                              borderRadius: BorderRadius.circular(20),
                               borderSide: BorderSide(
                                 color: Colors.grey,
                                 width: 1.5,
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
+                              borderRadius: BorderRadius.circular(20),
                               borderSide: BorderSide(
                                 color: Color(0xFF44558C8),
                                 width: 1.5,
@@ -212,7 +212,7 @@ class _ShopPageState extends State<ShopPage> {
                     Stack(
                       children: [
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(20),
                           child: Image.file(
                             _imageFile!,
                             fit: BoxFit.contain,
@@ -341,7 +341,7 @@ class _ShopPageState extends State<ShopPage> {
           backgroundColor: Colors.white,
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(20),
           ),
           content: SizedBox(
             width: 360,
@@ -533,7 +533,7 @@ class _ShopPageState extends State<ShopPage> {
             backgroundColor: Color.fromARGB(255, 255, 255, 255),
             elevation: 0,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(20),
             ),
             title: Text(
               'Edit item',
@@ -553,14 +553,14 @@ class _ShopPageState extends State<ShopPage> {
                       decoration: InputDecoration(
                         hintText: 'Update item title',
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(20),
                           borderSide: BorderSide(
                             color: Colors.grey,
                             width: 1.5,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(20),
                           borderSide: BorderSide(
                             color: Color(0xFF44558C8),
                             width: 1.5,
@@ -576,14 +576,14 @@ class _ShopPageState extends State<ShopPage> {
                       decoration: InputDecoration(
                         hintText: 'Update item price',
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(20),
                           borderSide: BorderSide(
                             color: Colors.grey,
                             width: 1.5,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(20),
                           borderSide: BorderSide(
                             color: Color(0xFF44558C8),
                             width: 1.5,
@@ -599,14 +599,14 @@ class _ShopPageState extends State<ShopPage> {
                       decoration: InputDecoration(
                         hintText: 'Update item contents',
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(20),
                           borderSide: BorderSide(
                             color: Colors.grey,
                             width: 1.5,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(20),
                           borderSide: BorderSide(
                             color: Color(0xFF44558C8),
                             width: 1.5,
@@ -622,7 +622,7 @@ class _ShopPageState extends State<ShopPage> {
                         children: [
                           if (_newImageFile != null)
                             ClipRRect(
-                              borderRadius: BorderRadius.circular(15),
+                              borderRadius: BorderRadius.circular(20),
                               child: Image.file(
                                 _newImageFile!,
                                 height: 200,
@@ -632,7 +632,7 @@ class _ShopPageState extends State<ShopPage> {
                             )
                           else if (existingImageUrl != null)
                             ClipRRect(
-                              borderRadius: BorderRadius.circular(15),
+                              borderRadius: BorderRadius.circular(20),
                               child: Image.network(
                                 existingImageUrl!,
                                 height: 200,
@@ -782,7 +782,7 @@ class _ShopPageState extends State<ShopPage> {
         return AlertDialog(
           backgroundColor: Color.fromARGB(255, 255, 255, 255),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(20),
           ),
           title: Text('Delete Item',
               style: TextStyle(
@@ -869,7 +869,7 @@ class _ShopPageState extends State<ShopPage> {
           backgroundColor: Color.fromARGB(255, 255, 255, 255),
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(20),
           ),
           title: Text('Purchase item',
               style: TextStyle(
@@ -952,7 +952,7 @@ class _ShopPageState extends State<ShopPage> {
                               color: Color.fromARGB(255, 255, 255, 255),
                               elevation: 0,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
+                                borderRadius: BorderRadius.circular(20),
                               ),
                               child: InkWell(
                                 onTap: () => _showItemDetailDialog(item),
@@ -961,7 +961,7 @@ class _ShopPageState extends State<ShopPage> {
                                   children: [
                                     Expanded(
                                       child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(15),
+                                        borderRadius: BorderRadius.circular(20),
                                         child: item['photo'] != null
                                             ? Image.network(
                                                 item['photo'] ?? '',

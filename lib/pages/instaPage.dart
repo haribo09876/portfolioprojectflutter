@@ -89,7 +89,7 @@ class _InstaPageState extends State<InstaPage> {
           backgroundColor: Color.fromARGB(255, 255, 255, 255),
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(20),
           ),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -123,7 +123,7 @@ class _InstaPageState extends State<InstaPage> {
                     Stack(
                       children: [
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(20),
                           child: Image.file(
                             _imageFile!,
                             fit: BoxFit.contain,
@@ -155,14 +155,14 @@ class _InstaPageState extends State<InstaPage> {
                         decoration: InputDecoration(
                           hintText: 'What’s happening?',
                           enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(20),
                             borderSide: BorderSide(
                               color: Colors.grey,
                               width: 1.5,
                             ),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(20),
                             borderSide: BorderSide(
                               color: Color(0xFF44558C8),
                               width: 1.5,
@@ -277,7 +277,7 @@ class _InstaPageState extends State<InstaPage> {
           backgroundColor: Color.fromARGB(255, 255, 255, 255),
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(20),
           ),
           content: SizedBox(
             width: 360,
@@ -476,7 +476,7 @@ class _InstaPageState extends State<InstaPage> {
             backgroundColor: Color.fromARGB(255, 255, 255, 255),
             elevation: 0,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(20),
             ),
             title: Text(
               'Edit insta',
@@ -496,7 +496,7 @@ class _InstaPageState extends State<InstaPage> {
                         children: [
                           if (_newImageFile != null)
                             ClipRRect(
-                              borderRadius: BorderRadius.circular(15),
+                              borderRadius: BorderRadius.circular(20),
                               child: Image.file(
                                 _newImageFile!,
                                 height: 200,
@@ -506,7 +506,7 @@ class _InstaPageState extends State<InstaPage> {
                             )
                           else if (existingImageUrl != null)
                             ClipRRect(
-                              borderRadius: BorderRadius.circular(15),
+                              borderRadius: BorderRadius.circular(20),
                               child: Image.network(
                                 existingImageUrl!,
                                 height: 200,
@@ -539,14 +539,14 @@ class _InstaPageState extends State<InstaPage> {
                       decoration: InputDecoration(
                         hintText: 'Update your insta',
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(20),
                           borderSide: BorderSide(
                             color: Colors.grey,
                             width: 1.5,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(20),
                           borderSide: BorderSide(
                             color: Color(0xFF44558C8),
                             width: 1.5,
@@ -668,7 +668,7 @@ class _InstaPageState extends State<InstaPage> {
           backgroundColor: Color.fromARGB(255, 255, 255, 255),
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(20),
           ),
           title: Text('Delete insta',
               style: TextStyle(

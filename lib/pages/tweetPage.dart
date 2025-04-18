@@ -84,7 +84,7 @@ class _TweetPageState extends State<TweetPage> {
           backgroundColor: Color.fromARGB(255, 255, 255, 255),
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(20),
           ),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -122,14 +122,14 @@ class _TweetPageState extends State<TweetPage> {
                         decoration: InputDecoration(
                           hintText: 'What’s happening?',
                           enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(20),
                             borderSide: BorderSide(
                               color: Colors.grey,
                               width: 1.5,
                             ),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(20),
                             borderSide: BorderSide(
                               color: Color(0xFF44558C8),
                               width: 1.5,
@@ -146,7 +146,7 @@ class _TweetPageState extends State<TweetPage> {
                     Stack(
                       children: [
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(20),
                           child: Image.file(
                             _imageFile!,
                             fit: BoxFit.contain,
@@ -268,7 +268,7 @@ class _TweetPageState extends State<TweetPage> {
           backgroundColor: Color.fromARGB(255, 255, 255, 255),
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(20),
           ),
           content: SizedBox(
             width: 360,
@@ -458,7 +458,7 @@ class _TweetPageState extends State<TweetPage> {
             backgroundColor: Color.fromARGB(255, 255, 255, 255),
             elevation: 0,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(20),
             ),
             title: Text(
               'Edit tweet',
@@ -478,14 +478,14 @@ class _TweetPageState extends State<TweetPage> {
                       decoration: InputDecoration(
                         hintText: 'Update your tweet',
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(20),
                           borderSide: BorderSide(
                             color: Colors.grey,
                             width: 1.5,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(20),
                           borderSide: BorderSide(
                             color: Color(0xFF44558C8),
                             width: 1.5,
@@ -501,7 +501,7 @@ class _TweetPageState extends State<TweetPage> {
                         children: [
                           if (_newImageFile != null)
                             ClipRRect(
-                              borderRadius: BorderRadius.circular(15),
+                              borderRadius: BorderRadius.circular(20),
                               child: Image.file(
                                 _newImageFile!,
                                 height: 200,
@@ -511,7 +511,7 @@ class _TweetPageState extends State<TweetPage> {
                             )
                           else if (existingImageUrl != null)
                             ClipRRect(
-                              borderRadius: BorderRadius.circular(15),
+                              borderRadius: BorderRadius.circular(20),
                               child: Image.network(
                                 existingImageUrl!,
                                 height: 200,
@@ -649,7 +649,7 @@ class _TweetPageState extends State<TweetPage> {
         return AlertDialog(
           backgroundColor: Color.fromARGB(255, 255, 255, 255),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(20),
           ),
           title: Text('Delete tweet',
               style: TextStyle(
@@ -753,7 +753,7 @@ class _TweetPageState extends State<TweetPage> {
                         color: Color.fromARGB(255, 255, 255, 255),
                         elevation: 0,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(20),
                         ),
                         child: Column(
                           children: [
@@ -809,7 +809,7 @@ class _TweetPageState extends State<TweetPage> {
                                       SizedBox(height: 5),
                                     if (tweet['photo'] != null)
                                       ClipRRect(
-                                        borderRadius: BorderRadius.circular(15),
+                                        borderRadius: BorderRadius.circular(20),
                                         child: Image.network(
                                           tweet['photo'],
                                           width: double.infinity,

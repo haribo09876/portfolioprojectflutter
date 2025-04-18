@@ -131,20 +131,19 @@ class _LoginPageState extends State<LoginPage> {
           obscureText: obscureText,
           decoration: InputDecoration(
             hintText: hintText,
-            hintStyle: TextStyle(color: Color.fromRGBO(89, 89, 89, 89)),
-            filled: true,
-            fillColor: Color.fromARGB(242, 242, 242, 242),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(50),
-              borderSide: BorderSide.none,
-            ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(50),
-              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(20),
+              borderSide: BorderSide(
+                color: Colors.grey,
+                width: 1.5,
+              ),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(50),
-              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(20),
+              borderSide: BorderSide(
+                color: Color(0xFF44558C8),
+                width: 1.5,
+              ),
             ),
           ),
         ),

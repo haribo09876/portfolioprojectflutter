@@ -92,7 +92,7 @@ class _UserPageState extends State<UserPage> {
   }
 
   void tweetDetailDialog(BuildContext context, String tweetContents,
-      String? tweetImgURL, String tweetId) {
+      String tweetImgURL, String tweetId) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -100,7 +100,7 @@ class _UserPageState extends State<UserPage> {
           backgroundColor: Color.fromARGB(255, 255, 255, 255),
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(20),
           ),
           content: SizedBox(
             width: 360,
@@ -156,7 +156,8 @@ class _UserPageState extends State<UserPage> {
                               ),
                             ),
                             onPressed: () {
-                              tweetUpdateDialog(tweetId, tweetContents);
+                              tweetUpdateDialog(
+                                  tweetId, tweetContents, tweetImgURL);
                             },
                             child: SizedBox(
                               width: double.infinity,
@@ -220,7 +221,7 @@ class _UserPageState extends State<UserPage> {
           backgroundColor: Color.fromARGB(255, 255, 255, 255),
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(20),
           ),
           content: SizedBox(
             width: 360,
@@ -278,7 +279,8 @@ class _UserPageState extends State<UserPage> {
                               ),
                             ),
                             onPressed: () {
-                              instaUpdateDialog(instaId, instaContents);
+                              instaUpdateDialog(
+                                  instaId, instaContents, instaImgURL);
                             },
                             child: SizedBox(
                               width: double.infinity,
@@ -349,7 +351,7 @@ class _UserPageState extends State<UserPage> {
           backgroundColor: Colors.white,
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(20),
           ),
           content: SizedBox(
             width: 360,
@@ -466,205 +468,264 @@ class _UserPageState extends State<UserPage> {
 
   void userUpdateDialog(String userPassword, String userName, String userGender,
       dynamic userAge, String userImgURL) {
+    TextEditingController nameController =
+        TextEditingController(text: userName);
+    TextEditingController passwordController =
+        TextEditingController(text: userPassword);
+    TextEditingController ageController =
+        TextEditingController(text: userAge.toString());
+
+    final Map<String, String> _genderOptions = {
+      'Male': '남성',
+      'Female': '여성',
+    };
+
+    String? selectedGender = userGender ?? 'Male';
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        TextEditingController nameController =
-            TextEditingController(text: userName);
-        TextEditingController passwordController =
-            TextEditingController(text: userPassword);
-        TextEditingController ageController =
-            TextEditingController(text: userAge.toString());
-        final Map<String, String> _genderOptions = {
-          'Male': '남성',
-          'Female': '여성',
-        };
-        String? selectedGender = userGender ?? 'Male';
-
-        return AlertDialog(
-          title: Text('Update User'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Center(
-                child: Column(
-                  children: [
-                    GestureDetector(
-                      child: Container(
-                        width: 80,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          color: Colors.grey,
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: userImgURL != null
-                            ? ClipOval(
-                                child: Image.network(
-                                  userImgURL,
-                                  width: 80,
-                                  height: 80,
-                                  fit: BoxFit.cover,
-                                ),
-                              )
-                            : Container(),
-                      ),
-                    ),
-                    SizedBox(height: 5),
-                    IconButton(
-                      icon: Icon(
-                        Icons.photo_outlined,
-                        size: 20,
-                      ),
-                      onPressed: () async {
-                        XFile? pickedImage = await _picker.pickImage(
-                            source: ImageSource.gallery);
-                        setState(() {
-                          selectedImage = pickedImage;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              TextField(
-                decoration: InputDecoration(labelText: 'Nickname'),
-                controller: nameController,
-              ),
-              TextField(
-                decoration: InputDecoration(labelText: 'Password'),
-                controller: passwordController,
-              ),
-              DropdownButtonFormField<String>(
-                decoration: InputDecoration(labelText: 'Gender'),
-                value: selectedGender,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    selectedGender = newValue;
-                  });
-                },
-                items: _genderOptions.entries
-                    .map((entry) => DropdownMenuItem(
-                          child: Text(entry.value),
-                          value: entry.key,
-                        ))
-                    .toList(),
-              ),
-              TextField(
-                decoration: InputDecoration(labelText: 'Age'),
-                controller: ageController,
-                keyboardType: TextInputType.number,
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              child: Text('Update'),
-              onPressed: () {
-                userUpdate(
-                  passwordController.text,
-                  nameController.text,
-                  selectedGender ?? userGender,
-                  int.tryParse(ageController.text) ?? userAge,
-                  selectedImage,
-                );
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('Close'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void tweetUpdateDialog(String tweetId, String tweetContents) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        final TextEditingController _controller =
-            TextEditingController(text: tweetContents);
         return StatefulBuilder(
-          builder: (context, setState) {
+          builder: (context, setModalState) {
             return AlertDialog(
-              title: Text('Update Tweet'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    controller: _controller,
-                    decoration: InputDecoration(
-                      labelText: 'Tweet Content',
-                    ),
-                    maxLines: 3,
-                  ),
-                  SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: () async {
-                      final XFile? image =
-                          await _picker.pickImage(source: ImageSource.gallery);
-                      if (image != null) {
-                        setState(() {
-                          selectedImage = image;
-                        });
-                      }
-                    },
-                    child: Text('Add Image'),
-                  ),
-                  SizedBox(height: 10),
-                  if (selectedImage != null)
-                    Container(
-                      constraints: BoxConstraints(
-                        maxHeight: 200,
-                        maxWidth: double.infinity,
-                      ),
-                      child: Stack(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image.file(
-                              File(selectedImage!.path),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Positioned(
-                            right: 10,
-                            top: 10,
-                            child: IconButton(
-                              icon: Icon(Icons.cancel,
-                                  color: Colors.red, size: 30),
-                              onPressed: () {
-                                setState(() {
-                                  selectedImage = null;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                ],
+              backgroundColor: Color.fromARGB(255, 255, 255, 255),
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
               ),
-              actions: [
-                TextButton(
-                  child: Text('Update'),
-                  onPressed: () async {
-                    await tweetUpdate(tweetId, _controller.text, selectedImage);
-                    Navigator.of(context).pop();
-                    Navigator.of(context).pop();
-                  },
+              title: Text(
+                'Edit user',
+                style: TextStyle(
+                  fontSize: 20,
                 ),
-                TextButton(
-                  child: Text('Cancel'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
+              ),
+              content: SizedBox(
+                width: 360,
+                height: 480,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Center(
+                        child: Column(
+                          children: [
+                            GestureDetector(
+                              child: Container(
+                                width: 100,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey,
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                child: userImgURL != null
+                                    ? ClipOval(
+                                        child: Image.network(
+                                          userImgURL,
+                                          width: 100,
+                                          height: 100,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      )
+                                    : Container(),
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                          ],
+                        ),
+                      ),
+                      TextField(
+                        controller: nameController,
+                        decoration: InputDecoration(
+                          hintText: 'Update your nickname',
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide(
+                              color: Colors.grey,
+                              width: 1.5,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide(
+                              color: Color(0xFF44558C8),
+                              width: 1.5,
+                            ),
+                          ),
+                        ),
+                        maxLines: 1,
+                        keyboardType: TextInputType.multiline,
+                      ),
+                      SizedBox(height: 10),
+                      TextField(
+                        controller: passwordController,
+                        decoration: InputDecoration(
+                          hintText: 'Update your password',
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide(
+                              color: Colors.grey,
+                              width: 1.5,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide(
+                              color: Color(0xFF44558C8),
+                              width: 1.5,
+                            ),
+                          ),
+                        ),
+                        maxLines: 1,
+                        keyboardType: TextInputType.multiline,
+                      ),
+                      SizedBox(height: 10),
+                      DropdownButtonFormField<String>(
+                        decoration: InputDecoration(
+                          hintText: 'Update your gender',
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide(
+                              color: Colors.grey,
+                              width: 1.5,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide(
+                              color: Color(0xFF44558C8),
+                              width: 1.5,
+                            ),
+                          ),
+                        ),
+                        value: selectedGender,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedGender = newValue;
+                          });
+                        },
+                        items: _genderOptions.entries
+                            .map((entry) => DropdownMenuItem(
+                                  value: entry.key,
+                                  child: Text(entry.value),
+                                ))
+                            .toList(),
+                      ),
+                      SizedBox(height: 10),
+                      TextField(
+                        controller: ageController,
+                        decoration: InputDecoration(
+                          hintText: 'Update your age',
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide(
+                              color: Colors.grey,
+                              width: 1.5,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide(
+                              color: Color(0xFF44558C8),
+                              width: 1.5,
+                            ),
+                          ),
+                        ),
+                        maxLines: 1,
+                        keyboardType: TextInputType.multiline,
+                      ),
+                      SizedBox(height: 10),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                        ),
+                        onPressed: () async {
+                          XFile? pickedImage = await _picker.pickImage(
+                              source: ImageSource.gallery);
+                          setState(() {
+                            selectedImage = pickedImage;
+                          });
+                        },
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Center(
+                            child: Text(
+                              'Add image',
+                              style: TextStyle(
+                                color: Color.fromRGBO(52, 52, 52, 52),
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFF4558C8),
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                        ),
+                        onPressed: () {
+                          userUpdate(
+                            passwordController.text,
+                            nameController.text,
+                            selectedGender ?? userGender,
+                            int.tryParse(ageController.text) ?? userAge,
+                            selectedImage,
+                          );
+                          Navigator.of(context).pop();
+                        },
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Center(
+                            child: Text(
+                              'Update',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Center(
+                            child: Text(
+                              'Cancel',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                                color: Color.fromRGBO(52, 52, 52, 52),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ],
+              ),
             );
           },
         );
@@ -672,89 +733,404 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
-  void instaUpdateDialog(String instaId, String instaContents) {
+  void tweetUpdateDialog(
+      String tweetId, String tweetContents, String tweetImgURL) {
+    final TextEditingController _controller =
+        TextEditingController(text: tweetContents);
+
+    XFile? _newImageFile = null;
+    String? existingImageUrl = tweetImgURL;
+
+    void refreshState() {
+      if (mounted) setState(() {});
+    }
+
+    Future<void> _pickImage() async {
+      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        _newImageFile = pickedFile;
+        existingImageUrl = null;
+        refreshState();
+      }
+    }
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        final TextEditingController _controller =
-            TextEditingController(text: instaContents);
         return StatefulBuilder(
-          builder: (context, setState) {
+          builder: (context, setModalState) {
             return AlertDialog(
-              title: Text('Update Insta'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (selectedImage != null)
-                    Container(
-                      constraints: BoxConstraints(
-                        maxHeight: 200,
-                        maxWidth: double.infinity,
-                      ),
-                      child: Stack(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image.file(
-                              File(selectedImage!.path),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Positioned(
-                            right: 10,
-                            top: 10,
-                            child: IconButton(
-                              icon: Icon(Icons.cancel,
-                                  color: Colors.red, size: 30),
-                              onPressed: () {
-                                setState(() {
-                                  selectedImage = null;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: () async {
-                      final XFile? image =
-                          await _picker.pickImage(source: ImageSource.gallery);
-                      if (image != null) {
-                        setState(() {
-                          selectedImage = image;
-                        });
-                      }
-                    },
-                    child: Text('Add Image'),
-                  ),
-                  SizedBox(height: 10),
-                  TextField(
-                    controller: _controller,
-                    decoration: InputDecoration(
-                      labelText: 'Insta Content',
-                    ),
-                    maxLines: 3,
-                  ),
-                ],
+              backgroundColor: Color.fromARGB(255, 255, 255, 255),
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
               ),
-              actions: [
-                TextButton(
-                  child: Text('Update'),
-                  onPressed: () async {
-                    await instaUpdate(instaId, _controller.text, selectedImage);
-                    Navigator.of(context).pop();
-                    Navigator.of(context).pop();
-                  },
+              title: Text(
+                'Edit tweet',
+                style: TextStyle(
+                  fontSize: 20,
                 ),
-                TextButton(
-                  child: Text('Cancel'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
+              ),
+              content: SizedBox(
+                width: 360,
+                height: 480,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextField(
+                        controller: _controller,
+                        decoration: InputDecoration(
+                          hintText: 'Update your tweet',
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide(
+                              color: Colors.grey,
+                              width: 1.5,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide(
+                              color: Color(0xFF44558C8),
+                              width: 1.5,
+                            ),
+                          ),
+                        ),
+                        maxLines: 3,
+                        keyboardType: TextInputType.multiline,
+                      ),
+                      SizedBox(height: 10),
+                      if (_newImageFile != null || existingImageUrl != null)
+                        Stack(
+                          children: [
+                            if (_newImageFile != null)
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Image.file(
+                                  File(_newImageFile!.path),
+                                  height: 200,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            else if (existingImageUrl != null)
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Image.network(
+                                  existingImageUrl!,
+                                  height: 200,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            Positioned(
+                              right: 10,
+                              top: 10,
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.cancel,
+                                  color: Colors.red,
+                                  size: 30,
+                                ),
+                                onPressed: () {
+                                  setModalState(() {
+                                    _newImageFile = null;
+                                    existingImageUrl = null;
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                        ),
+                        onPressed: () async {
+                          await _pickImage();
+                          setModalState(() {});
+                        },
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Center(
+                            child: Text(
+                              'Add image',
+                              style: TextStyle(
+                                color: Color.fromRGBO(52, 52, 52, 52),
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFF4558C8),
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                        ),
+                        onPressed: () async {
+                          await tweetUpdate(
+                              tweetId, _controller.text, _newImageFile);
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        },
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Center(
+                            child: Text(
+                              'Update',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Center(
+                            child: Text(
+                              'Cancel',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                                color: Color.fromRGBO(52, 52, 52, 52),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void instaUpdateDialog(
+      String instaId, String instaContents, String instaImgURL) {
+    final TextEditingController _controller =
+        TextEditingController(text: instaContents);
+
+    XFile? _newImageFile = null;
+    String? existingImageUrl = instaImgURL;
+
+    void refreshState() {
+      if (mounted) setState(() {});
+    }
+
+    Future<void> _pickImage() async {
+      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        _newImageFile = pickedFile;
+        existingImageUrl = null;
+        refreshState();
+      }
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return AlertDialog(
+              backgroundColor: Color.fromARGB(255, 255, 255, 255),
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              title: Text(
+                'Edit tweet',
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+              content: SizedBox(
+                width: 360,
+                height: 480,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (_newImageFile != null || existingImageUrl != null)
+                        Stack(
+                          children: [
+                            if (_newImageFile != null)
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Image.file(
+                                  File(_newImageFile!.path),
+                                  height: 200,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            else if (existingImageUrl != null)
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Image.network(
+                                  existingImageUrl!,
+                                  height: 200,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            Positioned(
+                              right: 10,
+                              top: 10,
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.cancel,
+                                  color: Colors.red,
+                                  size: 30,
+                                ),
+                                onPressed: () {
+                                  setModalState(() {
+                                    _newImageFile = null;
+                                    existingImageUrl = null;
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      SizedBox(height: 10),
+                      TextField(
+                        controller: _controller,
+                        decoration: InputDecoration(
+                          hintText: 'Update your insta',
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide(
+                              color: Colors.grey,
+                              width: 1.5,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide(
+                              color: Color(0xFF44558C8),
+                              width: 1.5,
+                            ),
+                          ),
+                        ),
+                        maxLines: 3,
+                        keyboardType: TextInputType.multiline,
+                      ),
+                      SizedBox(height: 10),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                        ),
+                        onPressed: () async {
+                          await _pickImage();
+                          setModalState(() {});
+                        },
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Center(
+                            child: Text(
+                              'Add image',
+                              style: TextStyle(
+                                color: Color.fromRGBO(52, 52, 52, 52),
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFF4558C8),
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                        ),
+                        onPressed: () async {
+                          await instaUpdate(
+                              instaId, _controller.text, _newImageFile);
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        },
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Center(
+                            child: Text(
+                              'Update',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Center(
+                            child: Text(
+                              'Cancel',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                                color: Color.fromRGBO(52, 52, 52, 52),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             );
           },
         );
@@ -769,7 +1145,7 @@ class _UserPageState extends State<UserPage> {
         return AlertDialog(
           backgroundColor: Color.fromARGB(255, 255, 255, 255),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(20),
           ),
           title: Text('Refund Item',
               style: TextStyle(
@@ -856,7 +1232,7 @@ class _UserPageState extends State<UserPage> {
           backgroundColor: Color.fromARGB(255, 255, 255, 255),
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(20),
           ),
           title: Text('Delete account',
               style: TextStyle(
@@ -941,7 +1317,7 @@ class _UserPageState extends State<UserPage> {
         return AlertDialog(
           backgroundColor: Color.fromARGB(255, 255, 255, 255),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(20),
           ),
           title: Text('Delete tweet',
               style: TextStyle(
@@ -1028,7 +1404,7 @@ class _UserPageState extends State<UserPage> {
           backgroundColor: Color.fromARGB(255, 255, 255, 255),
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(20),
           ),
           title: Text('Delete insta',
               style: TextStyle(
@@ -1166,8 +1542,8 @@ class _UserPageState extends State<UserPage> {
                 children: [
                   GestureDetector(
                     child: Container(
-                      width: 120,
-                      height: 120,
+                      width: 100,
+                      height: 100,
                       decoration: BoxDecoration(
                         color: Colors.grey,
                         borderRadius: BorderRadius.circular(60),
@@ -1176,8 +1552,8 @@ class _UserPageState extends State<UserPage> {
                           ? ClipOval(
                               child: Image.network(
                                 user['userImgURL']!,
-                                width: 120,
-                                height: 120,
+                                width: 100,
+                                height: 100,
                                 fit: BoxFit.cover,
                               ),
                             )
@@ -1332,14 +1708,14 @@ class _UserPageState extends State<UserPage> {
                 child: Container(
                   width: 150,
                   height: 100,
-                  margin: EdgeInsets.only(right: 1),
+                  margin: EdgeInsets.only(right: 3),
                   padding: EdgeInsets.all(5),
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: Color.fromARGB(176, 176, 176, 176),
-                      width: 1,
+                      color: Colors.grey,
+                      width: 1.5,
                     ),
-                    borderRadius: BorderRadius.circular(15),
+                    borderRadius: BorderRadius.circular(20),
                   ),
                   child: Align(
                     alignment: Alignment.centerLeft,
@@ -1404,7 +1780,7 @@ class _UserPageState extends State<UserPage> {
                 child: Container(
                   width: 100,
                   height: 100,
-                  margin: EdgeInsets.only(right: 1),
+                  margin: EdgeInsets.only(right: 3),
                   color: Colors.grey,
                   child: insta['instaImgURL'] != null
                       ? Image.network(
@@ -1467,11 +1843,11 @@ class _UserPageState extends State<UserPage> {
                       itemContents, purchaseId, itemPrice, purchaseStatus);
                 },
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(20),
                   child: Container(
                     width: 100,
                     height: 150,
-                    margin: EdgeInsets.only(right: 1),
+                    margin: EdgeInsets.only(right: 3),
                     color: Colors.grey,
                     child: purchase['itemImgURL'] != null
                         ? Image.network(
