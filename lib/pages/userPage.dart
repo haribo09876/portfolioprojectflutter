@@ -52,9 +52,9 @@ class _UserPageState extends State<UserPage> {
   }
 
   Future<void> userUpdate(String userPassword, String userName,
-      String userGender, dynamic userAge, XFile? userImgFile) async {
+      String userGender, dynamic userAge, XFile? imageFile) async {
     await UserService().userUpdate(
-        userPassword, userName, userGender, userAge, userImgFile, userId);
+        userPassword, userName, userGender, userAge, imageFile, userId);
     _fetchData();
   }
 
@@ -475,6 +475,22 @@ class _UserPageState extends State<UserPage> {
     TextEditingController ageController =
         TextEditingController(text: userAge.toString());
 
+    XFile? _newImageFile = null;
+    String? existingImageUrl = userImgURL;
+
+    void refreshState() {
+      if (mounted) setState(() {});
+    }
+
+    Future<void> _pickImage() async {
+      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        _newImageFile = pickedFile;
+        existingImageUrl = null;
+        refreshState();
+      }
+    }
+
     final Map<String, String> _genderOptions = {
       'Male': '남성',
       'Female': '여성',
@@ -506,33 +522,44 @@ class _UserPageState extends State<UserPage> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Center(
-                        child: Column(
+                      if (_newImageFile != null || existingImageUrl != null)
+                        Stack(
                           children: [
-                            GestureDetector(
-                              child: Container(
-                                width: 100,
-                                height: 100,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey,
-                                  borderRadius: BorderRadius.circular(50),
+                            ClipOval(
+                              child: _newImageFile != null
+                                  ? Image.file(
+                                      File(_newImageFile!.path),
+                                      width: 100,
+                                      height: 100,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.network(
+                                      existingImageUrl!,
+                                      width: 100,
+                                      height: 100,
+                                      fit: BoxFit.cover,
+                                    ),
+                            ),
+                            Positioned(
+                              left: 67,
+                              top: 67,
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.cancel,
+                                  color: Colors.red,
+                                  size: 20,
                                 ),
-                                child: userImgURL != null
-                                    ? ClipOval(
-                                        child: Image.network(
-                                          userImgURL,
-                                          width: 100,
-                                          height: 100,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      )
-                                    : Container(),
+                                onPressed: () {
+                                  setModalState(() {
+                                    _newImageFile = null;
+                                    existingImageUrl = null;
+                                  });
+                                },
                               ),
                             ),
-                            SizedBox(height: 10),
                           ],
                         ),
-                      ),
+                      SizedBox(height: 10),
                       TextField(
                         controller: nameController,
                         decoration: InputDecoration(
@@ -643,11 +670,8 @@ class _UserPageState extends State<UserPage> {
                           ),
                         ),
                         onPressed: () async {
-                          XFile? pickedImage = await _picker.pickImage(
-                              source: ImageSource.gallery);
-                          setState(() {
-                            selectedImage = pickedImage;
-                          });
+                          await _pickImage();
+                          setModalState(() {});
                         },
                         child: SizedBox(
                           width: double.infinity,
@@ -678,7 +702,7 @@ class _UserPageState extends State<UserPage> {
                             nameController.text,
                             selectedGender ?? userGender,
                             int.tryParse(ageController.text) ?? userAge,
-                            selectedImage,
+                            _newImageFile,
                           );
                           Navigator.of(context).pop();
                         },
