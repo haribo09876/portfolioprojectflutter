@@ -541,8 +541,8 @@ class _UserPageState extends State<UserPage> {
                                     ),
                             ),
                             Positioned(
-                              left: 67,
                               top: 67,
+                              left: 67,
                               child: IconButton(
                                 icon: Icon(
                                   Icons.cancel,
@@ -550,10 +550,12 @@ class _UserPageState extends State<UserPage> {
                                   size: 20,
                                 ),
                                 onPressed: () {
-                                  setModalState(() {
-                                    _newImageFile = null;
-                                    existingImageUrl = null;
-                                  });
+                                  setModalState(
+                                    () {
+                                      _newImageFile = null;
+                                      existingImageUrl = null;
+                                    },
+                                  );
                                 },
                               ),
                             ),

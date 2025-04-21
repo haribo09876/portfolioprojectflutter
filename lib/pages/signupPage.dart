@@ -343,149 +343,152 @@ class _SignupPageState extends State<SignupPage> {
       appBar: AppBar(title: Text('Sign up')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: <Widget>[
-            Center(
-              child: GestureDetector(
-                child: CircleAvatar(
-                  radius: 50,
-                  backgroundColor: Color.fromARGB(242, 242, 242, 242),
-                  backgroundImage: _image != null ? FileImage(_image!) : null,
-                  child: _image == null
-                      ? Icon(Icons.person,
-                          size: 50, color: Color.fromRGBO(52, 52, 52, 52))
-                      : Stack(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: Image.file(
-                                _image!,
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                            Positioned(
-                              top: 30,
-                              right: 30,
-                              child: IconButton(
-                                icon: Icon(Icons.cancel,
-                                    color: Colors.red, size: 20),
-                                onPressed: () {
-                                  setState(() {
-                                    _image = null;
-                                  });
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: <Widget>[
-                      _buildTextField(
-                        controller: _nameController,
-                        hintText: ' Username',
-                        validator: (value) =>
-                            value != null && nameRegex.hasMatch(value)
-                                ? null
-                                : 'Invalid username',
-                      ),
-                      _buildTextField(
-                        controller: _emailController,
-                        hintText: ' Email',
-                        validator: (value) =>
-                            value != null && emailRegex.hasMatch(value)
-                                ? null
-                                : 'Invalid email',
-                      ),
-                      _buildTextField(
-                        controller: _passwordController,
-                        hintText: ' Password',
-                        obscureText: true,
-                        validator: (value) => value != null && value.length >= 6
-                            ? null
-                            : 'Password must be at least 6 characters',
-                      ),
-                      _buildTextField(
-                        controller: _ageController,
-                        hintText: ' Age',
-                        validator: (value) =>
-                            value != null && ageRegex.hasMatch(value)
-                                ? null
-                                : 'Invalid age',
-                      ),
-                      _buildDropdownField(
-                        value: userGender,
-                        onChanged: (value) {
-                          setState(() {
-                            userGender = value!;
-                          });
-                        },
-                      ),
-                      SizedBox(height: 10),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromARGB(242, 242, 242, 242),
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                        ),
-                        onPressed: () async {
-                          await _pickImage();
-                        },
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: Center(
-                            child: Text(
-                              'Add image',
-                              style: TextStyle(
-                                color: Color.fromRGBO(52, 52, 52, 52),
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500,
-                              ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Stack(
+                children: [
+                  ClipOval(
+                    child: _image != null
+                        ? Image.file(
+                            _image!,
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                          )
+                        : CircleAvatar(
+                            radius: 50,
+                            backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                            child: Icon(
+                              Icons.person,
+                              size: 50,
+                              color: Color.fromRGBO(52, 52, 52, 52),
                             ),
                           ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      SizedBox(
-                        width: 360,
-                        child: ElevatedButton(
-                          onPressed: _isSubmitting ? null : _signup,
-                          child: _isSubmitting
-                              ? CircularProgressIndicator(color: Colors.white)
-                              : Text(
-                                  'Sign up',
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.white),
-                                ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xff4A7FF7),
-                            elevation: 0,
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 30, vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                    ],
                   ),
+                  Positioned(
+                    top: 67,
+                    left: 67,
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.cancel,
+                        color: Colors.red,
+                        size: 20,
+                      ),
+                      onPressed: () {
+                        setState(
+                          () {
+                            _image = null;
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10),
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: <Widget>[
+                    _buildTextField(
+                      controller: _nameController,
+                      hintText: ' Username',
+                      validator: (value) =>
+                          value != null && nameRegex.hasMatch(value)
+                              ? null
+                              : 'Invalid username',
+                    ),
+                    _buildTextField(
+                      controller: _emailController,
+                      hintText: ' Email',
+                      validator: (value) =>
+                          value != null && emailRegex.hasMatch(value)
+                              ? null
+                              : 'Invalid email',
+                    ),
+                    _buildTextField(
+                      controller: _passwordController,
+                      hintText: ' Password',
+                      obscureText: true,
+                      validator: (value) => value != null && value.length >= 6
+                          ? null
+                          : 'Password must be at least 6 characters',
+                    ),
+                    _buildTextField(
+                      controller: _ageController,
+                      hintText: ' Age',
+                      validator: (value) =>
+                          value != null && ageRegex.hasMatch(value)
+                              ? null
+                              : 'Invalid age',
+                    ),
+                    _buildDropdownField(
+                      value: userGender,
+                      onChanged: (value) {
+                        setState(() {
+                          userGender = value!;
+                        });
+                      },
+                    ),
+                    SizedBox(height: 10),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                      ),
+                      onPressed: () async {
+                        await _pickImage();
+                      },
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Center(
+                          child: Text(
+                            'Add image',
+                            style: TextStyle(
+                              color: Color.fromRGBO(52, 52, 52, 52),
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    SizedBox(
+                      width: 360,
+                      child: ElevatedButton(
+                        onPressed: _isSubmitting ? null : _signup,
+                        child: _isSubmitting
+                            ? CircularProgressIndicator(color: Colors.white)
+                            : Text(
+                                'Sign up',
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white),
+                              ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xff4A7FF7),
+                          elevation: 0,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 30, vertical: 15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                  ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
