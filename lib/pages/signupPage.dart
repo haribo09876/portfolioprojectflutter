@@ -54,14 +54,53 @@ class _SignupPageState extends State<SignupPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Sign up error'),
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Text('Sign up error',
+              style: TextStyle(
+                fontSize: 20,
+              )),
+          content: SizedBox(
+            width: 360,
+            height: 120,
+            child: Center(
+              child: Text(
+                message,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Confirm'),
+              child: SizedBox(
+                width: double.infinity,
+                child: Center(
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: Color.fromRGBO(52, 52, 52, 52),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         );
@@ -74,15 +113,54 @@ class _SignupPageState extends State<SignupPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Sign up success'),
-          content: Text('Sign up completed successfully.'),
-          actions: <Widget>[
-            TextButton(
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Text('Sign up success',
+              style: TextStyle(
+                fontSize: 20,
+              )),
+          content: SizedBox(
+            width: 360,
+            height: 120,
+            child: Center(
+              child: Text(
+                'Sign up completed successfully.',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
-              child: Text('Confirm'),
+              child: SizedBox(
+                width: double.infinity,
+                child: Center(
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: Color.fromRGBO(52, 52, 52, 52),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         );
@@ -100,6 +178,14 @@ class _SignupPageState extends State<SignupPage> {
       String userPassword = _passwordController.text;
       String userName = _nameController.text.trim();
       int userAge = int.tryParse(_ageController.text) ?? 0;
+
+      if (_image == null) {
+        _showErrorDialog('Please select an image.');
+        setState(() {
+          _isSubmitting = false;
+        });
+        return;
+      }
 
       if (!emailRegex.hasMatch(userEmail)) {
         _showErrorDialog('Invalid email format.');
@@ -144,10 +230,7 @@ class _SignupPageState extends State<SignupPage> {
         return;
       }
 
-      String? imageBase64;
-      if (_image != null) {
-        imageBase64 = await _convertImageToBase64(_image!);
-      }
+      String imageBase64 = await _convertImageToBase64(_image!);
 
       final userInfo = {
         'userEmail': userEmail,
@@ -191,16 +274,23 @@ class _SignupPageState extends State<SignupPage> {
           validator: validator,
           decoration: InputDecoration(
             hintText: hintText,
-            hintStyle: TextStyle(
-              color: Color.fromRGBO(52, 52, 52, 52),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+              borderSide: BorderSide(
+                color: Colors.grey,
+                width: 1.5,
+              ),
             ),
-            filled: true,
-            fillColor: Color.fromARGB(242, 242, 242, 242),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(50),
-              borderSide: BorderSide.none,
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+              borderSide: BorderSide(
+                color: Color(0xFF44558C8),
+                width: 1.5,
+              ),
             ),
           ),
+          maxLines: 1,
+          keyboardType: TextInputType.multiline,
         ),
       ),
     );
@@ -214,11 +304,6 @@ class _SignupPageState extends State<SignupPage> {
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Container(
         width: 360,
-        decoration: BoxDecoration(
-          color: Color.fromARGB(242, 242, 242, 242),
-          borderRadius: BorderRadius.circular(50),
-        ),
-        padding: EdgeInsets.symmetric(horizontal: 20),
         child: DropdownButtonFormField<String>(
           value: value,
           onChanged: onChanged,
@@ -226,7 +311,20 @@ class _SignupPageState extends State<SignupPage> {
             color: Color.fromRGBO(52, 52, 52, 52),
           ),
           decoration: InputDecoration(
-            border: InputBorder.none,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+              borderSide: const BorderSide(
+                color: Colors.grey,
+                width: 1.5,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+              borderSide: const BorderSide(
+                color: Color(0xFF44558C8),
+                width: 1.5,
+              ),
+            ),
           ),
           items: _genderOptions.entries.map((entry) {
             return DropdownMenuItem<String>(
@@ -249,7 +347,6 @@ class _SignupPageState extends State<SignupPage> {
           children: <Widget>[
             Center(
               child: GestureDetector(
-                onTap: _pickImage,
                 child: CircleAvatar(
                   radius: 50,
                   backgroundColor: Color.fromARGB(242, 242, 242, 242),
@@ -257,7 +354,30 @@ class _SignupPageState extends State<SignupPage> {
                   child: _image == null
                       ? Icon(Icons.person,
                           size: 50, color: Color.fromRGBO(52, 52, 52, 52))
-                      : null,
+                      : Stack(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Image.file(
+                                _image!,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                            Positioned(
+                              top: 30,
+                              right: 30,
+                              child: IconButton(
+                                icon: Icon(Icons.cancel,
+                                    color: Colors.red, size: 20),
+                                onPressed: () {
+                                  setState(() {
+                                    _image = null;
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
                 ),
               ),
             ),
@@ -308,7 +428,33 @@ class _SignupPageState extends State<SignupPage> {
                           });
                         },
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(height: 10),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                        ),
+                        onPressed: () async {
+                          await _pickImage();
+                        },
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Center(
+                            child: Text(
+                              'Add image',
+                              style: TextStyle(
+                                color: Color.fromRGBO(52, 52, 52, 52),
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 5),
                       SizedBox(
                         width: 360,
                         child: ElevatedButton(
