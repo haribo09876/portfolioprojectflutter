@@ -46,6 +46,7 @@ dependencies:
   syncfusion_flutter_datepicker: ^27.1.53
   word_cloud: ^1.0.3
   image: ^4.3.0
+  path_provider: ^2.1.5
 
 dev_dependencies:
   flutter_test:

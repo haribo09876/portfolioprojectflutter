@@ -1,8 +1,10 @@
+import 'dart:io';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 import '../routes.dart';
 import '../services/login.dart';
 import '../services/userInfo.dart';
@@ -51,11 +53,102 @@ class _UserPageState extends State<UserPage> {
     });
   }
 
-  Future<void> userUpdate(String userPassword, String userName,
-      String userGender, dynamic userAge, XFile? imageFile) async {
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Text('Image error',
+              style: TextStyle(
+                fontSize: 20,
+              )),
+          content: SizedBox(
+            width: 360,
+            height: 120,
+            child: Center(
+              child: Text(
+                message,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: SizedBox(
+                width: double.infinity,
+                child: Center(
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: Color.fromRGBO(52, 52, 52, 52),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> userUpdate(
+    String userPassword,
+    String userName,
+    String userGender,
+    dynamic userAge,
+    XFile? imageFile,
+    String? existingImageUrl,
+  ) async {
+    XFile? finalImageFile = imageFile;
+    if (finalImageFile == null &&
+        existingImageUrl != null &&
+        existingImageUrl.isNotEmpty) {
+      try {
+        final response = await http.get(Uri.parse(existingImageUrl));
+        final tempDir = await getTemporaryDirectory();
+        final tempFile = File('${tempDir.path}/temp_image.jpg');
+        await tempFile.writeAsBytes(response.bodyBytes);
+        finalImageFile = XFile(tempFile.path);
+      } catch (e) {
+        _showErrorDialog('Failed to load existing image.');
+        return;
+      }
+    }
+    if (finalImageFile == null) {
+      _showErrorDialog('Please select an image.');
+      return;
+    }
     await UserService().userUpdate(
-        userPassword, userName, userGender, userAge, imageFile, userId);
+      userPassword,
+      userName,
+      userGender,
+      userAge,
+      finalImageFile,
+      userId,
+    );
     _fetchData();
+    Navigator.of(context).pop();
   }
 
   Future<void> userDelete() async {
@@ -64,30 +157,63 @@ class _UserPageState extends State<UserPage> {
   }
 
   Future<void> tweetUpdate(
-      String tweetId, String tweetContents, XFile? imageFile) async {
-    await TweetService().tweetUpdate(tweetId, userId, tweetContents, imageFile);
+    String tweetId,
+    String tweetContents,
+    XFile? imageFile,
+  ) async {
+    await TweetService().tweetUpdate(
+      tweetId,
+      userId,
+      tweetContents,
+      imageFile,
+    );
     _fetchData();
   }
 
-  Future<void> tweetDelete(String tweetId) async {
-    await TweetService().tweetDelete(tweetId, userId);
+  Future<void> tweetDelete(
+    String tweetId,
+  ) async {
+    await TweetService().tweetDelete(
+      tweetId,
+      userId,
+    );
     _fetchData();
   }
 
   Future<void> instaUpdate(
-      String instaId, String instaContents, XFile? imageFile) async {
-    await InstaService().instaUpdate(instaId, userId, instaContents, imageFile);
+    String instaId,
+    String instaContents,
+    XFile? imageFile,
+  ) async {
+    await InstaService().instaUpdate(
+      instaId,
+      userId,
+      instaContents,
+      imageFile,
+    );
     _fetchData();
   }
 
-  Future<void> instaDelete(String instaId) async {
-    await InstaService().instaDelete(instaId, userId);
+  Future<void> instaDelete(
+    String instaId,
+  ) async {
+    await InstaService().instaDelete(
+      instaId,
+      userId,
+    );
     _fetchData();
   }
 
-  Future<void> purchaseUpdate(String purchaseId, dynamic itemPrice) async {
+  Future<void> purchaseUpdate(
+    String purchaseId,
+    dynamic itemPrice,
+  ) async {
     double price = (itemPrice is int) ? itemPrice.toDouble() : itemPrice;
-    await ShopService().purchaseUpdate(purchaseId, userId, price);
+    await ShopService().purchaseUpdate(
+      purchaseId,
+      userId,
+      price,
+    );
     _fetchData();
   }
 
@@ -475,7 +601,7 @@ class _UserPageState extends State<UserPage> {
     TextEditingController ageController =
         TextEditingController(text: userAge.toString());
 
-    XFile? _newImageFile = null;
+    XFile? _newImageFile;
     String? existingImageUrl = userImgURL;
 
     void refreshState() {
@@ -522,24 +648,35 @@ class _UserPageState extends State<UserPage> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      if (_newImageFile != null || existingImageUrl != null)
-                        Stack(
-                          children: [
-                            ClipOval(
-                              child: _newImageFile != null
-                                  ? Image.file(
-                                      File(_newImageFile!.path),
-                                      width: 100,
-                                      height: 100,
-                                      fit: BoxFit.cover,
-                                    )
-                                  : Image.network(
-                                      existingImageUrl!,
-                                      width: 100,
-                                      height: 100,
-                                      fit: BoxFit.cover,
-                                    ),
-                            ),
+                      Stack(
+                        children: [
+                          ClipOval(
+                            child: _newImageFile != null
+                                ? Image.file(
+                                    File(_newImageFile!.path),
+                                    width: 100,
+                                    height: 100,
+                                    fit: BoxFit.cover,
+                                  )
+                                : existingImageUrl != null
+                                    ? Image.network(
+                                        existingImageUrl!,
+                                        width: 100,
+                                        height: 100,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : CircleAvatar(
+                                        radius: 50,
+                                        backgroundColor:
+                                            Color.fromARGB(242, 242, 242, 242),
+                                        child: Icon(
+                                          Icons.person,
+                                          size: 50,
+                                          color: Color.fromRGBO(52, 52, 52, 52),
+                                        ),
+                                      ),
+                          ),
+                          if (_newImageFile != null || existingImageUrl != null)
                             Positioned(
                               top: 67,
                               left: 67,
@@ -559,8 +696,8 @@ class _UserPageState extends State<UserPage> {
                                 },
                               ),
                             ),
-                          ],
-                        ),
+                        ],
+                      ),
                       SizedBox(height: 10),
                       TextField(
                         controller: nameController,
@@ -705,8 +842,8 @@ class _UserPageState extends State<UserPage> {
                             selectedGender ?? userGender,
                             int.tryParse(ageController.text) ?? userAge,
                             _newImageFile,
+                            existingImageUrl,
                           );
-                          Navigator.of(context).pop();
                         },
                         child: SizedBox(
                           width: double.infinity,

@@ -367,24 +367,25 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
                   ),
-                  Positioned(
-                    top: 67,
-                    left: 67,
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.cancel,
-                        color: Colors.red,
-                        size: 20,
+                  if (_image != null)
+                    Positioned(
+                      top: 67,
+                      left: 67,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.cancel,
+                          color: Colors.red,
+                          size: 20,
+                        ),
+                        onPressed: () {
+                          setState(
+                            () {
+                              _image = null;
+                            },
+                          );
+                        },
                       ),
-                      onPressed: () {
-                        setState(
-                          () {
-                            _image = null;
-                          },
-                        );
-                      },
                     ),
-                  ),
                 ],
               ),
               SizedBox(height: 10),
