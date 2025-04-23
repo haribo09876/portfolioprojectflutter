@@ -12,29 +12,29 @@ class DashboardUsersPage extends StatelessWidget {
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(15.0),
+          padding: EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                margin: const EdgeInsets.symmetric(vertical: 10),
                 child: Text(
-                  'Info',
+                  'Summary',
                   style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.w400,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                    color: Color.fromRGBO(52, 52, 52, 52),
                   ),
                 ),
               ),
               DashboardUsersInfo(),
               SizedBox(height: 20),
               Container(
-                margin: const EdgeInsets.symmetric(vertical: 10),
                 child: Text(
                   'Location',
                   style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.w400,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                    color: Color.fromRGBO(52, 52, 52, 52),
                   ),
                 ),
               ),
@@ -44,12 +44,12 @@ class DashboardUsersPage extends StatelessWidget {
               ),
               SizedBox(height: 20),
               Container(
-                margin: const EdgeInsets.symmetric(vertical: 10),
                 child: Text(
                   'Search',
                   style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.w400,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                    color: Color.fromRGBO(52, 52, 52, 52),
                   ),
                 ),
               ),
@@ -185,125 +185,138 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
         : Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Center(
-                      child: Text(
-                        '방문',
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Center(
-                      child: Text(
-                        '연령',
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Center(
-                      child: Text(
-                        '성별',
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Total',
-                            style: TextStyle(fontSize: 25),
-                            textAlign: TextAlign.center,
-                          ),
-                          Text(
-                            '$_locationsCount',
-                            style: TextStyle(fontSize: 30),
-                            textAlign: TextAlign.center,
-                          ),
-                          SizedBox(height: 3),
-                          Text(
-                            'Today $_todayLocationsCount',
-                            style: TextStyle(
-                                fontSize: 20, fontStyle: FontStyle.italic),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: SizedBox(
-                      height: 150,
-                      child: SfCircularChart(
-                        series: <CircularSeries>[
-                          PieSeries<_AgeData, String>(
-                            dataSource: _getAgeData(),
-                            xValueMapper: (_AgeData data, _) => data.ageGroup,
-                            yValueMapper: (_AgeData data, _) => data.count,
-                            dataLabelMapper: (_AgeData data, _) =>
-                                data.ageGroup,
-                            dataLabelSettings: DataLabelSettings(
-                                isVisible: true,
-                                textStyle: TextStyle(
-                                  color: Colors.white,
-                                )),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: SizedBox(
-                      height: 150,
-                      child: SfCartesianChart(
-                        primaryXAxis: CategoryAxis(),
-                        primaryYAxis: NumericAxis(
-                          isVisible: false,
-                          majorGridLines: MajorGridLines(width: 0),
-                        ),
-                        series: <CartesianSeries>[
-                          ColumnSeries<_GenderData, String>(
-                            dataSource: [
-                              _GenderData('Male', maleCount),
-                              _GenderData('Female', femaleCount),
-                            ],
-                            xValueMapper: (_GenderData data, _) => data.gender,
-                            yValueMapper: (_GenderData data, _) => data.count,
-                            dataLabelSettings: DataLabelSettings(
-                              isVisible: true,
-                              textStyle: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Center(
+                            child: Text(
+                              'visit',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
                               ),
+                              textAlign: TextAlign.center,
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                        Expanded(
+                          child: Center(
+                            child: Text(
+                              'age',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Center(
+                            child: Text(
+                              'gender',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Total',
+                                  style: TextStyle(fontSize: 20),
+                                  textAlign: TextAlign.center,
+                                ),
+                                Text(
+                                  '$_locationsCount',
+                                  style: TextStyle(
+                                    fontSize: 35,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                SizedBox(height: 10),
+                                Text(
+                                  'Today $_todayLocationsCount',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: SizedBox(
+                            height: 150,
+                            child: SfCircularChart(
+                              series: <CircularSeries>[
+                                PieSeries<_AgeData, String>(
+                                  dataSource: _getAgeData(),
+                                  xValueMapper: (_AgeData data, _) =>
+                                      data.ageGroup,
+                                  yValueMapper: (_AgeData data, _) =>
+                                      data.count,
+                                  dataLabelMapper: (_AgeData data, _) =>
+                                      data.ageGroup,
+                                  dataLabelSettings: DataLabelSettings(
+                                    isVisible: true,
+                                    textStyle: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: SizedBox(
+                            height: 150,
+                            child: SfCartesianChart(
+                              primaryXAxis: CategoryAxis(),
+                              primaryYAxis: NumericAxis(
+                                isVisible: false,
+                                majorGridLines: MajorGridLines(width: 0),
+                              ),
+                              series: <CartesianSeries>[
+                                ColumnSeries<_GenderData, String>(
+                                  dataSource: [
+                                    _GenderData('Male', maleCount),
+                                    _GenderData('Female', femaleCount),
+                                  ],
+                                  xValueMapper: (_GenderData data, _) =>
+                                      data.gender,
+                                  yValueMapper: (_GenderData data, _) =>
+                                      data.count,
+                                  dataLabelSettings: DataLabelSettings(
+                                    isVisible: true,
+                                    textStyle: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ],
           );
@@ -341,7 +354,6 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
   Future<void> _initializeMap() async {
     bool serviceEnabled;
     geolocator_position.LocationPermission permission;
-
     serviceEnabled =
         await geolocator_position.Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
@@ -351,7 +363,6 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
       print("Location services are disabled.");
       return;
     }
-
     permission = await geolocator_position.Geolocator.checkPermission();
     if (permission == geolocator_position.LocationPermission.denied) {
       permission = await geolocator_position.Geolocator.requestPermission();
@@ -364,19 +375,16 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
         return;
       }
     }
-
     geolocator_position.Position position =
         await geolocator_position.Geolocator.getCurrentPosition(
       desiredAccuracy: geolocator_position.LocationAccuracy.high,
     );
-
     mapController = MapController(
       initPosition: GeoPoint(
         latitude: position.latitude,
         longitude: position.longitude,
       ),
     );
-
     _loadLocations();
   }
 
@@ -391,12 +399,10 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
           longitude: double.parse(location['longitude']),
         );
       }).toList();
-
       setState(() {
         geoPoints = points;
         isLoading = false;
       });
-
       for (var point in geoPoints) {
         mapController.addMarker(point);
       }
@@ -417,60 +423,81 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
   Widget build(BuildContext context) {
     return isLoading
         ? Center(child: CircularProgressIndicator())
-        : Stack(
-            children: [
-              OSMFlutter(
-                controller: mapController,
-                osmOption: OSMOption(
-                  userTrackingOption: UserTrackingOption(
-                    enableTracking: true,
-                    unFollowUser: false,
-                  ),
-                  zoomOption: ZoomOption(
-                    initZoom: 12,
-                    minZoomLevel: 3,
-                    maxZoomLevel: 19,
-                    stepZoom: 1.0,
-                  ),
-                  userLocationMarker: UserLocationMaker(
-                    personMarker: MarkerIcon(
-                      icon: Icon(Icons.location_history_rounded,
-                          color: Colors.blue, size: 80),
-                    ),
-                    directionArrowMarker: MarkerIcon(
-                      icon: Icon(
-                        Icons.double_arrow,
-                        size: 48,
-                      ),
-                    ),
-                  ),
-                ),
-                onMapIsReady: (isReady) async {
-                  if (isReady) {
-                    for (var point in geoPoints) {
-                      await mapController.addMarker(point);
-                    }
-                  }
-                },
+        : Padding(
+            padding: EdgeInsets.symmetric(vertical: 10),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
               ),
-              Positioned(
-                right: 10,
-                bottom: 10,
-                child: Column(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Stack(
                   children: [
-                    FloatingActionButton(
-                      onPressed: _zoomIn,
-                      child: Icon(Icons.add),
+                    OSMFlutter(
+                      controller: mapController,
+                      osmOption: OSMOption(
+                        userTrackingOption: UserTrackingOption(
+                          enableTracking: true,
+                          unFollowUser: false,
+                        ),
+                        zoomOption: ZoomOption(
+                          initZoom: 12,
+                          minZoomLevel: 3,
+                          maxZoomLevel: 19,
+                          stepZoom: 1.0,
+                        ),
+                        userLocationMarker: UserLocationMaker(
+                          personMarker: MarkerIcon(
+                            icon: Icon(
+                              Icons.location_on,
+                              color: Color(0xFF12AC79),
+                              size: 80,
+                            ),
+                          ),
+                          directionArrowMarker: MarkerIcon(
+                            icon: Icon(
+                              Icons.double_arrow,
+                              size: 48,
+                            ),
+                          ),
+                        ),
+                      ),
+                      onMapIsReady: (isReady) async {
+                        if (isReady) {
+                          for (var point in geoPoints) {
+                            await mapController.addMarker(point);
+                          }
+                        }
+                      },
                     ),
-                    SizedBox(height: 5),
-                    FloatingActionButton(
-                      onPressed: _zoomOut,
-                      child: Icon(Icons.remove),
+                    Positioned(
+                      right: 10,
+                      bottom: 10,
+                      child: Column(
+                        children: [
+                          FloatingActionButton.small(
+                            onPressed: _zoomIn,
+                            backgroundColor: Color(0xFF44558C8),
+                            child: Icon(
+                              Icons.add,
+                              color: Colors.white,
+                            ),
+                          ),
+                          FloatingActionButton.small(
+                            onPressed: _zoomOut,
+                            backgroundColor: Color(0xFF44558C8),
+                            child: Icon(
+                              Icons.remove,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
-            ],
+            ),
           );
   }
 }
@@ -542,181 +569,201 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TextField(
-          onChanged: (query) {
-            _searchUsers(query);
-          },
-          decoration: InputDecoration(
-            hintText: 'Search by name...',
-            border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.search),
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 10),
+      child: Column(
+        children: [
+          TextField(
+            onChanged: (query) {
+              _searchUsers(query);
+            },
+            decoration: InputDecoration(
+              hintText: 'Search by name',
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: BorderSide(
+                  color: Colors.grey,
+                  width: 1.5,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: BorderSide(
+                  color: Color(0xFF44558C8),
+                  width: 1.5,
+                ),
+              ),
+              prefixIcon: Icon(Icons.search_rounded),
+            ),
+            maxLines: 1,
+            keyboardType: TextInputType.multiline,
           ),
-        ),
-        SizedBox(height: 10),
-        isLoading
-            ? CircularProgressIndicator()
-            : SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        blurRadius: 8,
-                        spreadRadius: 2,
-                        offset: Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Table(
-                    columnWidths: {
-                      0: FixedColumnWidth(100),
-                      1: FixedColumnWidth(100),
-                      2: FixedColumnWidth(200),
-                      3: FixedColumnWidth(150),
-                      4: FixedColumnWidth(300),
-                      5: FixedColumnWidth(50),
-                      6: FixedColumnWidth(100),
-                      7: FixedColumnWidth(100),
-                      8: FixedColumnWidth(100),
-                      9: FixedColumnWidth(200),
-                      10: FixedColumnWidth(200),
-                    },
-                    border: TableBorder.all(
-                      color: Colors.grey[300]!,
-                    ),
-                    children: [
-                      TableRow(
-                        decoration: BoxDecoration(
-                          color: Colors.blue[100],
+          SizedBox(height: 10),
+          isLoading
+              ? CircularProgressIndicator()
+              : SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.2),
+                          blurRadius: 8,
+                          spreadRadius: 2,
+                          offset: Offset(0, 4),
                         ),
-                        children: [
-                          _tableHeader('Profile'),
-                          _tableHeader('Name'),
-                          _tableHeader('Email'),
-                          _tableHeader('Password'),
-                          _tableHeader('ID'),
-                          _tableHeader('Age'),
-                          _tableHeader('Gender'),
-                          _tableHeader('Money'),
-                          _tableHeader('Spend'),
-                          _tableHeader('Created At'),
-                          _tableHeader('Modified At'),
-                        ],
+                      ],
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    child: Table(
+                      columnWidths: {
+                        0: FixedColumnWidth(60),
+                        1: FixedColumnWidth(100),
+                        2: FixedColumnWidth(200),
+                        3: FixedColumnWidth(150),
+                        4: FixedColumnWidth(300),
+                        5: FixedColumnWidth(50),
+                        6: FixedColumnWidth(70),
+                        7: FixedColumnWidth(100),
+                        8: FixedColumnWidth(100),
+                        9: FixedColumnWidth(200),
+                        10: FixedColumnWidth(200),
+                      },
+                      border: TableBorder.all(
+                        color: Colors.grey,
                       ),
-                      for (var user in filteredUsers)
+                      children: [
                         TableRow(
+                          decoration: BoxDecoration(
+                            color: Color(0xFF44558C8),
+                          ),
                           children: [
-                            TableCell(
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.pushNamed(context, AppRoutes.user,
-                                      arguments: {'userId': user['userId']});
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: CircleAvatar(
-                                    radius: 17,
-                                    backgroundImage:
-                                        NetworkImage(user['userImgURL']),
-                                    onBackgroundImageError: (_, __) =>
-                                        Icon(Icons.person),
+                            _tableHeader('Profile'),
+                            _tableHeader('Name'),
+                            _tableHeader('Email'),
+                            _tableHeader('Password'),
+                            _tableHeader('ID'),
+                            _tableHeader('Age'),
+                            _tableHeader('Gender'),
+                            _tableHeader('Money'),
+                            _tableHeader('Spend'),
+                            _tableHeader('Created At'),
+                            _tableHeader('Modified At'),
+                          ],
+                        ),
+                        for (var user in filteredUsers)
+                          TableRow(
+                            children: [
+                              TableCell(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(context, AppRoutes.user,
+                                        arguments: {'userId': user['userId']});
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8),
+                                    child: CircleAvatar(
+                                      radius: 17,
+                                      backgroundImage:
+                                          NetworkImage(user['userImgURL']),
+                                      onBackgroundImageError: (_, __) =>
+                                          Icon(Icons.person),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            TableCell(
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.pushNamed(context, AppRoutes.user,
-                                      arguments: {'userId': user['userId']});
-                                },
+                              TableCell(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(context, AppRoutes.user,
+                                        arguments: {'userId': user['userId']});
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      user['userName'],
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              TableCell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(user['userEmail']),
+                                ),
+                              ),
+                              TableCell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(user['userPassword']),
+                                ),
+                              ),
+                              TableCell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(user['userId']),
+                                ),
+                              ),
+                              TableCell(
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
-                                    user['userName'],
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                                    user['userAge'].toString(),
+                                    textAlign: TextAlign.center,
                                   ),
                                 ),
                               ),
-                            ),
-                            TableCell(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(user['userEmail']),
-                              ),
-                            ),
-                            TableCell(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(user['userPassword']),
-                              ),
-                            ),
-                            TableCell(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(user['userId']),
-                              ),
-                            ),
-                            TableCell(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  user['userAge'].toString(),
-                                  textAlign: TextAlign.center,
+                              TableCell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    user['userGender'],
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
                               ),
-                            ),
-                            TableCell(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  user['userGender'],
-                                  textAlign: TextAlign.center,
+                              TableCell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    formatter.format(user['userMoney']),
+                                    textAlign: TextAlign.right,
+                                  ),
                                 ),
                               ),
-                            ),
-                            TableCell(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  formatter.format(user['userMoney']),
-                                  textAlign: TextAlign.right,
+                              TableCell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    formatter.format(user['userSpend']),
+                                    textAlign: TextAlign.right,
+                                  ),
                                 ),
                               ),
-                            ),
-                            TableCell(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  formatter.format(user['userSpend']),
-                                  textAlign: TextAlign.right,
+                              TableCell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(user['createdAt'].toString()),
                                 ),
                               ),
-                            ),
-                            TableCell(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(user['createdAt'].toString()),
+                              TableCell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(user['modifiedAt'].toString()),
+                                ),
                               ),
-                            ),
-                            TableCell(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(user['modifiedAt'].toString()),
-                              ),
-                            ),
-                          ],
-                        ),
-                    ],
+                            ],
+                          ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -728,7 +775,7 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
         textAlign: TextAlign.center,
         style: TextStyle(
           fontWeight: FontWeight.bold,
-          color: Colors.blue[800],
+          color: Colors.white,
         ),
       ),
     );
