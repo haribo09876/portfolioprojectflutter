@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
-import 'package:geolocator/geolocator.dart' as geolocator_position;
 import '../services/dashboard.dart';
 import '../routes.dart';
 
@@ -337,165 +338,154 @@ class _GenderData {
 
 class DashboardUsersLocation extends StatefulWidget {
   @override
-  _DashboardUsersLocationState createState() => _DashboardUsersLocationState();
+  State<DashboardUsersLocation> createState() => _DashboardUsersLocationState();
 }
 
 class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
-  late MapController mapController;
-  List<GeoPoint> geoPoints = [];
-  bool isLoading = true;
+  final MapController _mapController = MapController();
+  List<Marker> _markers = [];
+  LatLng _center = LatLng(37.5665, 126.9780);
+  double _zoom = 12.0;
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _initializeMap();
+    _initializeLocation();
   }
 
-  Future<void> _initializeMap() async {
-    bool serviceEnabled;
-    geolocator_position.LocationPermission permission;
-    serviceEnabled =
-        await geolocator_position.Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
+  Future<void> _initializeLocation() async {
+    try {
+      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) throw Exception('Location services are disabled.');
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+      if (permission == LocationPermission.deniedForever) {
+        throw Exception('Location permission permanently denied.');
+      }
+      final position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      if (!mounted) return;
+
+      final currentLatLng = LatLng(position.latitude, position.longitude);
       setState(() {
-        isLoading = false;
+        _center = currentLatLng;
       });
-      print("Location services are disabled.");
-      return;
-    }
-    permission = await geolocator_position.Geolocator.checkPermission();
-    if (permission == geolocator_position.LocationPermission.denied) {
-      permission = await geolocator_position.Geolocator.requestPermission();
-      if (permission != geolocator_position.LocationPermission.whileInUse &&
-          permission != geolocator_position.LocationPermission.always) {
-        setState(() {
-          isLoading = false;
-        });
-        print("Location permission denied.");
-        return;
+      await _loadMarkers();
+    } catch (e) {
+      print('Location error: $e');
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
       }
     }
-    geolocator_position.Position position =
-        await geolocator_position.Geolocator.getCurrentPosition(
-      desiredAccuracy: geolocator_position.LocationAccuracy.high,
-    );
-    mapController = MapController(
-      initPosition: GeoPoint(
-        latitude: position.latitude,
-        longitude: position.longitude,
-      ),
-    );
-    _loadLocations();
   }
 
-  Future<void> _loadLocations() async {
+  Future<void> _loadMarkers() async {
     try {
-      DashboardService dashboardService = DashboardService();
-      List<dynamic> locations = await dashboardService.fetchLocationsAll();
+      final dashboardService = DashboardService();
+      final locations = await dashboardService.fetchLocationsAll();
+      final markers = <Marker>[];
 
-      List<GeoPoint> points = locations.map((location) {
-        return GeoPoint(
-          latitude: double.parse(location['latitude']),
-          longitude: double.parse(location['longitude']),
-        );
-      }).toList();
-      setState(() {
-        geoPoints = points;
-        isLoading = false;
-      });
-      for (var point in geoPoints) {
-        mapController.addMarker(point);
+      for (var loc in locations) {
+        final lat = double.tryParse(loc['latitude'].toString());
+        final lng = double.tryParse(loc['longitude'].toString());
+
+        if (lat != null && lng != null) {
+          markers.add(
+            Marker(
+              point: LatLng(lat, lng),
+              child: const Icon(
+                Icons.location_on,
+                color: Color(0xFFF04452),
+                size: 30,
+              ),
+            ),
+          );
+        }
+      }
+      markers.add(
+        Marker(
+          point: _center,
+          child: const Icon(
+            Icons.location_on,
+            color: Color(0xFF12AC79),
+            size: 30,
+          ),
+        ),
+      );
+      if (mounted) {
+        setState(() => _markers = markers);
       }
     } catch (e) {
-      print('Error loading locations: $e');
+      print('Marker load error: $e');
     }
   }
 
   void _zoomIn() {
-    mapController.zoomIn();
+    setState(() {
+      _zoom += 1;
+      _mapController.move(_center, _zoom);
+    });
   }
 
   void _zoomOut() {
-    mapController.zoomOut();
+    setState(() {
+      _zoom -= 1;
+      _mapController.move(_center, _zoom);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return isLoading
+    return _isLoading
         ? Center(child: CircularProgressIndicator())
         : Padding(
             padding: EdgeInsets.symmetric(vertical: 10),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Stack(
-                  children: [
-                    OSMFlutter(
-                      controller: mapController,
-                      osmOption: OSMOption(
-                        userTrackingOption: UserTrackingOption(
-                          enableTracking: true,
-                          unFollowUser: false,
-                        ),
-                        zoomOption: ZoomOption(
-                          initZoom: 12,
-                          minZoomLevel: 3,
-                          maxZoomLevel: 19,
-                          stepZoom: 1.0,
-                        ),
-                        userLocationMarker: UserLocationMaker(
-                          personMarker: MarkerIcon(
-                            icon: Icon(
-                              Icons.location_on,
-                              color: Color(0xFF12AC79),
-                              size: 80,
-                            ),
-                          ),
-                          directionArrowMarker: MarkerIcon(
-                            icon: Icon(
-                              Icons.double_arrow,
-                              size: 48,
-                            ),
-                          ),
-                        ),
-                      ),
-                      onMapIsReady: (isReady) async {
-                        if (isReady) {
-                          for (var point in geoPoints) {
-                            await mapController.addMarker(point);
-                          }
-                        }
-                      },
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Stack(
+                children: [
+                  FlutterMap(
+                    mapController: _mapController,
+                    options: MapOptions(
+                      initialCenter: _center,
+                      initialZoom: _zoom,
+                      minZoom: 3,
+                      maxZoom: 19,
                     ),
-                    Positioned(
-                      right: 10,
-                      bottom: 10,
-                      child: Column(
-                        children: [
-                          FloatingActionButton.small(
-                            onPressed: _zoomIn,
-                            backgroundColor: Color(0xFF44558C8),
-                            child: Icon(
-                              Icons.add,
-                              color: Colors.white,
-                            ),
-                          ),
-                          FloatingActionButton.small(
-                            onPressed: _zoomOut,
-                            backgroundColor: Color(0xFF44558C8),
-                            child: Icon(
-                              Icons.remove,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
+                    children: [
+                      TileLayer(
+                        urlTemplate:
+                            'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        userAgentPackageName: 'com.example.app',
                       ),
+                      MarkerLayer(markers: _markers),
+                    ],
+                  ),
+                  Positioned(
+                    right: 10,
+                    bottom: 10,
+                    child: Column(
+                      children: [
+                        FloatingActionButton.small(
+                          onPressed: _zoomIn,
+                          backgroundColor: Color(0xFF44558C8),
+                          child: Icon(Icons.add, color: Colors.white),
+                        ),
+                        FloatingActionButton.small(
+                          onPressed: _zoomOut,
+                          backgroundColor: Color(0xFF44558C8),
+                          child: Icon(Icons.remove, color: Colors.white),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           );
