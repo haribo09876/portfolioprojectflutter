@@ -322,15 +322,15 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
                                 pointColorMapper: (_AgeData data, _) {
                                   switch (data.ageGroup) {
                                     case '20대 미만':
-                                      return Color(0xFF9C27B0);
+                                      return Color(0xFF12AC79);
                                     case '20대':
-                                      return Color(0xFFFFCA28);
+                                      return Color(0xFFF04452);
                                     case '30대':
                                       return Color(0xFF44558C8);
                                     case '40대':
-                                      return Color(0xFFF04452);
+                                      return Color(0xFFFFCA28);
                                     case '50대':
-                                      return Color(0xFF12AC79);
+                                      return Color(0xFF9C27B0);
                                     case '60세 이상':
                                       return Color(0xFFFF7043);
                                     default:

@@ -31,7 +31,7 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
 
   void _onSearch() {
     if (_startDateController.text.isEmpty || _endDateController.text.isEmpty) {
-      _showAlertDialog(context, '\n날짜 범위를 설정하세요');
+      _showAlertDialog(context, '\nSet the date range');
     } else {
       _salesDateRange();
     }
@@ -132,75 +132,127 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(15.0),
+          padding: EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                margin: EdgeInsets.only(bottom: 20),
                 child: Row(
                   children: [
                     Expanded(
                       child: TextFormField(
                         controller: _startDateController,
                         readOnly: true,
+                        textAlign: TextAlign.center,
                         decoration: InputDecoration(
-                          labelText: 'Start Date',
-                          border: OutlineInputBorder(),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                          hintText: 'Start Date',
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide(
+                              color: Colors.grey,
+                              width: 1.5,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide(
+                              color: Color(0xFF44558C8),
+                              width: 1.5,
+                            ),
+                          ),
                         ),
+                        maxLines: 1,
                       ),
                     ),
-                    SizedBox(width: 5),
                     Text(' ~ ', style: TextStyle(fontSize: 18)),
-                    SizedBox(width: 5),
                     Expanded(
                       child: TextFormField(
                         controller: _endDateController,
                         readOnly: true,
+                        textAlign: TextAlign.center,
                         decoration: InputDecoration(
-                          labelText: 'End Date',
-                          border: OutlineInputBorder(),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                          hintText: 'End Date',
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide(
+                              color: Colors.grey,
+                              width: 1.5,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide(
+                              color: Color(0xFF44558C8),
+                              width: 1.5,
+                            ),
+                          ),
                         ),
+                        maxLines: 1,
                       ),
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.calendar_today,
-                        color: Colors.blueAccent,
-                        size: 35,
-                      ),
-                      onPressed: _showDateRangePicker,
                     ),
                   ],
                 ),
               ),
-              Container(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _onSearch,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blueAccent,
-                    padding: EdgeInsets.symmetric(vertical: 5),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
+              SizedBox(height: 10),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                ),
+                onPressed: () {
+                  _showDateRangePicker();
+                },
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Center(
+                    child: Text(
+                      'Set Date Range',
+                      style: TextStyle(
+                        color: Color.fromRGBO(52, 52, 52, 52),
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
-                  child: Text(
-                    '조 회',
-                    style: TextStyle(fontSize: 17, color: Colors.white),
+                ),
+              ),
+              SizedBox(height: 5),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF44558C8),
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                ),
+                onPressed: () {
+                  _onSearch();
+                },
+                child: SizedBox(
+                  width: 360,
+                  child: Center(
+                    child: Text(
+                      'Get Results',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                 ),
               ),
               SizedBox(height: 20),
               Container(
-                margin: const EdgeInsets.symmetric(vertical: 10),
                 child: Text(
                   'Analysis',
                   style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.w400,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                    color: Color.fromRGBO(52, 52, 52, 52),
                   ),
                 ),
               ),
@@ -208,12 +260,12 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
                   imageUrl: _analysisImageUrl, isLoading: _isLoading),
               SizedBox(height: 20),
               Container(
-                margin: const EdgeInsets.symmetric(vertical: 10),
                 child: Text(
                   'Prediction',
                   style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.w400,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                    color: Color.fromRGBO(52, 52, 52, 52),
                   ),
                 ),
               ),

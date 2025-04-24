@@ -1649,8 +1649,16 @@ class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
-        title: Text('User Page'),
+        backgroundColor: Color.fromARGB(255, 255, 255, 255),
+        title: Text(
+          'User Page',
+          style: TextStyle(
+            fontSize: 20,
+          ),
+        ),
+        centerTitle: true,
       ),
       body: FutureBuilder<Map<String, dynamic>>(
         future: allData,

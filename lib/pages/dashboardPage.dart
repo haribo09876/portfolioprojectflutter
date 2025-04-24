@@ -12,18 +12,14 @@ class DashboardPage extends StatelessWidget {
         backgroundColor: Color.fromARGB(255, 255, 255, 255),
         appBar: AppBar(
           backgroundColor: Color.fromARGB(255, 255, 255, 255),
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          flexibleSpace: Center(
-            child: Text(
-              'Dashboard',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w500,
-                color: Color(0xff333333),
-              ),
+          title: Text(
+            'Dashboard Page',
+            style: TextStyle(
+              fontSize: 20,
             ),
           ),
+          centerTitle: true,
+          elevation: 0,
           bottom: PreferredSize(
             preferredSize: Size.fromHeight(48),
             child: Center(

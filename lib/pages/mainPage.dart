@@ -29,18 +29,16 @@ class _MainPageState extends State<MainPage> {
         backgroundColor: Color.fromARGB(255, 255, 255, 255),
         appBar: AppBar(
           backgroundColor: Color.fromARGB(255, 255, 255, 255),
-          elevation: 0,
-          automaticallyImplyLeading: false,
           flexibleSpace: Center(
             child: Text(
               'PPF',
               style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w500,
-                color: Color(0xff333333),
+                fontSize: 25,
               ),
             ),
           ),
+          elevation: 0,
+          automaticallyImplyLeading: false,
           bottom: PreferredSize(
             preferredSize: Size.fromHeight(48),
             child: Center(
