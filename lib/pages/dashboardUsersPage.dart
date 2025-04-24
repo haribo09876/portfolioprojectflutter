@@ -319,10 +319,28 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
                                 xValueMapper: (_AgeData data, _) =>
                                     data.ageGroup,
                                 yValueMapper: (_AgeData data, _) => data.count,
+                                pointColorMapper: (_AgeData data, _) {
+                                  switch (data.ageGroup) {
+                                    case '20대 미만':
+                                      return Color(0xFF9C27B0);
+                                    case '20대':
+                                      return Color(0xFFFFCA28);
+                                    case '30대':
+                                      return Color(0xFF44558C8);
+                                    case '40대':
+                                      return Color(0xFFF04452);
+                                    case '50대':
+                                      return Color(0xFF12AC79);
+                                    case '60세 이상':
+                                      return Color(0xFFFF7043);
+                                    default:
+                                      return Colors.grey;
+                                  }
+                                },
                                 dataLabelSettings: DataLabelSettings(
+                                  labelPosition: ChartDataLabelPosition.outside,
                                   textStyle: TextStyle(
                                     color: Colors.black,
-                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
@@ -490,12 +508,24 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
                         FloatingActionButton.small(
                           onPressed: _zoomIn,
                           backgroundColor: Color(0xFF44558C8),
-                          child: Icon(Icons.add, color: Colors.white),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child: Icon(
+                            Icons.add,
+                            color: Colors.white,
+                          ),
                         ),
                         FloatingActionButton.small(
                           onPressed: _zoomOut,
                           backgroundColor: Color(0xFF44558C8),
-                          child: Icon(Icons.remove, color: Colors.white),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child: Icon(
+                            Icons.remove,
+                            color: Colors.white,
+                          ),
                         ),
                       ],
                     ),
