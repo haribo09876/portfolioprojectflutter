@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+import 'package:flutter/widgets.dart';
+import 'package:http/http.dart' as http;
+import 'package:image/image.dart' as img;
 import 'package:word_cloud/word_cloud_data.dart';
 import 'package:word_cloud/word_cloud_view.dart';
 import 'package:word_cloud/word_cloud_shape.dart';
-import 'package:flutter/widgets.dart';
-import 'package:http/http.dart' as http;
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'dart:typed_data';
-import 'package:image/image.dart' as img;
 import '../services/dashboard.dart';
 
 class DashboardContentsPage extends StatefulWidget {
@@ -26,6 +26,7 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
   List<String> instaImageURLs = [];
   List<Widget> tweetOverlayImages = [];
   List<Widget> instaOverlayImages = [];
+  bool _imagesLoaded = false;
 
   List<Map> _generateWordCloudData(List<String> dataList) {
     Map<String, int> wordCount = {};
@@ -70,12 +71,16 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
           instas = List<String>.from(response['instas']);
           tweetImageURLs = List<String>.from(response['tweetImageURLs']);
           instaImageURLs = List<String>.from(response['instaImageURLs']);
+          _imagesLoaded = false;
         });
-        _loadOverlayImages();
+        if (!_imagesLoaded) {
+          await _loadOverlayImages();
+          _imagesLoaded = true;
+        }
       }
     } catch (e) {
       if (mounted) {
-        _showAlertDialog(context, '데이터 로드 실패: $e');
+        _showAlertDialog(context, 'Data loading failure: $e');
       }
     }
   }
@@ -101,9 +106,19 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
     final image = img.decodeImage(Uint8List.fromList(bytes));
 
     if (image != null) {
-      return Opacity(
-        opacity: 0.3,
-        child: Image.memory(Uint8List.fromList(img.encodeJpg(image))),
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Opacity(
+          opacity: 0.3,
+          child: SizedBox(
+            width: 360,
+            height: 360,
+            child: Image.memory(
+              Uint8List.fromList(img.encodeJpg(image)),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
       );
     } else {
       return SizedBox();
@@ -121,7 +136,7 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
           ),
           actions: [
             TextButton(
-              child: Text('확인'),
+              child: Text('Confirm'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -164,7 +179,7 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
           ),
           actions: [
             TextButton(
-              child: Text('확인'),
+              child: Text('Confirm'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -298,55 +313,36 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
                 ),
               ),
               SizedBox(height: 20),
-              Container(
-                child: Text(
-                  'Tweet Text',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    color: Color.fromRGBO(52, 52, 52, 52),
-                  ),
-                ),
-              ),
+              _buildSection('Tweet Text'),
+              SizedBox(height: 10),
               DashboardContentsTweetText(tweetsWordList: tweetsWordList),
               SizedBox(height: 20),
-              Container(
-                child: Text(
-                  'Tweet Image',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    color: Color.fromRGBO(52, 52, 52, 52),
-                  ),
-                ),
-              ),
+              _buildSection('Tweet Image'),
+              SizedBox(height: 10),
               DashboardContentsTweetImage(overlayImages: tweetOverlayImages),
               SizedBox(height: 20),
-              Container(
-                child: Text(
-                  'Insta Text',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    color: Color.fromRGBO(52, 52, 52, 52),
-                  ),
-                ),
-              ),
+              _buildSection('Insta Text'),
+              SizedBox(height: 10),
               DashboardContentsInstaText(instasWordList: instasWordList),
               SizedBox(height: 20),
-              Container(
-                child: Text(
-                  'Insta Image',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    color: Color.fromRGBO(52, 52, 52, 52),
-                  ),
-                ),
-              ),
+              _buildSection('Insta Image'),
+              SizedBox(height: 10),
               DashboardContentsInstaImage(overlayImages: instaOverlayImages),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSection(String title) {
+    return Container(
+      child: Text(
+        title,
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w500,
+          color: Color.fromRGBO(52, 52, 52, 52),
         ),
       ),
     );
@@ -355,7 +351,6 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
 
 class DashboardContentsTweetText extends StatelessWidget {
   final List<Map> tweetsWordList;
-
   DashboardContentsTweetText({required this.tweetsWordList});
 
   @override
@@ -392,22 +387,24 @@ class DashboardContentsTweetText extends StatelessWidget {
 
 class DashboardContentsTweetImage extends StatelessWidget {
   final List<Widget> overlayImages;
-
   DashboardContentsTweetImage({required this.overlayImages});
 
   @override
   Widget build(BuildContext context) {
     return overlayImages.isEmpty
         ? Center(child: CircularProgressIndicator())
-        : Stack(
-            children: overlayImages,
+        : SizedBox(
+            width: 360,
+            height: 360,
+            child: Stack(
+              children: overlayImages,
+            ),
           );
   }
 }
 
 class DashboardContentsInstaText extends StatelessWidget {
   final List<Map> instasWordList;
-
   DashboardContentsInstaText({required this.instasWordList});
 
   @override
@@ -444,15 +441,18 @@ class DashboardContentsInstaText extends StatelessWidget {
 
 class DashboardContentsInstaImage extends StatelessWidget {
   final List<Widget> overlayImages;
-
   DashboardContentsInstaImage({required this.overlayImages});
 
   @override
   Widget build(BuildContext context) {
     return overlayImages.isEmpty
         ? Center(child: CircularProgressIndicator())
-        : Stack(
-            children: overlayImages,
+        : SizedBox(
+            width: 360,
+            height: 360,
+            child: Stack(
+              children: overlayImages,
+            ),
           );
   }
 }
