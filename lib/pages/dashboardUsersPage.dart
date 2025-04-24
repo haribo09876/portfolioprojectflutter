@@ -207,7 +207,7 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
                         Expanded(
                           child: Center(
                             child: Text(
-                              'age',
+                              'gender',
                               style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w400,
@@ -219,7 +219,7 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
                         Expanded(
                           child: Center(
                             child: Text(
-                              'gender',
+                              'age',
                               style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w400,
@@ -265,19 +265,45 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
                           child: SizedBox(
                             height: 150,
                             child: SfCircularChart(
+                              tooltipBehavior: TooltipBehavior(enable: true),
                               series: <CircularSeries>[
-                                PieSeries<_AgeData, String>(
-                                  dataSource: _getAgeData(),
-                                  xValueMapper: (_AgeData data, _) =>
-                                      data.ageGroup,
-                                  yValueMapper: (_AgeData data, _) =>
+                                DoughnutSeries<_GenderData, String>(
+                                  dataSource: [
+                                    _GenderData('Female', femaleCount),
+                                    _GenderData('Male', maleCount),
+                                  ],
+                                  xValueMapper: (_GenderData data, _) =>
+                                      data.gender,
+                                  yValueMapper: (_GenderData data, _) =>
                                       data.count,
-                                  dataLabelMapper: (_AgeData data, _) =>
-                                      data.ageGroup,
+                                  dataLabelMapper: (_GenderData data, _) {
+                                    switch (data.gender) {
+                                      case 'Male':
+                                        return 'M';
+                                      case 'Female':
+                                        return 'F';
+                                      default:
+                                        return '';
+                                    }
+                                  },
+                                  pointColorMapper: (_GenderData data, _) {
+                                    switch (data.gender) {
+                                      case 'Male':
+                                        return Color(0xFF44558C8);
+                                      case 'Female':
+                                        return Color(0xFFF04452);
+                                    }
+                                  },
                                   dataLabelSettings: DataLabelSettings(
                                     isVisible: true,
-                                    textStyle: TextStyle(color: Colors.white),
+                                    textStyle: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                    ),
                                   ),
+                                  enableTooltip: true,
+                                  radius: '100%',
+                                  innerRadius: '30%',
                                 ),
                               ],
                             ),
@@ -285,32 +311,21 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
                         ),
                         Expanded(
                           child: SizedBox(
-                            height: 150,
-                            child: SfCartesianChart(
-                              primaryXAxis: CategoryAxis(),
-                              primaryYAxis: NumericAxis(
-                                isVisible: false,
-                                majorGridLines: MajorGridLines(width: 0),
-                              ),
-                              series: <CartesianSeries>[
-                                ColumnSeries<_GenderData, String>(
-                                  dataSource: [
-                                    _GenderData('Male', maleCount),
-                                    _GenderData('Female', femaleCount),
-                                  ],
-                                  xValueMapper: (_GenderData data, _) =>
-                                      data.gender,
-                                  yValueMapper: (_GenderData data, _) =>
-                                      data.count,
-                                  dataLabelSettings: DataLabelSettings(
-                                    isVisible: true,
-                                    textStyle: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                    ),
+                            height: 100,
+                            child: SfPyramidChart(
+                              tooltipBehavior: TooltipBehavior(enable: true),
+                              series: PyramidSeries<_AgeData, String>(
+                                dataSource: _getAgeData(),
+                                xValueMapper: (_AgeData data, _) =>
+                                    data.ageGroup,
+                                yValueMapper: (_AgeData data, _) => data.count,
+                                dataLabelSettings: DataLabelSettings(
+                                  textStyle: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                              ],
+                              ),
                             ),
                           ),
                         ),
@@ -324,16 +339,16 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
   }
 }
 
-class _AgeData {
-  final String ageGroup;
-  final int count;
-  _AgeData(this.ageGroup, this.count);
-}
-
 class _GenderData {
   final String gender;
   final int count;
   _GenderData(this.gender, this.count);
+}
+
+class _AgeData {
+  final String ageGroup;
+  final int count;
+  _AgeData(this.ageGroup, this.count);
 }
 
 class DashboardUsersLocation extends StatefulWidget {
