@@ -360,7 +360,9 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
                 ),
               ),
               DashboardSalesAnalysis(
-                  imageUrl: _analysisImageUrl, isLoading: _isLoading),
+                imageUrl: _analysisImageUrl,
+                isLoading: _isLoading,
+              ),
               SizedBox(height: 20),
               Container(
                 child: Text(
@@ -373,7 +375,9 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
                 ),
               ),
               DashboardSalesPrediction(
-                  imageUrl: _predictionImageUrl, isLoading: _isLoading),
+                imageUrl: _predictionImageUrl,
+                isLoading: _isLoading,
+              ),
             ],
           ),
         ),
@@ -394,7 +398,7 @@ class DashboardSalesAnalysis extends StatelessWidget {
         ? Center(child: CircularProgressIndicator())
         : imageUrl != null
             ? Image.network(imageUrl!)
-            : Text('분석 이미지 없음');
+            : SizedBox(height: 10);
   }
 }
 
@@ -410,6 +414,6 @@ class DashboardSalesPrediction extends StatelessWidget {
         ? Center(child: CircularProgressIndicator())
         : imageUrl != null
             ? Image.network(imageUrl!)
-            : Text('예측 이미지 없음');
+            : SizedBox(height: 10);
   }
 }
