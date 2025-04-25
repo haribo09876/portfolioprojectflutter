@@ -27,11 +27,45 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
   List<Widget> tweetOverlayImages = [];
   List<Widget> instaOverlayImages = [];
   bool _imagesLoaded = false;
+  bool isLoadingTweetImages = false;
+  bool isLoadingInstaImages = false;
 
   List<Map> _generateWordCloudData(List<String> dataList) {
+    final stopWords = {
+      'the',
+      'is',
+      'a',
+      'of',
+      'to',
+      'and',
+      'in',
+      'that',
+      'it',
+      'on',
+      'for',
+      'this',
+      'with',
+      'as',
+      'was',
+      'but',
+      'be',
+      'are',
+      'at',
+      'or',
+      'an',
+      'by'
+    };
+
     Map<String, int> wordCount = {};
-    for (var word in dataList) {
-      wordCount[word] = (wordCount[word] ?? 0) + 1;
+    for (var sentence in dataList) {
+      final words = sentence
+          .toLowerCase()
+          .replaceAll(RegExp(r'[^\w\s]'), '')
+          .split(' ')
+          .where((w) => w.isNotEmpty && !stopWords.contains(w));
+      for (var word in words) {
+        wordCount[word] = (wordCount[word] ?? 0) + 1;
+      }
     }
     return wordCount.entries.map((entry) {
       return {'word': entry.key, 'value': entry.value + 10};
@@ -72,10 +106,19 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
           tweetImageURLs = List<String>.from(response['tweetImageURLs']);
           instaImageURLs = List<String>.from(response['instaImageURLs']);
           _imagesLoaded = false;
+
+          isLoadingTweetImages = true;
+          isLoadingInstaImages = true;
         });
-        if (!_imagesLoaded) {
-          await _loadOverlayImages();
-          _imagesLoaded = true;
+
+        await _loadOverlayImages();
+
+        if (mounted) {
+          setState(() {
+            _imagesLoaded = true;
+            isLoadingTweetImages = false;
+            isLoadingInstaImages = false;
+          });
         }
       }
     } catch (e) {
@@ -109,7 +152,7 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
       return ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child: Opacity(
-          opacity: 0.3,
+          opacity: 0.1,
           child: SizedBox(
             width: 360,
             height: 360,
@@ -130,16 +173,50 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: Text(
-            message,
-            style: TextStyle(fontSize: 15),
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Text(
+            'Error alert',
+            style: TextStyle(fontSize: 20),
+          ),
+          content: SizedBox(
+            width: 360,
+            height: 120,
+            child: Center(
+              child: Text(
+                message,
+                style: TextStyle(fontSize: 15),
+              ),
+            ),
           ),
           actions: [
-            TextButton(
-              child: Text('Confirm'),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
+              child: SizedBox(
+                width: double.infinity,
+                child: Center(
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: Color.fromRGBO(52, 52, 52, 52),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         );
@@ -152,39 +229,95 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          contentPadding: EdgeInsets.all(10),
-          content: Container(
-            width: 300,
-            height: 300,
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  SizedBox(height: 20),
-                  SfDateRangePicker(
-                    controller: _datePickerController,
-                    onSelectionChanged: _onDateRangeChanged,
-                    selectionMode: DateRangePickerSelectionMode.range,
-                    initialSelectedRange: PickerDateRange(
-                      DateTime.now().subtract(Duration(days: 7)),
-                      DateTime.now(),
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Text('Date range setting', style: TextStyle(fontSize: 20)),
+          content: SizedBox(
+            width: 360,
+            height: 480,
+            child: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SfDateRangePicker(
+                          controller: _datePickerController,
+                          onSelectionChanged: _onDateRangeChanged,
+                          selectionMode: DateRangePickerSelectionMode.range,
+                          initialSelectedRange: PickerDateRange(
+                            DateTime.now().subtract(Duration(days: 7)),
+                            DateTime.now(),
+                          ),
+                          startRangeSelectionColor: Colors.blueAccent,
+                          endRangeSelectionColor: Colors.blueAccent,
+                          rangeSelectionColor:
+                              Colors.blueAccent.withOpacity(0.2),
+                          backgroundColor: Colors.transparent,
+                        ),
+                        SizedBox(height: 10),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFF44558C8),
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: SizedBox(
+                            width: 360,
+                            child: Center(
+                              child: Text(
+                                'Confirm',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 5),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: Center(
+                              child: Text(
+                                'Cancel',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500,
+                                  color: Color.fromRGBO(52, 52, 52, 52),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    startRangeSelectionColor: Colors.blueAccent,
-                    endRangeSelectionColor: Colors.blueAccent,
-                    rangeSelectionColor: Colors.blueAccent.withOpacity(0.2),
-                    backgroundColor: Colors.transparent,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-          actions: [
-            TextButton(
-              child: Text('Confirm'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
         );
       },
     );
@@ -196,155 +329,160 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
         tweets.isNotEmpty ? _generateWordCloudData(tweets) : [];
     List<Map> instasWordList =
         instas.isNotEmpty ? _generateWordCloudData(instas) : [];
+
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: _startDateController,
-                        readOnly: true,
-                        textAlign: TextAlign.center,
-                        decoration: InputDecoration(
-                          hintText: 'Start date',
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide(
-                              color: Colors.grey,
-                              width: 1.5,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide(
-                              color: Color(0xFF44558C8),
-                              width: 1.5,
-                            ),
-                          ),
-                        ),
-                        maxLines: 1,
-                      ),
-                    ),
-                    Text(' ~ ', style: TextStyle(fontSize: 18)),
-                    Expanded(
-                      child: TextFormField(
-                        controller: _endDateController,
-                        readOnly: true,
-                        textAlign: TextAlign.center,
-                        decoration: InputDecoration(
-                          hintText: 'End date',
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide(
-                              color: Colors.grey,
-                              width: 1.5,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide(
-                              color: Color(0xFF44558C8),
-                              width: 1.5,
-                            ),
-                          ),
-                        ),
-                        maxLines: 1,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 10),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(242, 242, 242, 242),
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                ),
-                onPressed: () {
-                  _showDateRangePicker();
-                },
-                child: SizedBox(
-                  width: double.infinity,
-                  child: Center(
-                    child: Text(
-                      'Set date range',
-                      style: TextStyle(
-                        color: Color.fromRGBO(52, 52, 52, 52),
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 5),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF44558C8),
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                ),
-                onPressed: () {
-                  _onSearch();
-                },
-                child: SizedBox(
-                  width: 360,
-                  child: Center(
-                    child: Text(
-                      'Get Results',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              _buildSection('Tweet Text'),
-              SizedBox(height: 10),
-              DashboardContentsTweetText(tweetsWordList: tweetsWordList),
-              SizedBox(height: 20),
-              _buildSection('Tweet Image'),
-              SizedBox(height: 10),
-              DashboardContentsTweetImage(overlayImages: tweetOverlayImages),
-              SizedBox(height: 20),
-              _buildSection('Insta Text'),
-              SizedBox(height: 10),
-              DashboardContentsInstaText(instasWordList: instasWordList),
-              SizedBox(height: 20),
-              _buildSection('Insta Image'),
-              SizedBox(height: 10),
-              DashboardContentsInstaImage(overlayImages: instaOverlayImages),
-            ],
-          ),
+        padding: EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildDateInputSection(),
+            SizedBox(height: 20),
+            _buildSection('Tweet Text'),
+            SizedBox(height: 10),
+            DashboardContentsTweetText(tweetsWordList: tweetsWordList),
+            SizedBox(height: 20),
+            _buildSection('Tweet Image'),
+            SizedBox(height: 10),
+            DashboardContentsTweetImage(
+              overlayImages: tweetOverlayImages,
+              isLoading: isLoadingTweetImages,
+            ),
+            SizedBox(height: 20),
+            _buildSection('Insta Text'),
+            SizedBox(height: 10),
+            DashboardContentsInstaText(instasWordList: instasWordList),
+            SizedBox(height: 20),
+            _buildSection('Insta Image'),
+            SizedBox(height: 10),
+            DashboardContentsInstaImage(
+              overlayImages: instaOverlayImages,
+              isLoading: isLoadingInstaImages,
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildSection(String title) {
-    return Container(
-      child: Text(
-        title,
-        style: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.w500,
-          color: Color.fromRGBO(52, 52, 52, 52),
+  Widget _buildDateInputSection() {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: TextFormField(
+                controller: _startDateController,
+                readOnly: true,
+                textAlign: TextAlign.center,
+                decoration: _inputDecoration('Start date'),
+              ),
+            ),
+            Text(' ~ ', style: TextStyle(fontSize: 18)),
+            Expanded(
+              child: TextFormField(
+                controller: _endDateController,
+                readOnly: true,
+                textAlign: TextAlign.center,
+                decoration: _inputDecoration('End date'),
+              ),
+            ),
+          ],
         ),
+        SizedBox(height: 10),
+        ElevatedButton(
+          style: _btnStyle(Color.fromARGB(242, 242, 242, 242)),
+          onPressed: _showDateRangePicker,
+          child: Center(
+            child:
+                Text('Set date range', style: TextStyle(color: Colors.black)),
+          ),
+        ),
+        SizedBox(height: 5),
+        ElevatedButton(
+          style: _btnStyle(Color(0xFF44558C8)),
+          onPressed: _onSearch,
+          child: Center(
+            child: Text('Get Results', style: TextStyle(color: Colors.white)),
+          ),
+        ),
+      ],
+    );
+  }
+
+  InputDecoration _inputDecoration(String hint) {
+    return InputDecoration(
+      hintText: hint,
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(20),
+        borderSide: BorderSide(color: Colors.grey, width: 1.5),
       ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(20),
+        borderSide: BorderSide(color: Color(0xFF44558C8), width: 1.5),
+      ),
+    );
+  }
+
+  ButtonStyle _btnStyle(Color color) {
+    return ElevatedButton.styleFrom(
+      backgroundColor: color,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(50),
+      ),
+    );
+  }
+
+  Widget _buildSection(String title) {
+    return Text(
+      title,
+      style: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.w500,
+        color: Color.fromRGBO(52, 52, 52, 52),
+      ),
+    );
+  }
+}
+
+class DashboardContentsTweetImage extends StatelessWidget {
+  final List<Widget> overlayImages;
+  final bool isLoading;
+  DashboardContentsTweetImage({
+    required this.overlayImages,
+    required this.isLoading,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (isLoading) return Center(child: CircularProgressIndicator());
+    if (overlayImages.isEmpty) return SizedBox();
+    return SizedBox(
+      width: 360,
+      height: 360,
+      child: Stack(children: overlayImages),
+    );
+  }
+}
+
+class DashboardContentsInstaImage extends StatelessWidget {
+  final List<Widget> overlayImages;
+  final bool isLoading;
+  DashboardContentsInstaImage({
+    required this.overlayImages,
+    required this.isLoading,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (isLoading) return Center(child: CircularProgressIndicator());
+    if (overlayImages.isEmpty) return SizedBox();
+    return SizedBox(
+      width: 360,
+      height: 360,
+      child: Stack(children: overlayImages),
     );
   }
 }
@@ -356,7 +494,6 @@ class DashboardContentsTweetText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (tweetsWordList.isNotEmpty)
           WordCloudView(
@@ -385,24 +522,6 @@ class DashboardContentsTweetText extends StatelessWidget {
   }
 }
 
-class DashboardContentsTweetImage extends StatelessWidget {
-  final List<Widget> overlayImages;
-  DashboardContentsTweetImage({required this.overlayImages});
-
-  @override
-  Widget build(BuildContext context) {
-    return overlayImages.isEmpty
-        ? Center(child: CircularProgressIndicator())
-        : SizedBox(
-            width: 360,
-            height: 360,
-            child: Stack(
-              children: overlayImages,
-            ),
-          );
-  }
-}
-
 class DashboardContentsInstaText extends StatelessWidget {
   final List<Map> instasWordList;
   DashboardContentsInstaText({required this.instasWordList});
@@ -410,7 +529,6 @@ class DashboardContentsInstaText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (instasWordList.isNotEmpty)
           WordCloudView(
@@ -436,23 +554,5 @@ class DashboardContentsInstaText extends StatelessWidget {
           ),
       ],
     );
-  }
-}
-
-class DashboardContentsInstaImage extends StatelessWidget {
-  final List<Widget> overlayImages;
-  DashboardContentsInstaImage({required this.overlayImages});
-
-  @override
-  Widget build(BuildContext context) {
-    return overlayImages.isEmpty
-        ? Center(child: CircularProgressIndicator())
-        : SizedBox(
-            width: 360,
-            height: 360,
-            child: Stack(
-              children: overlayImages,
-            ),
-          );
   }
 }

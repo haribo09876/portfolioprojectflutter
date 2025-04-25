@@ -11,6 +11,7 @@ class DashboardUsersPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(20),
@@ -115,14 +116,13 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
   Future<void> _fetchTodayLocationsCount() async {
     try {
       final locations = await _dashboardService.fetchLocationsAll();
-      DateTime today = DateTime.now();
+      DateTime now = DateTime.now();
       int todayCount = locations.where((location) {
-        DateTime createdAt = DateTime.parse(location['createdAt']);
-        return createdAt.year == today.year &&
-            createdAt.month == today.month &&
-            createdAt.day == today.day;
+        DateTime createdAt = DateTime.parse(location['createdAt']).toLocal();
+        return createdAt.year == now.year &&
+            createdAt.month == now.month &&
+            createdAt.day == now.day;
       }).length;
-
       setState(() {
         _todayLocationsCount = todayCount;
       });

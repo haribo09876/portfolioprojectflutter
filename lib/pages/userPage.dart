@@ -75,7 +75,6 @@ class _UserPageState extends State<UserPage> {
                 message,
                 style: TextStyle(
                   fontSize: 15,
-                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),
@@ -369,9 +368,7 @@ class _UserPageState extends State<UserPage> {
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
+                  SizedBox(height: 10),
                   Expanded(
                     child: SingleChildScrollView(
                       child: Column(

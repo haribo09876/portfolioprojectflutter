@@ -58,7 +58,7 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
       setState(() {
         _isLoading = false;
       });
-      _showAlertDialog(context, '데이터 로드 실패: $e');
+      _showAlertDialog(context, 'Data loading failure: $e');
     }
   }
 
@@ -67,16 +67,54 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: Text(
-            message,
-            style: TextStyle(fontSize: 15),
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Text(
+            'Error alert',
+            style: TextStyle(
+              fontSize: 20,
+            ),
+          ),
+          content: SizedBox(
+            width: 360,
+            height: 120,
+            child: Center(
+              child: Text(
+                message,
+                style: TextStyle(
+                  fontSize: 15,
+                ),
+              ),
+            ),
           ),
           actions: [
-            TextButton(
-              child: Text('확인'),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
+              child: SizedBox(
+                width: double.infinity,
+                child: Center(
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: Color.fromRGBO(52, 52, 52, 52),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         );
@@ -89,39 +127,103 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          contentPadding: EdgeInsets.all(10),
-          content: Container(
-            width: 300,
-            height: 300,
-            child: SingleChildScrollView(
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Text(
+            'Date range setting',
+            style: TextStyle(
+              fontSize: 20,
+            ),
+          ),
+          content: SizedBox(
+            width: 360,
+            height: 480,
+            child: Container(
               child: Column(
                 children: [
-                  SizedBox(height: 20),
-                  SfDateRangePicker(
-                    controller: _datePickerController,
-                    onSelectionChanged: _onDateRangeChanged,
-                    selectionMode: DateRangePickerSelectionMode.range,
-                    initialSelectedRange: PickerDateRange(
-                      DateTime.now().subtract(Duration(days: 7)),
-                      DateTime.now(),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SfDateRangePicker(
+                            controller: _datePickerController,
+                            onSelectionChanged: _onDateRangeChanged,
+                            selectionMode: DateRangePickerSelectionMode.range,
+                            initialSelectedRange: PickerDateRange(
+                              DateTime.now().subtract(Duration(days: 7)),
+                              DateTime.now(),
+                            ),
+                            startRangeSelectionColor: Colors.blueAccent,
+                            endRangeSelectionColor: Colors.blueAccent,
+                            rangeSelectionColor:
+                                Colors.blueAccent.withOpacity(0.2),
+                            backgroundColor: Colors.transparent,
+                          ),
+                          SizedBox(height: 10),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF44558C8),
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: SizedBox(
+                              width: 360,
+                              child: Center(
+                                child: Text(
+                                  'Confirm',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  Color.fromARGB(242, 242, 242, 242),
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: Center(
+                                child: Text(
+                                  'Cancel',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color.fromRGBO(52, 52, 52, 52),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    startRangeSelectionColor: Colors.blueAccent,
-                    endRangeSelectionColor: Colors.blueAccent,
-                    rangeSelectionColor: Colors.blueAccent.withOpacity(0.2),
-                    backgroundColor: Colors.transparent,
                   ),
                 ],
               ),
             ),
           ),
-          actions: [
-            TextButton(
-              child: Text('확인'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
         );
       },
     );
@@ -130,6 +232,7 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(20),
