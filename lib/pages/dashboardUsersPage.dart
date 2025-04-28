@@ -509,7 +509,7 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
                           onPressed: _zoomIn,
                           backgroundColor: Color(0xFF44558C8),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50),
+                            borderRadius: BorderRadius.circular(20),
                           ),
                           child: Icon(
                             Icons.add,
@@ -520,7 +520,7 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
                           onPressed: _zoomOut,
                           backgroundColor: Color(0xFF44558C8),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50),
+                            borderRadius: BorderRadius.circular(20),
                           ),
                           child: Icon(
                             Icons.remove,
