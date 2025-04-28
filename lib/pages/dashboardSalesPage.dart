@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+import 'dart:async';
 import '../services/dashboard.dart';
 
 class DashboardSalesPage extends StatefulWidget {
@@ -16,6 +17,15 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
   String? _analysisImageUrl;
   String? _predictionImageUrl;
   bool _isLoading = false;
+  bool _isProcessing = false;
+  String _statusMessage = '';
+  Timer? _waitingTimer;
+
+  @override
+  void dispose() {
+    _waitingTimer?.cancel();
+    super.dispose();
+  }
 
   void _onDateRangeChanged(DateRangePickerSelectionChangedArgs args) {
     if (args.value is PickerDateRange) {
@@ -33,32 +43,53 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
     if (_startDateController.text.isEmpty || _endDateController.text.isEmpty) {
       _showAlertDialog(context, '\nSet the date range');
     } else {
-      _salesDateRange();
+      if (_isProcessing) return;
+      _startSalesProcessing();
     }
   }
 
-  void _salesDateRange() async {
+  void _startSalesProcessing() async {
     final startDate = DateFormat('yyyy/MM/dd').parse(_startDateController.text);
     final endDate = DateFormat('yyyy/MM/dd').parse(_endDateController.text);
 
     setState(() {
       _isLoading = true;
+      _isProcessing = true;
+      _statusMessage = 'Processing started. Please wait for 5 minutes...';
     });
 
     try {
-      final response =
-          await DashboardService().salesDateRange(startDate, endDate);
+      await DashboardService().startSalesProcessingJob(startDate, endDate);
 
-      setState(() {
-        _analysisImageUrl = response['analysisImageURL'];
-        _predictionImageUrl = response['predictionImageURL'];
-        _isLoading = false;
+      _waitingTimer = Timer(Duration(minutes: 5), () async {
+        try {
+          final response = await DashboardService().fetchLatestSalesImages();
+          if (!mounted) return;
+
+          setState(() {
+            _analysisImageUrl = response['analysisImageURL'];
+            _predictionImageUrl = response['predictionImageURL'];
+            _isLoading = false;
+            _isProcessing = false;
+            _statusMessage = '';
+          });
+        } catch (e) {
+          if (!mounted) return;
+          setState(() {
+            _isLoading = false;
+            _isProcessing = false;
+            _statusMessage = '';
+          });
+          _showAlertDialog(context, 'Data loading failure: $e');
+        }
       });
     } catch (e) {
       setState(() {
         _isLoading = false;
+        _isProcessing = false;
+        _statusMessage = '';
       });
-      _showAlertDialog(context, 'Data loading failure: $e');
+      _showAlertDialog(context, 'Failed to start processing job: $e');
     }
   }
 
@@ -74,9 +105,7 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
           ),
           title: Text(
             'Error alert',
-            style: TextStyle(
-              fontSize: 20,
-            ),
+            style: TextStyle(fontSize: 20),
           ),
           content: SizedBox(
             width: 360,
@@ -84,9 +113,7 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
             child: Center(
               child: Text(
                 message,
-                style: TextStyle(
-                  fontSize: 15,
-                ),
+                style: TextStyle(fontSize: 15),
               ),
             ),
           ),
@@ -110,7 +137,7 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
-                      color: Color.fromRGBO(52, 52, 52, 52),
+                      color: Color.fromRGBO(52, 52, 52, 1),
                     ),
                   ),
                 ),
@@ -134,94 +161,60 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
           ),
           title: Text(
             'Date range setting',
-            style: TextStyle(
-              fontSize: 20,
-            ),
+            style: TextStyle(fontSize: 20),
           ),
           content: SizedBox(
             width: 360,
             height: 480,
-            child: Container(
-              child: Column(
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SfDateRangePicker(
-                            controller: _datePickerController,
-                            onSelectionChanged: _onDateRangeChanged,
-                            selectionMode: DateRangePickerSelectionMode.range,
-                            initialSelectedRange: PickerDateRange(
-                              DateTime.now().subtract(Duration(days: 7)),
-                              DateTime.now(),
-                            ),
-                            startRangeSelectionColor: Colors.blueAccent,
-                            endRangeSelectionColor: Colors.blueAccent,
-                            rangeSelectionColor:
-                                Colors.blueAccent.withOpacity(0.2),
-                            backgroundColor: Colors.transparent,
+            child: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SfDateRangePicker(
+                          controller: _datePickerController,
+                          onSelectionChanged: _onDateRangeChanged,
+                          selectionMode: DateRangePickerSelectionMode.range,
+                          initialSelectedRange: PickerDateRange(
+                            DateTime.now().subtract(Duration(days: 7)),
+                            DateTime.now(),
                           ),
-                          SizedBox(height: 10),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFF44558C8),
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: SizedBox(
-                              width: 360,
-                              child: Center(
-                                child: Text(
-                                  'Confirm',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
+                          startRangeSelectionColor: Colors.blueAccent,
+                          endRangeSelectionColor: Colors.blueAccent,
+                          rangeSelectionColor:
+                              Colors.blueAccent.withOpacity(0.2),
+                          backgroundColor: Colors.transparent,
+                        ),
+                        SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: SizedBox(
+                            width: 360,
+                            child: Center(child: Text('Confirm')),
                           ),
-                          SizedBox(height: 5),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  Color.fromARGB(242, 242, 242, 242),
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: SizedBox(
-                              width: double.infinity,
-                              child: Center(
-                                child: Text(
-                                  'Cancel',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500,
-                                    color: Color.fromRGBO(52, 52, 52, 52),
-                                  ),
-                                ),
-                              ),
-                            ),
+                        ),
+                        SizedBox(height: 5),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color.fromARGB(242, 242, 242, 242),
                           ),
-                        ],
-                      ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: Center(child: Text('Cancel')),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         );
@@ -239,141 +232,82 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: _startDateController,
-                        readOnly: true,
-                        textAlign: TextAlign.center,
-                        decoration: InputDecoration(
-                          hintText: 'Start Date',
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide(
-                              color: Colors.grey,
-                              width: 1.5,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide(
-                              color: Color(0xFF44558C8),
-                              width: 1.5,
-                            ),
-                          ),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _startDateController,
+                      readOnly: true,
+                      textAlign: TextAlign.center,
+                      decoration: InputDecoration(
+                        hintText: 'Start Date',
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide:
+                              BorderSide(color: Colors.grey, width: 1.5),
                         ),
-                        maxLines: 1,
-                      ),
-                    ),
-                    Text(' ~ ', style: TextStyle(fontSize: 18)),
-                    Expanded(
-                      child: TextFormField(
-                        controller: _endDateController,
-                        readOnly: true,
-                        textAlign: TextAlign.center,
-                        decoration: InputDecoration(
-                          hintText: 'End Date',
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide(
-                              color: Colors.grey,
-                              width: 1.5,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide(
-                              color: Color(0xFF44558C8),
-                              width: 1.5,
-                            ),
-                          ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide:
+                              BorderSide(color: Color(0xFF44558C8), width: 1.5),
                         ),
-                        maxLines: 1,
                       ),
+                      maxLines: 1,
                     ),
-                  ],
-                ),
+                  ),
+                  Text(' ~ ', style: TextStyle(fontSize: 18)),
+                  Expanded(
+                    child: TextFormField(
+                      controller: _endDateController,
+                      readOnly: true,
+                      textAlign: TextAlign.center,
+                      decoration: InputDecoration(
+                        hintText: 'End Date',
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide:
+                              BorderSide(color: Colors.grey, width: 1.5),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide:
+                              BorderSide(color: Color(0xFF44558C8), width: 1.5),
+                        ),
+                      ),
+                      maxLines: 1,
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 10),
               ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(242, 242, 242, 242),
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                ),
-                onPressed: () {
-                  _showDateRangePicker();
-                },
-                child: SizedBox(
-                  width: double.infinity,
-                  child: Center(
-                    child: Text(
-                      'Set Date Range',
-                      style: TextStyle(
-                        color: Color.fromRGBO(52, 52, 52, 52),
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ),
+                onPressed: _isProcessing ? null : _showDateRangePicker,
+                child: Text('Set Date Range'),
               ),
               SizedBox(height: 5),
               ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF44558C8),
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                ),
-                onPressed: () {
-                  _onSearch();
-                },
-                child: SizedBox(
-                  width: 360,
-                  child: Center(
-                    child: Text(
-                      'Get Results',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
+                onPressed: _isProcessing ? null : _onSearch,
+                child: Text('Get Results'),
               ),
               SizedBox(height: 20),
-              Container(
-                child: Text(
-                  'Analysis',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    color: Color.fromRGBO(52, 52, 52, 52),
-                  ),
+              if (_statusMessage.isNotEmpty)
+                Column(
+                  children: [
+                    CircularProgressIndicator(),
+                    SizedBox(height: 10),
+                    Text(_statusMessage),
+                    SizedBox(height: 20),
+                  ],
                 ),
-              ),
+              Text('Analysis',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
               DashboardSalesAnalysis(
                 imageUrl: _analysisImageUrl,
                 isLoading: _isLoading,
               ),
               SizedBox(height: 20),
-              Container(
-                child: Text(
-                  'Prediction',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    color: Color.fromRGBO(52, 52, 52, 52),
-                  ),
-                ),
-              ),
+              Text('Prediction',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
               DashboardSalesPrediction(
                 imageUrl: _predictionImageUrl,
                 isLoading: _isLoading,

@@ -66,4 +66,35 @@ class DashboardService {
       throw Exception('Failed to start processing job');
     }
   }
+
+  Future<void> startSalesProcessingJob(
+      DateTime startDate, DateTime endDate) async {
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        'action': 'startSalesProcessingJob',
+        'start_date': startDate.toIso8601String(),
+        'end_date': endDate.toIso8601String(),
+      }),
+    );
+    if (response.statusCode != 200) {
+      throw Exception('Failed to start processing job');
+    }
+  }
+
+  Future<Map<String, dynamic>> fetchLatestSalesImages() async {
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        'action': 'fetchLatestSalesImages',
+      }),
+    );
+    if (response.statusCode == 200) {
+      return json.decode(response.body)['sales'];
+    } else {
+      throw Exception('Failed to fetch latest sales images');
+    }
+  }
 }
