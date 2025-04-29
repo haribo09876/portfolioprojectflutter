@@ -16,10 +16,43 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
 
   String? _analysisImageUrl;
   String? _predictionImageUrl;
+  String? _analysisImageDate;
+  String? _predictionImageDate;
   bool _isLoading = false;
   bool _isProcessing = false;
   String _statusMessage = '';
   Timer? _waitingTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLatestImages();
+  }
+
+  void _loadLatestImages() async {
+    setState(() {
+      _isLoading = true;
+      _statusMessage = 'Loading latest images...';
+    });
+
+    try {
+      final response = await DashboardService().fetchLatestSalesImages();
+      if (!mounted) return;
+      setState(() {
+        _analysisImageUrl = response['analysisImageURL'];
+        _analysisImageDate = response['analysisImageDate'];
+        _predictionImageUrl = response['predictionImageURL'];
+        _predictionImageDate = response['predictionImageDate'];
+        _isLoading = false;
+        _statusMessage = '';
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+        _statusMessage = 'Failed to load images: $e';
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -68,7 +101,9 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
 
           setState(() {
             _analysisImageUrl = response['analysisImageURL'];
+            _analysisImageDate = response['analysisImageDate'];
             _predictionImageUrl = response['predictionImageURL'];
+            _predictionImageDate = response['predictionImageDate'];
             _isLoading = false;
             _isProcessing = false;
             _statusMessage = '';
@@ -137,7 +172,7 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
-                      color: Color.fromRGBO(52, 52, 52, 1),
+                      color: Color.fromRGBO(52, 52, 52, 52),
                     ),
                   ),
                 ),
@@ -272,10 +307,9 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
                       child: Text(
                         _statusMessage,
                         style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500,
-                          color: Color.fromRGBO(52, 52, 52, 52),
-                        ),
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                            color: Color.fromRGBO(52, 52, 52, 52)),
                       ),
                     ),
                     SizedBox(height: 20),
@@ -283,15 +317,15 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
                 ),
               _buildSection('Analysis'),
               DashboardSalesAnalysis(
-                imageUrl: _analysisImageUrl,
-                isLoading: _isLoading,
-              ),
+                  imageUrl: _analysisImageUrl,
+                  imageDate: _analysisImageDate,
+                  isLoading: _isLoading),
               SizedBox(height: 20),
               _buildSection('Prediction'),
               DashboardSalesPrediction(
-                imageUrl: _predictionImageUrl,
-                isLoading: _isLoading,
-              ),
+                  imageUrl: _predictionImageUrl,
+                  imageDate: _predictionImageDate,
+                  isLoading: _isLoading),
             ],
           ),
         ),
@@ -357,62 +391,76 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
     );
   }
 
-  InputDecoration _inputDecoration(String hint) {
-    return InputDecoration(
-      hintText: hint,
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(20),
-        borderSide: BorderSide(
-          color: Colors.grey,
-          width: 1.5,
+  InputDecoration _inputDecoration(String hint) => InputDecoration(
+        hintText: hint,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: BorderSide(
+            color: Colors.grey,
+            width: 1.5,
+          ),
         ),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(20),
-        borderSide: BorderSide(
-          color: Color(0xFF44558C8),
-          width: 1.5,
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: BorderSide(
+            color: Color(0xFF44558C8),
+            width: 1.5,
+          ),
         ),
-      ),
-    );
-  }
+      );
 
-  ButtonStyle _btnStyle(Color color) {
-    return ElevatedButton.styleFrom(
-      backgroundColor: color,
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(50),
-      ),
-    );
-  }
+  ButtonStyle _btnStyle(Color color) => ElevatedButton.styleFrom(
+        backgroundColor: color,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(50),
+        ),
+      );
 
-  Widget _buildSection(String title) {
-    return Text(
-      title,
-      style: TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.w500,
-        color: Color.fromRGBO(52, 52, 52, 52),
-      ),
-    );
-  }
+  Widget _buildSection(String title) => Text(
+        title,
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w500,
+          color: Color.fromRGBO(52, 52, 52, 52),
+        ),
+      );
 }
 
 class DashboardSalesAnalysis extends StatelessWidget {
   final String? imageUrl;
+  final String? imageDate;
   final bool isLoading;
 
-  DashboardSalesAnalysis({required this.imageUrl, required this.isLoading});
+  DashboardSalesAnalysis(
+      {required this.imageUrl,
+      required this.imageDate,
+      required this.isLoading});
 
   @override
   Widget build(BuildContext context) {
     return isLoading
         ? Center(child: CircularProgressIndicator())
         : imageUrl != null
-            ? Image.network(
-                imageUrl!,
-                width: 360,
+            ? Column(
+                children: [
+                  Image.network(imageUrl!, width: 360),
+                  if (imageDate != null)
+                    Row(
+                      children: [
+                        Spacer(),
+                        Text(
+                          DateFormat('MMM d, yyyy, h:mm a')
+                              .format(DateTime.parse(imageDate!).toLocal()),
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                            color: Color.fromRGBO(52, 52, 52, 52),
+                          ),
+                        ),
+                      ],
+                    ),
+                ],
               )
             : SizedBox(height: 10);
   }
@@ -420,18 +468,38 @@ class DashboardSalesAnalysis extends StatelessWidget {
 
 class DashboardSalesPrediction extends StatelessWidget {
   final String? imageUrl;
+  final String? imageDate;
   final bool isLoading;
 
-  DashboardSalesPrediction({required this.imageUrl, required this.isLoading});
+  DashboardSalesPrediction(
+      {required this.imageUrl,
+      required this.imageDate,
+      required this.isLoading});
 
   @override
   Widget build(BuildContext context) {
     return isLoading
         ? Center(child: CircularProgressIndicator())
         : imageUrl != null
-            ? Image.network(
-                imageUrl!,
-                width: 360,
+            ? Column(
+                children: [
+                  Image.network(imageUrl!, width: 360),
+                  if (imageDate != null)
+                    Row(
+                      children: [
+                        Spacer(),
+                        Text(
+                          DateFormat('MMM d, yyyy, h:mm a')
+                              .format(DateTime.parse(imageDate!).toLocal()),
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                            color: Color.fromRGBO(52, 52, 52, 52),
+                          ),
+                        ),
+                      ],
+                    ),
+                ],
               )
             : SizedBox(height: 10);
   }
