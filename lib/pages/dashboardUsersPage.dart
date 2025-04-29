@@ -509,7 +509,7 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
                           onPressed: _zoomIn,
                           backgroundColor: Color(0xFF44558C8),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                           child: Icon(
                             Icons.add,
@@ -520,7 +520,7 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
                           onPressed: _zoomOut,
                           backgroundColor: Color(0xFF44558C8),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                           child: Icon(
                             Icons.remove,
@@ -657,7 +657,7 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
                         0: FixedColumnWidth(60),
                         1: FixedColumnWidth(100),
                         2: FixedColumnWidth(200),
-                        3: FixedColumnWidth(150),
+                        3: FixedColumnWidth(200),
                         4: FixedColumnWidth(300),
                         5: FixedColumnWidth(50),
                         6: FixedColumnWidth(70),
@@ -708,6 +708,8 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
                                     ),
                                   ),
                                 ),
+                                verticalAlignment:
+                                    TableCellVerticalAlignment.middle,
                               ),
                               TableCell(
                                 child: GestureDetector(
@@ -720,28 +722,36 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
                                     child: Text(
                                       user['userName'],
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold),
+                                          fontWeight: FontWeight.w500),
                                     ),
                                   ),
                                 ),
+                                verticalAlignment:
+                                    TableCellVerticalAlignment.middle,
                               ),
                               TableCell(
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(user['userEmail']),
                                 ),
+                                verticalAlignment:
+                                    TableCellVerticalAlignment.middle,
                               ),
                               TableCell(
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(user['userPassword']),
                                 ),
+                                verticalAlignment:
+                                    TableCellVerticalAlignment.middle,
                               ),
                               TableCell(
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(user['userId']),
                                 ),
+                                verticalAlignment:
+                                    TableCellVerticalAlignment.middle,
                               ),
                               TableCell(
                                 child: Padding(
@@ -751,6 +761,8 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
+                                verticalAlignment:
+                                    TableCellVerticalAlignment.middle,
                               ),
                               TableCell(
                                 child: Padding(
@@ -760,6 +772,8 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
+                                verticalAlignment:
+                                    TableCellVerticalAlignment.middle,
                               ),
                               TableCell(
                                 child: Padding(
@@ -769,6 +783,8 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
                                     textAlign: TextAlign.right,
                                   ),
                                 ),
+                                verticalAlignment:
+                                    TableCellVerticalAlignment.middle,
                               ),
                               TableCell(
                                 child: Padding(
@@ -778,18 +794,24 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
                                     textAlign: TextAlign.right,
                                   ),
                                 ),
+                                verticalAlignment:
+                                    TableCellVerticalAlignment.middle,
                               ),
                               TableCell(
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(user['createdAt'].toString()),
                                 ),
+                                verticalAlignment:
+                                    TableCellVerticalAlignment.middle,
                               ),
                               TableCell(
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(user['modifiedAt'].toString()),
                                 ),
+                                verticalAlignment:
+                                    TableCellVerticalAlignment.middle,
                               ),
                             ],
                           ),

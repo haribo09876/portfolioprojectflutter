@@ -234,7 +234,10 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          title: Text('Date range setting', style: TextStyle(fontSize: 20)),
+          title: Text(
+            'Date range setting',
+            style: TextStyle(fontSize: 20),
+          ),
           content: SizedBox(
             width: 360,
             height: 480,
@@ -253,10 +256,10 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
                             DateTime.now().subtract(Duration(days: 7)),
                             DateTime.now(),
                           ),
-                          startRangeSelectionColor: Colors.blueAccent,
-                          endRangeSelectionColor: Colors.blueAccent,
+                          startRangeSelectionColor: Color(0xFF44558C8),
+                          endRangeSelectionColor: Color(0xFF44558C8),
                           rangeSelectionColor:
-                              Colors.blueAccent.withOpacity(0.2),
+                              Color(0xFF44558C8).withOpacity(0.2),
                           backgroundColor: Colors.transparent,
                         ),
                         SizedBox(height: 10),
@@ -329,7 +332,6 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
         tweets.isNotEmpty ? _generateWordCloudData(tweets) : [];
     List<Map> instasWordList =
         instas.isNotEmpty ? _generateWordCloudData(instas) : [];
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -395,8 +397,14 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
           style: _btnStyle(Color.fromARGB(242, 242, 242, 242)),
           onPressed: _showDateRangePicker,
           child: Center(
-            child:
-                Text('Set date range', style: TextStyle(color: Colors.black)),
+            child: Text(
+              'Set date range',
+              style: TextStyle(
+                color: Color.fromRGBO(52, 52, 52, 52),
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ),
         ),
         SizedBox(height: 5),
@@ -404,7 +412,14 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
           style: _btnStyle(Color(0xFF44558C8)),
           onPressed: _onSearch,
           child: Center(
-            child: Text('Get Results', style: TextStyle(color: Colors.white)),
+            child: Text(
+              'Get Results',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ),
         ),
       ],
@@ -416,11 +431,17 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
       hintText: hint,
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(20),
-        borderSide: BorderSide(color: Colors.grey, width: 1.5),
+        borderSide: BorderSide(
+          color: Colors.grey,
+          width: 1.5,
+        ),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(20),
-        borderSide: BorderSide(color: Color(0xFF44558C8), width: 1.5),
+        borderSide: BorderSide(
+          color: Color(0xFF44558C8),
+          width: 1.5,
+        ),
       ),
     );
   }
