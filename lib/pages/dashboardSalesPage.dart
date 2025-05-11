@@ -297,12 +297,12 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildDateInputSection(),
-              SizedBox(height: 20),
+              SizedBox(height: 30),
               if (_statusMessage.isNotEmpty)
                 Column(
                   children: [
                     CircularProgressIndicator(),
-                    SizedBox(height: 20),
+                    SizedBox(height: 30),
                     Center(
                       child: Text(
                         _statusMessage,
@@ -312,7 +312,7 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
                             color: Color.fromRGBO(52, 52, 52, 52)),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 30),
                   ],
                 ),
               _buildSection('Analysis'),
@@ -320,7 +320,7 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
                   imageUrl: _analysisImageUrl,
                   imageDate: _analysisImageDate,
                   isLoading: _isLoading),
-              SizedBox(height: 20),
+              SizedBox(height: 30),
               _buildSection('Prediction'),
               DashboardSalesPrediction(
                   imageUrl: _predictionImageUrl,

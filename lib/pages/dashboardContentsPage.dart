@@ -340,22 +340,22 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildDateInputSection(),
-            SizedBox(height: 20),
+            SizedBox(height: 30),
             _buildSection('Tweet Text'),
             SizedBox(height: 10),
             DashboardContentsTweetText(tweetsWordList: tweetsWordList),
-            SizedBox(height: 20),
+            SizedBox(height: 30),
             _buildSection('Tweet Image'),
             SizedBox(height: 10),
             DashboardContentsTweetImage(
               overlayImages: tweetOverlayImages,
               isLoading: isLoadingTweetImages,
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 30),
             _buildSection('Insta Text'),
             SizedBox(height: 10),
             DashboardContentsInstaText(instasWordList: instasWordList),
-            SizedBox(height: 20),
+            SizedBox(height: 30),
             _buildSection('Insta Image'),
             SizedBox(height: 10),
             DashboardContentsInstaImage(
@@ -520,12 +520,12 @@ class DashboardContentsTweetText extends StatelessWidget {
           WordCloudView(
             data: WordCloudData(data: tweetsWordList),
             mapcolor: Colors.white,
-            mapwidth: 360,
-            mapheight: 360,
+            mapwidth: 350,
+            mapheight: 350,
             fontWeight: FontWeight.bold,
             shape: WordCloudEllipse(
-              majoraxis: 250,
-              minoraxis: 200,
+              majoraxis: 300,
+              minoraxis: 250,
             ),
             colorlist: [
               Color.fromRGBO(29, 107, 255, 1),
@@ -555,12 +555,12 @@ class DashboardContentsInstaText extends StatelessWidget {
           WordCloudView(
             data: WordCloudData(data: instasWordList),
             mapcolor: Colors.white,
-            mapwidth: 360,
-            mapheight: 360,
+            mapwidth: 350,
+            mapheight: 350,
             fontWeight: FontWeight.bold,
             shape: WordCloudEllipse(
-              majoraxis: 250,
-              minoraxis: 200,
+              majoraxis: 300,
+              minoraxis: 250,
             ),
             colorlist: [
               Color.fromRGBO(29, 107, 255, 1),

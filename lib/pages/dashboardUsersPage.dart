@@ -29,7 +29,7 @@ class DashboardUsersPage extends StatelessWidget {
                 ),
               ),
               DashboardUsersInfo(),
-              SizedBox(height: 20),
+              SizedBox(height: 30),
               Container(
                 child: Text(
                   'Location',
@@ -44,7 +44,7 @@ class DashboardUsersPage extends StatelessWidget {
                 height: 250,
                 child: DashboardUsersLocation(),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 30),
               Container(
                 child: Text(
                   'Search',
