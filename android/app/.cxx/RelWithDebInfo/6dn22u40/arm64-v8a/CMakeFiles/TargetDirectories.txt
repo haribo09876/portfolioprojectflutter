@@ -1,0 +1,2 @@
+C:/Users/KYW/Desktop/Coding/portfolioprojectflutter/android/app/.cxx/RelWithDebInfo/6dn22u40/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/KYW/Desktop/Coding/portfolioprojectflutter/android/app/.cxx/RelWithDebInfo/6dn22u40/arm64-v8a/CMakeFiles/rebuild_cache.dir
