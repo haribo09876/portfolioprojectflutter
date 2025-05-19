@@ -274,7 +274,8 @@ class _UserPageState extends State<UserPage> {
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFF44558C8),
+                              backgroundColor:
+                                  Color.fromARGB(242, 242, 242, 242),
                               elevation: 0,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50),
@@ -292,7 +293,7 @@ class _UserPageState extends State<UserPage> {
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w500,
-                                    color: Colors.white,
+                                    color: Color.fromRGBO(52, 52, 52, 52),
                                   ),
                                 ),
                               ),
@@ -395,7 +396,8 @@ class _UserPageState extends State<UserPage> {
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFF44558C8),
+                              backgroundColor:
+                                  Color.fromARGB(242, 242, 242, 242),
                               elevation: 0,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50),
@@ -413,7 +415,7 @@ class _UserPageState extends State<UserPage> {
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w500,
-                                    color: Colors.white,
+                                    color: Color.fromRGBO(52, 52, 52, 52),
                                   ),
                                 ),
                               ),
@@ -1776,7 +1778,7 @@ class _UserPageState extends State<UserPage> {
           SizedBox(height: 30),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xFF44558C8),
+              backgroundColor: Color.fromARGB(242, 242, 242, 242),
               elevation: 0,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(50),
@@ -1794,7 +1796,7 @@ class _UserPageState extends State<UserPage> {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
-                    color: Colors.white,
+                    color: Color.fromRGBO(52, 52, 52, 52),
                   ),
                 ),
               ),

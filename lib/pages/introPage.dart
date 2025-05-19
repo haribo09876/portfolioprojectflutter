@@ -34,7 +34,7 @@ class IntroPage extends StatelessWidget {
               width: 360,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xff4A7FF7),
+                  backgroundColor: Color(0xFF44558C8),
                   elevation: 0,
                   padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                   shape: RoundedRectangleBorder(

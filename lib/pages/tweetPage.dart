@@ -196,7 +196,7 @@ class _TweetPageState extends State<TweetPage> {
                   SizedBox(height: 5),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF12AC79),
+                      backgroundColor: Color(0xFF44558C8),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50),
@@ -369,7 +369,8 @@ class _TweetPageState extends State<TweetPage> {
                                   adminId) ...[
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFF44558C8),
+                                backgroundColor:
+                                    Color.fromARGB(242, 242, 242, 242),
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(50),
@@ -386,7 +387,7 @@ class _TweetPageState extends State<TweetPage> {
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w500,
-                                      color: Colors.white,
+                                      color: Color.fromRGBO(52, 52, 52, 52),
                                     ),
                                   ),
                                 ),

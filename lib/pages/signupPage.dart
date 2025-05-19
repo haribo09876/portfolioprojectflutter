@@ -479,7 +479,7 @@ class _SignupPageState extends State<SignupPage> {
                                     color: Colors.white),
                               ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xff4A7FF7),
+                          backgroundColor: Color(0xFF44558C8),
                           elevation: 0,
                           padding: EdgeInsets.symmetric(
                               horizontal: 30, vertical: 15),

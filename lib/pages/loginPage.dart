@@ -153,7 +153,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget _buildButton(
     String text,
     VoidCallback onPressed, {
-    Color color = const Color(0xff4A7FF7),
+    Color color = const Color(0xFF44558C8),
   }) {
     return Padding(
       padding: const EdgeInsets.only(top: 20),
