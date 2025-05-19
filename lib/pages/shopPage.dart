@@ -473,7 +473,7 @@ class _ShopPageState extends State<ShopPage> {
                           SizedBox(height: 5),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFFEE5E37),
+                              backgroundColor: Color(0xFFF04452),
                               elevation: 0,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50),

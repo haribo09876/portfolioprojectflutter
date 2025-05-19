@@ -439,26 +439,29 @@ class _SignupPageState extends State<SignupPage> {
                       },
                     ),
                     SizedBox(height: 10),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color.fromARGB(242, 242, 242, 242),
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50),
+                    SizedBox(
+                      width: 360,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
                         ),
-                      ),
-                      onPressed: () async {
-                        await _pickImage();
-                      },
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: Center(
-                          child: Text(
-                            'Add image',
-                            style: TextStyle(
-                              color: Color.fromRGBO(52, 52, 52, 52),
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
+                        onPressed: () async {
+                          await _pickImage();
+                        },
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Center(
+                            child: Text(
+                              'Add image',
+                              style: TextStyle(
+                                color: Color.fromRGBO(52, 52, 52, 52),
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
                         ),
