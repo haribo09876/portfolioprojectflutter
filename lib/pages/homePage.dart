@@ -128,60 +128,54 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                     ),
+                    SizedBox(height: 10),
                     SizedBox(
                       width: 360,
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            width: 360,
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                await vpnService.connect();
-                              },
-                              style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.symmetric(vertical: 10),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(50),
-                                ),
-                                backgroundColor: Color(0xFF12AC79),
-                                elevation: 0,
-                              ),
-                              child: Text(
-                                'Start VPN',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          await vpnService.connect();
+                        },
+                        child: Text(
+                          'Start VPN',
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFF12AC79),
+                          elevation: 0,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 30, vertical: 15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25),
                           ),
-                          SizedBox(height: 15),
-                          SizedBox(
-                            width: 360,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                vpnService.disconnect();
-                              },
-                              style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.symmetric(vertical: 10),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(50),
-                                ),
-                                backgroundColor: Color(0xFFF04452),
-                                elevation: 0,
-                              ),
-                              child: Text(
-                                'Stop VPN',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    SizedBox(
+                      width: 360,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          vpnService.disconnect();
+                        },
+                        child: Text(
+                          'Stop VPN',
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFFF04452),
+                          elevation: 0,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 30, vertical: 15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25),
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ],

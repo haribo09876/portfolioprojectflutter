@@ -1776,54 +1776,51 @@ class _UserPageState extends State<UserPage> {
           SizedBox(height: 20),
           sectionPurchase(purchaseData),
           SizedBox(height: 30),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Color.fromARGB(242, 242, 242, 242),
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(50),
+          SizedBox(
+            width: 360,
+            child: ElevatedButton(
+              onPressed: () {
+                userUpdateDialog(
+                    userPassword, userName, userGender, userAge, userImgURL);
+              },
+              child: Text(
+                'Edit account',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  color: Color.fromRGBO(52, 52, 52, 52),
+                ),
               ),
-            ),
-            onPressed: () {
-              userUpdateDialog(
-                  userPassword, userName, userGender, userAge, userImgURL);
-            },
-            child: SizedBox(
-              width: 360,
-              child: Center(
-                child: Text(
-                  'Edit account',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                    color: Color.fromRGBO(52, 52, 52, 52),
-                  ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(242, 242, 242, 242),
+                elevation: 0,
+                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
                 ),
               ),
             ),
           ),
-          SizedBox(height: 5),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xFFF04452),
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(50),
-              ),
-            ),
-            onPressed: () {
-              userDeleteDialog();
-            },
-            child: SizedBox(
-              width: 360,
-              child: Center(
-                child: Text(
-                  'Delete account',
-                  style: TextStyle(
+          SizedBox(height: 10),
+          SizedBox(
+            width: 360,
+            child: ElevatedButton(
+              onPressed: () {
+                userDeleteDialog();
+              },
+              child: Text(
+                'Delete account',
+                style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
-                    color: Colors.white,
-                  ),
+                    color: Colors.white),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFFF04452),
+                elevation: 0,
+                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
                 ),
               ),
             ),

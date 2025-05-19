@@ -393,31 +393,45 @@ class _DashboardContentsPageState extends State<DashboardContentsPage> {
           ],
         ),
         SizedBox(height: 10),
-        ElevatedButton(
-          style: _btnStyle(Color.fromARGB(242, 242, 242, 242)),
-          onPressed: _showDateRangePicker,
-          child: Center(
+        SizedBox(
+          width: 360,
+          child: ElevatedButton(
+            onPressed: _showDateRangePicker,
             child: Text(
-              'Set date range',
+              'Set dates',
               style: TextStyle(
-                color: Color.fromRGBO(52, 52, 52, 52),
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  color: Color.fromRGBO(52, 52, 52, 52)),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color.fromARGB(242, 242, 242, 242),
+              elevation: 0,
+              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25),
               ),
             ),
           ),
         ),
-        SizedBox(height: 5),
-        ElevatedButton(
-          style: _btnStyle(Color(0xFF44558C8)),
-          onPressed: _onSearch,
-          child: Center(
+        SizedBox(height: 10),
+        SizedBox(
+          width: 360,
+          child: ElevatedButton(
+            onPressed: _onSearch,
             child: Text(
-              'Get Results',
+              'Get results',
               style: TextStyle(
-                color: Colors.white,
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color(0xFF44558C8),
+              elevation: 0,
+              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25),
               ),
             ),
           ),
