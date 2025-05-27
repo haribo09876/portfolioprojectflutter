@@ -1858,39 +1858,59 @@ class _UserPageState extends State<UserPage> {
           ),
         ),
         Container(
-          height: 100,
+          height: 230,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: tweetData.length,
             itemBuilder: (context, index) {
               final tweet = tweetData[index];
-              final tweetContents = tweet['tweetContents'];
-              final tweetImgURL = tweet['tweetImgURL'];
               final tweetId = tweet['tweetId'];
+              final tweetImgURL = tweet['tweetImgURL'];
+              final tweetContents = tweet['tweetContents'];
+              final userId = tweet['userId'];
+
               return GestureDetector(
                 onTap: () {
                   tweetDetailDialog(
                       context, tweetContents, tweetImgURL, tweetId);
                 },
                 child: Container(
-                  width: 150,
-                  height: 100,
-                  margin: EdgeInsets.only(right: 3),
-                  padding: EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.grey,
-                      width: 1.5,
+                  width: 240,
+                  height: 230,
+                  margin: EdgeInsets.only(right: 10),
+                  child: Card(
+                    color: Colors.white,
+                    elevation: 1,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      tweet['tweetContents'] ?? '',
-                      style: TextStyle(color: Colors.black, fontSize: 15),
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
+                    child: Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 10),
+                          Text(
+                            tweetContents ?? '',
+                            style: TextStyle(
+                              fontSize: 15,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          SizedBox(height: 10),
+                          if (tweetImgURL != null && tweetImgURL.isNotEmpty)
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Image.network(
+                                tweetImgURL,
+                                width: 200,
+                                height: 120,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
