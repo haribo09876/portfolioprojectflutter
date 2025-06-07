@@ -34,6 +34,7 @@ class _MainPageState extends State<MainPage> {
             'PPF',
             style: TextStyle(
               fontSize: 25,
+              fontWeight: FontWeight.w500,
             ),
           ),
           elevation: 0,
