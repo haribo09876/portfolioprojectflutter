@@ -130,7 +130,7 @@ class HomePage extends StatelessWidget {
                     ),
                     SizedBox(height: 10),
                     SizedBox(
-                      width: 360,
+                      width: 340,
                       child: ElevatedButton(
                         onPressed: () async {
                           await vpnService.connect();
@@ -155,7 +155,7 @@ class HomePage extends StatelessWidget {
                     ),
                     SizedBox(height: 10),
                     SizedBox(
-                      width: 360,
+                      width: 340,
                       child: ElevatedButton(
                         onPressed: () {
                           vpnService.disconnect();

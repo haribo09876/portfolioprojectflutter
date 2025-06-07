@@ -96,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                   Navigator.pushNamed(context, AppRoutes.signup);
                 },
                 child: SizedBox(
-                  width: 300,
+                  width: 280,
                   child: Center(
                     child: Text(
                       'Sign up',
@@ -124,7 +124,7 @@ class _LoginPageState extends State<LoginPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Container(
-        width: 360,
+        width: 340,
         child: TextField(
           controller: controller,
           obscureText: obscureText,
@@ -158,7 +158,7 @@ class _LoginPageState extends State<LoginPage> {
     return Padding(
       padding: const EdgeInsets.only(top: 20),
       child: Container(
-        width: 360,
+        width: 340,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             backgroundColor: color,

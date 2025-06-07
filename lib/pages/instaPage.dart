@@ -754,7 +754,7 @@ class _InstaPageState extends State<InstaPage> {
       backgroundColor: Color.fromARGB(255, 255, 255, 255),
       body: Center(
         child: Container(
-          width: 360,
+          width: 340,
           child: Column(
             children: [
               SizedBox(height: 5),

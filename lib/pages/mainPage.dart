@@ -29,12 +29,11 @@ class _MainPageState extends State<MainPage> {
         backgroundColor: Color.fromARGB(255, 255, 255, 255),
         appBar: AppBar(
           backgroundColor: Color.fromARGB(255, 255, 255, 255),
-          flexibleSpace: Center(
-            child: Text(
-              'PPF',
-              style: TextStyle(
-                fontSize: 25,
-              ),
+          centerTitle: true,
+          title: Text(
+            'PPF',
+            style: TextStyle(
+              fontSize: 25,
             ),
           ),
           elevation: 0,
@@ -43,7 +42,7 @@ class _MainPageState extends State<MainPage> {
             preferredSize: Size.fromHeight(48),
             child: Center(
               child: SizedBox(
-                width: 360,
+                width: 340,
                 height: 40,
                 child: Container(
                   decoration: BoxDecoration(

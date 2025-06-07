@@ -24,7 +24,7 @@ class DashboardPage extends StatelessWidget {
             preferredSize: Size.fromHeight(48),
             child: Center(
               child: SizedBox(
-                width: 360,
+                width: 340,
                 height: 40,
                 child: Container(
                   decoration: BoxDecoration(
