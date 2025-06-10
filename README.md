@@ -69,11 +69,11 @@ portfolioprojectflutter는 소셜미디어와 쇼핑 기능을 포함한 **생�
 
 ### 🔹 기능 화면 (tweet, insta, shop)
 
-![캘린더 화면](./design/calendar_ui.png)
+![기능 화면](./design/calendar_ui.png)
 
 ### 🔹 분석 화면 (user, contents, sales)
 
-![일정 추가 모달](./design/schedule_modal.png)
+![분석 화면](./design/schedule_modal.png)
 
 ---
 
