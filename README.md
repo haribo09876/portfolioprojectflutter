@@ -104,7 +104,7 @@ portfolioprojectflutter는 소셜미디어와 쇼핑 기능을 포함한 **생�
         - Initiated project ideas (프로젝트 아이디어 도출)<br>
         - Defined requirements (요구사항 명세 작성)<br>
         - Designed UX (UX 설계)<br>
-        - Created wireframes using Figma (Figma 활용 와이어프레임 제작)
+        - Created wireframes using Figma (Figma 와이어프레임 제작)
       </td>
     </tr>
     <tr>
