@@ -1,9 +1,11 @@
-# 📱 portfolioprojectflutter – 생활 플랫폼 모바일 애플리케이션
+# 📱 portfolioprojectflutter
+
+Social and shopping mobile application (소셜과 쇼핑 기능을 갖춘 모바일 어플리케이션)
 
 ## 📌 프로젝트 개요
 
-portfolioprojectflutter는 SNS, 쇼핑채널을 포함한 **생활 플랫폼 모바일 애플리케이션**입니다.  
-캘린더 기반 UI를 통해 직관적으로 일정을 확인하고, 역할 기반의 업무 분담과 마감일 관리를 지원합니다.
+portfolioprojectflutter는 소셜미디어와 쇼핑 기능을 포함한 **생활 플랫폼 모바일 애플리케이션**입니다.  
+유저 정보, 소셜미디어 정보, 구매 패턴 등을 확인하고, 머신러닝 등의 데이터 분석 기능을 지원합니다.
 
 - **기획 배경**: 팀원 간 일정 공유의 불편함과 커뮤니케이션 문제를 해결하고자 기획
 - **개발 목적**: 실시간 일정 공유 및 마감 알림을 통해 협업 효율을 높이는 도구 개발
@@ -25,18 +27,16 @@ portfolioprojectflutter는 SNS, 쇼핑채널을 포함한 **생활 플랫폼 모
 
 ### 💻 프론트엔드
 
-- React (with Vite)
-- TypeScript
-- Tailwind CSS
-- React Router
-- Day.js
+- Flutter
+- Dart
 
 ### 🖥 백엔드
 
-- Node.js
-- Express
-- MongoDB + Mongoose
-- Nodemailer (알림 메일 전송)
+- AWS Lambda (Node.js, JavaScript)
+- AWS API Gateway
+- AWS RDS (MySQL)
+- AWS S3
+- AWS SageMaker ProcessingJob
 
 ### 🛠 협업 & 디자인
 
@@ -79,6 +79,7 @@ portfolioprojectflutter는 SNS, 쇼핑채널을 포함한 **생활 플랫폼 모
 ## 🔗 외부 자료 링크
 
 - 📄 [Figma 와이어프레임](https://figma.com/your-link)
+- 🧾 [Notion 기획서](https://notion.so/your-link)
 - 🎬 [시연 영상 (YouTube)](https://youtube.com/your-demo-link)
 - 🌐 [배포 링크 (Vercel)](https://smartplanner.vercel.app)
 
@@ -86,11 +87,11 @@ portfolioprojectflutter는 SNS, 쇼핑채널을 포함한 **생활 플랫폼 모
 
 ## 👥 팀 구성 및 역할
 
-| Name                 | Role        | 주요 기여 내용                                        |
-| -------------------- | ----------- | ----------------------------------------------------- |
-| Yongwon Kim (김용원) | 기획/디자인 | 프로젝트 아이디어 도출, 요구사항 정의, UX 설계, Figma |
-| Yongwon Kim (김용원) | 프론트엔드  | 전체 UI 구현, 캘린더 뷰 개발, 알림 UX 처리            |
-| Yongwon Kim (김용원) | 백엔드      | API 서버 구축, DB 모델링, 이메일 알림 기능 구현       |
+| Name (이름)         | Role (역할)           | Key Contributions (주요 기여 내용)                                                                                                                                   |
+|---------------------|-----------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Yongwon Kim (김용원)** | Planning / Design (기획/디자인)   | - Initiated project ideas (프로젝트 아이디어 도출)<br>- Defined requirements (요구사항 정의)<br>- Designed UX (UX 설계)<br>- Created wireframes using Figma (Figma 활용)        |
+|                     | Frontend Development (프론트엔드) | - Implemented full UI (전체 UI 구현)<br>- Developed calendar view (캘린더 뷰 개발)<br>- Handled notification UX (알림 UX 처리)                                          |
+|                     | Backend Development (백엔드)     | - Built API server (API 서버 구축)<br>- Modeled database schema (DB 모델링)<br>- Developed email notification feature (이메일 알림 기능 구현)                            |
 
 ---
 
@@ -136,7 +137,7 @@ npm run dev
 ## 📣 기타 정보
 
 - **프로젝트 기간**: 2025.01 ~ 2025.02
-- **진행 방식**: 1인 단독 작업
-- **문의**: haribo09876@gmail.com
+- **진행 방식**: 3인 팀 협업 (GitHub flow 기반)
+- **문의**: kimplanner@example.com
 
 ---
