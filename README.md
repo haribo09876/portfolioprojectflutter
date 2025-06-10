@@ -41,10 +41,8 @@ portfolioprojectflutter는 SNS, 쇼핑채널을 포함한 **생활 플랫폼 모
 ### 🛠 협업 & 디자인
 
 - GitHub
-- Notion
 - Figma
-- Slack
-- Postman (API 테스트)
+- Photoshop
 
 ---
 
@@ -81,7 +79,6 @@ portfolioprojectflutter는 SNS, 쇼핑채널을 포함한 **생활 플랫폼 모
 ## 🔗 외부 자료 링크
 
 - 📄 [Figma 와이어프레임](https://figma.com/your-link)
-- 🧾 [Notion 기획서](https://notion.so/your-link)
 - 🎬 [시연 영상 (YouTube)](https://youtube.com/your-demo-link)
 - 🌐 [배포 링크 (Vercel)](https://smartplanner.vercel.app)
 
@@ -139,7 +136,7 @@ npm run dev
 ## 📣 기타 정보
 
 - **프로젝트 기간**: 2025.01 ~ 2025.02
-- **진행 방식**: 3인 팀 협업 (GitHub flow 기반)
-- **문의**: kimplanner@example.com
+- **진행 방식**: 1인 단독 작업
+- **문의**: haribo09876@gmail.com
 
 ---
