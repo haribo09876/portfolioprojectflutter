@@ -98,7 +98,7 @@ portfolioprojectflutter는 소셜미디어와 쇼핑 기능을 포함한 **생�
   <tbody>
     <tr>
       <td rowspan="3">Yongwon Kim (김용원)</td>
-      <td>Planning / Design (기획/디자인)</td>
+      <td>Planning / Design</td>
       <td>
         - Initiated project ideas (프로젝트 아이디어 도출)<br>
         - Defined requirements (요구사항 명세 작성)<br>
@@ -107,7 +107,7 @@ portfolioprojectflutter는 소셜미디어와 쇼핑 기능을 포함한 **생�
       </td>
     </tr>
     <tr>
-      <td>Frontend Development (프론트엔드)</td>
+      <td>Frontend Development</td>
       <td>
         - Implemented full UI (전체 UI 구성 및 개발)<br>
         - Developed calendar view (캘린더 뷰 기능 구현)<br>
@@ -115,7 +115,7 @@ portfolioprojectflutter는 소셜미디어와 쇼핑 기능을 포함한 **생�
       </td>
     </tr>
     <tr>
-      <td>Backend Development (백엔드)</td>
+      <td>Backend Development</td>
       <td>
         - Built API server (API 서버 구축)<br>
         - Modeled database schema (DB 모델링)<br>
