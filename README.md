@@ -78,7 +78,7 @@ portfolioprojectflutter는 소셜미디어와 쇼핑 기능을 포함한 **생�
 
 ## 🔗 외부 자료 링크
 
-- 📄 [Figma 와이어프레임](https://figma.com/your-link)
+- 📄 [Figma 와이어프레임](https://www.figma.com/design/qokFuaMidfvWIZtHE8pn3o/Portfolio-Projects?m=auto&t=lZD8PoA9xJuTEpGh-6)
 - 🧾 [Notion 기획서](https://notion.so/your-link)
 - 🎬 [시연 영상 (YouTube)](https://youtube.com/your-demo-link)
 - 🌐 [배포 링크 (Vercel)](https://smartplanner.vercel.app)
