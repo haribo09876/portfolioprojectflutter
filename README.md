@@ -87,9 +87,11 @@ portfolioprojectflutter는 소셜미디어와 쇼핑 기능을 포함한 **생�
 
 ## 👥 팀 구성 및 역할
 
-| Name (이름) | Role (역할) | Key Contributions (주요 기여 내용) |
-|-------------|-------------|-------------------------------------|
-| - Yongwon Kim<br>  (김용원) | - Planning / Design<br>  (기획/디자인)<br><br>- Frontend Development<br>  (프론트엔드)<br><br>- Backend Development<br>  (백엔드) | - Designed UX<br>  (UX 설계)<br><br>- Defined requirements<br>  (요구사항 정의)<br><br>- Initiated project ideas<br>  (프로젝트 아이디어 도출)<br><br>- Created wireframes using Figma<br>  (Figma 활용)<br><br>- Implemented full UI<br>  (전체 UI 구현)<br><br>- Developed calendar view<br>  (캘린더 뷰 개발)<br><br>- Handled notification UX<br>  (알림 UX 처리)<br><br>- Built API server<br>  (API 서버 구축)<br><br>- Modeled database schema<br>  (DB 모델링)<br><br>- Developed email notification feature<br>  (이메일 알림 기능 구현) |
+| Name<br>  (이름)         | Role<br>  (역할)           | Key Contributions<br>  (주요 기여 내용)                                                                                                                                   |
+|---------------------|-----------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Yongwon Kim<br>  (김용원) | Planning / Design<br>  (기획/디자인)   | - Initiated project ideas<br>  (프로젝트 아이디어 도출)<br>- Defined requirements<br>  (요구사항 명세 작성)<br>- Designed UX<br>  (UX 설계)<br>- Created wireframes using Figma<br>  (Figma를 활용한 와이어프레임 제작) |
+|                     | Frontend Development<br>  (프론트엔드) | - Implemented full UI<br>  (전체 UI 구성 및 개발)<br>- Developed calendar view<br>  (캘린더 뷰 기능 구현)<br>- Handled notification UX<br>  (알림 관련 UX 처리) |
+|                     | Backend Development<br>  (백엔드)     | - Built API server<br>  (API 서버 구축)<br>- Modeled database schema<br>  (DB 모델링)<br>- Developed database<br>  (DB 구축) |
 
 ---
 
