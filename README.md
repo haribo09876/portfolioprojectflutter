@@ -1,8 +1,9 @@
 # 📱 portfolioprojectflutter
 
-Social and shopping mobile application (소셜과 쇼핑 기능을 갖춘 모바일 어플리케이션)
+Social and shopping mobile application
+(소셜과 쇼핑 기능을 갖춘 모바일 어플리케이션)
 
-## 📌 프로젝트 개요
+## 📌 Project Overview
 
 portfolioprojectflutter는 소셜미디어와 쇼핑 기능을 포함한 **생활 플랫폼 모바일 애플리케이션**입니다.  
 유저 정보, 소셜미디어 정보, 구매 패턴 등을 확인하고, 머신러닝 등의 데이터 분석 기능을 지원합니다.
@@ -12,7 +13,7 @@ portfolioprojectflutter는 소셜미디어와 쇼핑 기능을 포함한 **생�
 
 ---
 
-## 🖥 주요 기능
+## 🖥 Main Features
 
 - 팀 생성 및 멤버 초대 (이메일 기반)
 - 월간/주간/일간 보기 제공하는 캘린더 UI
@@ -23,14 +24,14 @@ portfolioprojectflutter는 소셜미디어와 쇼핑 기능을 포함한 **생�
 
 ---
 
-## ⚙️ 기술 스택
+## ⚙️ Tech Stack
 
-### 💻 프론트엔드
+### 💻 Frontend
 
 - Flutter
 - Dart
 
-### 🖥 백엔드
+### 🖥 Backend
 
 - AWS Lambda (Node.js, JavaScript)
 - AWS API Gateway
@@ -38,7 +39,7 @@ portfolioprojectflutter는 소셜미디어와 쇼핑 기능을 포함한 **생�
 - AWS S3
 - AWS SageMaker ProcessingJob
 
-### 🛠 협업 & 디자인
+### 🛠 Collaboration & Design
 
 - GitHub
 - Figma
@@ -46,7 +47,7 @@ portfolioprojectflutter는 소셜미디어와 쇼핑 기능을 포함한 **생�
 
 ---
 
-## 📁 프로젝트 구조
+## 📁 Project Structure
 
 ```
 📁 MyApp/
@@ -64,7 +65,7 @@ portfolioprojectflutter는 소셜미디어와 쇼핑 기능을 포함한 **생�
 
 ---
 
-## 🖼 주요 화면 예시
+## 🖼 Main Screens Examples
 
 ### 🔹 메인 캘린더 화면
 
@@ -76,7 +77,7 @@ portfolioprojectflutter는 소셜미디어와 쇼핑 기능을 포함한 **생�
 
 ---
 
-## 🔗 외부 자료 링크
+## 🔗 External Resources
 
 - 📄 [Figma 와이어프레임](https://www.figma.com/design/qokFuaMidfvWIZtHE8pn3o/Portfolio-Projects?m=auto&t=lZD8PoA9xJuTEpGh-6)
 - 🧾 [Notion 기획서](https://notion.so/your-link)
@@ -85,7 +86,7 @@ portfolioprojectflutter는 소셜미디어와 쇼핑 기능을 포함한 **생�
 
 ---
 
-## 👥 팀 구성 및 역할
+## 👥 Team Structure and Roles
 
 <table>
   <thead>
@@ -127,15 +128,15 @@ portfolioprojectflutter는 소셜미디어와 쇼핑 기능을 포함한 **생�
 
 ---
 
-## 🧪 실행 방법
+## 🧪 Setup Instructions
 
-### 1. 프로젝트 클론
+### 1. Clone the Project
 
 ```bash
 git clone https://github.com/your-username/smartplanner.git
 ```
 
-### 2. 프론트엔드 실행
+### 2. Run Frontend
 
 ```bash
 cd client
@@ -143,7 +144,7 @@ npm install
 npm run dev
 ```
 
-### 3. 백엔드 실행
+### 3. Run Backend
 
 ```bash
 cd server
@@ -155,7 +156,7 @@ npm run dev
 
 ---
 
-## 📅 개발 일정
+## 📅 Project Timeline
 
 | 기간               | 주요 작업                |
 | ------------------ | ------------------------ |
@@ -166,10 +167,10 @@ npm run dev
 
 ---
 
-## 📣 기타 정보
+## 📣 Other Info
 
-- **프로젝트 기간**: 2025.01 ~ 2025.02
-- **진행 방식**: 3인 팀 협업 (GitHub flow 기반)
-- **문의**: kimplanner@example.com
+- **Project Duration**: 2025.01 ~ 2025.02
+- **Workflow**: 3인 팀 협업 (GitHub flow 기반)
+- **Contact**: kimplanner@example.com
 
 ---
