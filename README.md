@@ -28,11 +28,23 @@ portfolioprojectflutter는 소셜미디어와 쇼핑 기능을 포함한 **생�
 
 ### 🖥 Development Environment
 
+<<<<<<< HEAD
+
+=======
+
+> > > > > > > 9edd43bed3118e908ce5920856d1d24fbc3aaaf0
+
 - OS: Windows 11
 - IDE & Tools: VS Code, Android Studio, Flutter DevTools
 - Version Control: Git, GitHub
 
 ### 📝 Programming Languages
+
+<<<<<<< HEAD
+
+=======
+
+> > > > > > > 9edd43bed3118e908ce5920856d1d24fbc3aaaf0
 
 - Dart (Flutter app development) (Flutter 앱 개발)
 - Python (SageMakerAI processing) (SageMakerAI 처리 로직)
@@ -40,6 +52,12 @@ portfolioprojectflutter는 소셜미디어와 쇼핑 기능을 포함한 **생�
 - Java (Android-specific integration, SDK usage) (Android SDK 연동 등 플랫폼 특화 기능)
 
 ### ☁️ Cloud & Backend (AWS)
+
+<<<<<<< HEAD
+
+=======
+
+> > > > > > > 9edd43bed3118e908ce5920856d1d24fbc3aaaf0
 
 - API Gateway (connects Flutter app with serverless backend) (Flutter 앱과 서버리스 백엔드 연동)
 - Lambda (backend logic using JavaScript) (백엔드 로직, JavaScript 기반)
@@ -49,14 +67,30 @@ portfolioprojectflutter는 소셜미디어와 쇼핑 기능을 포함한 **생�
 
 ### 📱 Platform
 
+<<<<<<< HEAD
+
 - Target OS: Android (Flutter-based build and deployment) (Flutter 기반 빌드 및 배포)
 
 ### 🎨 Design & Architecture
+
+=======
+
+- Target OS: Android (Flutter-based build and deployment) (Flutter 기반 빌드 및 배포)
+
+### 🎨 Design & Architecture
+
+> > > > > > > 9edd43bed3118e908ce5920856d1d24fbc3aaaf0
 
 - Figma (UI/UX wireframing and prototyping) (UI/UX 설계 및 프로토타이핑)
 - ERD editor (ERD and database modeling) (ERD 및 데이터베이스 모델링)
 
 ### 🛠 Other Tools
+
+<<<<<<< HEAD
+
+=======
+
+> > > > > > > 9edd43bed3118e908ce5920856d1d24fbc3aaaf0
 
 - Photoshop, Canva (image and video editing) (이미지 및 비디오 편집)
 
