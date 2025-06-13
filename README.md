@@ -26,32 +26,32 @@ portfolioprojectflutter는 소셜미디어와 쇼핑 기능을 포함한 **생�
 
 ## ⚙️ Tech Stack
 
-### Development Environment
+### 🖥 Development Environment
 - OS: Windows 11
 - IDE & Tools: VS Code, Android Studio, Flutter DevTools
 - Version Control: Git, GitHub
 
-### Programming Languages
+### 📝 Programming Languages
 - Dart (Flutter app development) (Flutter 앱 개발)
 - Python (SageMakerAI processing) (SageMakerAI 처리 로직)
 - JavaScript (Lambda scripting, minor frontend logic) (Lambda 스크립트 및 간단한 프론트엔드 로직)
 - Java (Android-specific integration, SDK usage) (Android SDK 연동 등 플랫폼 특화 기능)
 
-### Cloud & Backend (AWS)
+### ☁️ Cloud & Backend (AWS)
 - API Gateway (connects Flutter app with serverless backend) (Flutter 앱과 서버리스 백엔드 연동)
 - Lambda (backend logic using JavaScript) (백엔드 로직, JavaScript 기반)
 - RDS (MySQL – user and app data storage) (MySQL – 사용자 및 앱 데이터 저장)
 - S3 (image and static asset storage) (이미지 및 정적 리소스 저장)
 - SageMakerAI ProcessingJob (data preprocessing and machine learning) (데이터 전처리 및 머신러닝)
 
-### Platform
+### 📱 Platform
 - Target OS: Android (Flutter-based build and deployment) (Flutter 기반 빌드 및 배포)
 
-### Design & Architecture
+### 🎨 Design & Architecture
 - Figma (UI/UX wireframing and prototyping) (UI/UX 설계 및 프로토타이핑)
 - ERD editor (ERD and database modeling) (ERD 및 데이터베이스 모델링)
 
-### Other Tools
+### 🛠 Other Tools
 - Photoshop, Canva (image and video editing) (이미지 및 비디오 편집)
 
 ---
