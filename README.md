@@ -26,10 +26,10 @@ portfolioprojectflutter는 소셜미디어와 쇼핑 기능을 포함한 **생�
 
 ## ⚙️ Tech Stack
 
-### 💻 Frontend
-
-- Flutter
-- Dart
+- **Development Environment**
+  - OS: Windows 11
+  - IDE & Tools: VS Code, Android Studio, Flutter DevTools
+  - Version Control: Git, GitHub
 
 ### 🖥 Backend
 
