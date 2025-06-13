@@ -26,24 +26,35 @@ portfolioprojectflutter는 소셜미디어와 쇼핑 기능을 포함한 **생�
 
 ## ⚙️ Tech Stack
 
-- **Development Environment**
-  - OS: Windows 11
-  - IDE & Tools: VS Code, Android Studio, Flutter DevTools
-  - Version Control: Git, GitHub
 
-### 🖥 Backend
+### Development Environment
+- OS: Windows 11
+- IDE & Tools: VS Code, Android Studio, Flutter DevTools
+- Version Control: Git, GitHub
 
-- AWS Lambda (Node.js, JavaScript)
-- AWS API Gateway
-- AWS RDS (MySQL)
-- AWS S3
-- AWS SageMaker ProcessingJob
+### Programming Languages
+- Dart (Flutter app development)
+- Python (SageMakerAI processing)
+- JavaScript (Lambda scripting, minor frontend logic)
+- Java (Android-specific integration, SDK usage)
 
-### 🛠 Collaboration & Design
+### Cloud & Backend (AWS)
+- API Gateway (connects Flutter app with serverless backend)
+                되나?
+- Lambda (backend logic using JavaScript)
+- RDS (MySQL – user and app data storage)
+- S3 (image and static asset storage)
+- SageMakerAI ProcessingJob (data preprocessing and machine learning)
 
-- GitHub
-- Figma
-- Photoshop
+### Platform
+- Target OS: Android (Flutter-based build and deployment)
+
+### Design & Architecture
+- Figma (UI/UX wireframing and prototyping)
+- ERD editor (ERD and database modeling)
+
+### Other Tools
+- Photoshop, Canva (image and video editing)
 
 ---
 
