@@ -229,7 +229,8 @@ class _TweetPageState extends State<TweetPage> {
     );
   }
 
-  Future<void> _editTweet(String tweetId, String tweetContents) async {
+  Future<void> _editTweet(
+      String tweetId, String tweetContents, File? imageFile) async {
     final loginService = Provider.of<LoginService>(context, listen: false);
     final userId = loginService.userInfo?['id'] ?? '';
 
@@ -238,7 +239,7 @@ class _TweetPageState extends State<TweetPage> {
         tweetId,
         userId,
         tweetContents,
-        _imageFile != null ? XFile(_imageFile!.path) : null,
+        imageFile != null ? XFile(imageFile.path) : null,
       );
       print('Tweet updated successfully');
       fetchTweets();
@@ -514,7 +515,7 @@ class _TweetPageState extends State<TweetPage> {
                             ClipRRect(
                               borderRadius: BorderRadius.circular(20),
                               child: Image.network(
-                                existingImageUrl!,
+                                '$existingImageUrl?${DateTime.now().millisecondsSinceEpoch}',
                                 height: 200,
                                 width: double.infinity,
                                 fit: BoxFit.cover,
@@ -576,20 +577,8 @@ class _TweetPageState extends State<TweetPage> {
                         ),
                       ),
                       onPressed: () async {
-                        final tweetService = TweetService();
-                        final userId =
-                            Provider.of<LoginService>(context, listen: false)
-                                    .userInfo?['id'] ??
-                                '';
-                        await tweetService.tweetUpdate(
-                          tweet['id'],
-                          userId,
-                          controller.text,
-                          _newImageFile != null
-                              ? XFile(_newImageFile!.path)
-                              : null,
-                        );
-                        fetchTweets();
+                        await _editTweet(
+                            tweet['id'], controller.text, _newImageFile);
                         Navigator.of(context).pop();
                         Navigator.of(context).pop();
                       },
@@ -812,7 +801,7 @@ class _TweetPageState extends State<TweetPage> {
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(20),
                                         child: Image.network(
-                                          tweet['photo'],
+                                          '${tweet['photo']}?${DateTime.now().millisecondsSinceEpoch}',
                                           width: double.infinity,
                                           height: 200,
                                           fit: BoxFit.cover,

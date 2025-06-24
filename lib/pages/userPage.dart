@@ -1865,7 +1865,8 @@ class _UserPageState extends State<UserPage> {
             itemBuilder: (context, index) {
               final tweet = tweetData[index];
               final tweetId = tweet['tweetId'];
-              final tweetImgURL = tweet['tweetImgURL'];
+              final tweetImgURL =
+                  '${tweet['tweetImgURL']}?${DateTime.now().millisecondsSinceEpoch}';
               final tweetContents = tweet['tweetContents'];
               final userId = tweet['userId'];
 
@@ -1957,7 +1958,8 @@ class _UserPageState extends State<UserPage> {
             itemBuilder: (context, index) {
               final insta = instaData[index];
               final instaContents = insta['instaContents'];
-              final instaImgURL = insta['instaImgURL'];
+              final instaImgURL =
+                  '${insta['instaImgURL']}?${DateTime.now().millisecondsSinceEpoch}';
               final instaId = insta['instaId'];
               return GestureDetector(
                 onTap: () {
@@ -1969,9 +1971,9 @@ class _UserPageState extends State<UserPage> {
                   height: 100,
                   margin: EdgeInsets.only(right: 3),
                   color: Colors.grey,
-                  child: insta['instaImgURL'] != null
+                  child: instaImgURL != null
                       ? Image.network(
-                          insta['instaImgURL'],
+                          instaImgURL,
                           fit: BoxFit.cover,
                         )
                       : Icon(Icons.camera_alt_outlined),

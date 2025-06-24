@@ -635,7 +635,7 @@ class _ShopPageState extends State<ShopPage> {
                             ClipRRect(
                               borderRadius: BorderRadius.circular(20),
                               child: Image.network(
-                                existingImageUrl!,
+                                '$existingImageUrl?${DateTime.now().millisecondsSinceEpoch}',
                                 height: 200,
                                 width: double.infinity,
                                 fit: BoxFit.cover,
@@ -965,7 +965,7 @@ class _ShopPageState extends State<ShopPage> {
                                         borderRadius: BorderRadius.circular(20),
                                         child: item['photo'] != null
                                             ? Image.network(
-                                                item['photo'] ?? '',
+                                                '${item['photo']}?${DateTime.now().millisecondsSinceEpoch}',
                                                 width: double.infinity,
                                                 fit: BoxFit.cover,
                                                 errorBuilder: (context, error,

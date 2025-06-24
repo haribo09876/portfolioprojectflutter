@@ -238,7 +238,8 @@ class _InstaPageState extends State<InstaPage> {
     );
   }
 
-  Future<void> _editInsta(String instaId, String instaContents) async {
+  Future<void> _editInsta(
+      String instaId, String instaContents, File? _imageFile) async {
     final loginService = Provider.of<LoginService>(context, listen: false);
     final userId = loginService.userInfo?['id'] ?? '';
 
@@ -247,7 +248,7 @@ class _InstaPageState extends State<InstaPage> {
         instaId,
         userId,
         instaContents,
-        _imageFile != null ? XFile(_imageFile!.path) : null,
+        _imageFile != null ? XFile(_imageFile.path) : null,
       );
       print('Insta updated successfully');
       fetchInstas();
@@ -509,7 +510,7 @@ class _InstaPageState extends State<InstaPage> {
                             ClipRRect(
                               borderRadius: BorderRadius.circular(20),
                               child: Image.network(
-                                existingImageUrl!,
+                                '$existingImageUrl?${DateTime.now().millisecondsSinceEpoch}',
                                 height: 200,
                                 width: double.infinity,
                                 fit: BoxFit.cover,
@@ -594,20 +595,8 @@ class _InstaPageState extends State<InstaPage> {
                         ),
                       ),
                       onPressed: () async {
-                        final instaService = InstaService();
-                        final userId =
-                            Provider.of<LoginService>(context, listen: false)
-                                    .userInfo?['id'] ??
-                                '';
-                        await instaService.instaUpdate(
-                          insta['id'],
-                          userId,
-                          controller.text,
-                          _newImageFile != null
-                              ? XFile(_newImageFile!.path)
-                              : null,
-                        );
-                        fetchInstas();
+                        await _editInsta(
+                            insta['id'], controller.text, _newImageFile);
                         Navigator.of(context).pop();
                         Navigator.of(context).pop();
                       },
@@ -776,7 +765,7 @@ class _InstaPageState extends State<InstaPage> {
                             return GestureDetector(
                               onTap: () => _showInstaDetailDialog(insta),
                               child: Image.network(
-                                insta['photo'] ?? '',
+                                '${insta['photo']}?${DateTime.now().millisecondsSinceEpoch}',
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) {
                                   return Container(
