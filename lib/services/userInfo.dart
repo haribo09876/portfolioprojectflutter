@@ -3,10 +3,12 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+// Abstract base class for API interactions (API 통신을 위한 추상 클래스)
 abstract class ApiService {
   final String apiUrl = dotenv.env['USER_INFO_FUNC_URL']!;
   final ImagePicker _picker = ImagePicker();
 
+  // Generic POST request handler (일반 POST 요청 처리 메서드)
   Future<dynamic> sendRequest(
     String action,
     Map<String, dynamic> body,
@@ -31,7 +33,9 @@ abstract class ApiService {
   }
 }
 
+// Handles user-related operations (사용자 관련 기능 처리)
 class UserService extends ApiService {
+  // Fetch user data by userId (userId로 사용자 데이터 조회)
   Future<List<Map<String, dynamic>>> userRead(String userId) async {
     final data = await sendRequest('userRead', {'userId': userId});
     return (data as List<dynamic>)
@@ -48,6 +52,7 @@ class UserService extends ApiService {
         .toList();
   }
 
+  // Update user profile and image (사용자 프로필 및 이미지 수정)
   Future<void> userUpdate(
       String userPassword,
       String userName,
@@ -70,6 +75,7 @@ class UserService extends ApiService {
     });
   }
 
+  // Delete user account (사용자 계정 삭제)
   Future<void> userDelete(String userId) async {
     await sendRequest('userDelete', {
       'userId': userId,
@@ -77,7 +83,9 @@ class UserService extends ApiService {
   }
 }
 
+// Handles tweet-related operations (트윗 관련 기능 처리)
 class TweetService extends ApiService {
+  // Fetch tweets by userId (userId로 트윗 목록 조회)
   Future<List<Map<String, dynamic>>> tweetRead(String userId) async {
     final data = await sendRequest('tweetRead', {'userId': userId});
     return (data as List<dynamic>)
@@ -92,6 +100,7 @@ class TweetService extends ApiService {
         .toList();
   }
 
+  // Update tweet content and image (트윗 내용 및 이미지 수정)
   Future<void> tweetUpdate(String tweetId, String userId, String tweetContents,
       XFile? imageFile) async {
     String? base64Image;
@@ -107,6 +116,7 @@ class TweetService extends ApiService {
     });
   }
 
+  // Delete tweet (트윗 삭제)
   Future<void> tweetDelete(String tweetId, String userId) async {
     await sendRequest('tweetDelete', {
       'tweetId': tweetId,
@@ -115,7 +125,9 @@ class TweetService extends ApiService {
   }
 }
 
+// Handles Instagram-like post operations (인스타그램 게시물 관련 기능 처리)
 class InstaService extends ApiService {
+  // Fetch Instagram posts by userId (userId로 인스타 게시물 조회)
   Future<List<Map<String, dynamic>>> instaRead(String userId) async {
     final data = await sendRequest('instaRead', {'userId': userId});
     return (data as List<dynamic>)
@@ -130,6 +142,7 @@ class InstaService extends ApiService {
         .toList();
   }
 
+  // Update Instagram post and image (인스타 게시물 및 이미지 수정)
   Future<void> instaUpdate(String instaId, String userId, String instaContents,
       XFile? imageFile) async {
     String? base64Image;
@@ -145,6 +158,7 @@ class InstaService extends ApiService {
     });
   }
 
+  // Delete Instagram post (인스타 게시물 삭제)
   Future<void> instaDelete(String instaId, String userId) async {
     await sendRequest('instaDelete', {
       'instaId': instaId,
@@ -153,7 +167,9 @@ class InstaService extends ApiService {
   }
 }
 
+// Handles purchase and shop operations (상품 구매 및 쇼핑 관련 기능 처리)
 class ShopService extends ApiService {
+  // Fetch purchase history (구매 내역 조회)
   Future<List<Map<String, dynamic>>> purchaseRead(String userId) async {
     final data = await sendRequest('purchaseRead', {'userId': userId});
     return (data as List<dynamic>)
@@ -170,6 +186,7 @@ class ShopService extends ApiService {
         .toList();
   }
 
+  // Update purchase status and adjust user balance (구매 상태 업데이트 및 잔액 반영)
   Future<void> purchaseUpdate(
       String purchaseId, String userId, double itemPrice) async {
     await sendRequest('purchaseUpdate', {

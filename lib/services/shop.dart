@@ -7,6 +7,7 @@ class ShopService {
   final String apiUrl = dotenv.env['ITEM_FUNC_URL']!;
   final ImagePicker _picker = ImagePicker();
 
+  // Create item via HTTP POST (아이템 생성 요청)
   Future<void> itemCreate(String userId, String itemTitle, String itemContents,
       double itemPrice, XFile? imageFile) async {
     try {
@@ -16,6 +17,7 @@ class ShopService {
         base64Image = base64Encode(imageBytes);
       }
 
+      // Send create request with payload (생성 요청 전송)
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: {'Content-Type': 'application/json'},
@@ -29,6 +31,7 @@ class ShopService {
         }),
       );
 
+      // Check for success status code (정상 응답 코드 확인)
       if (response.statusCode != 200) {
         print('Error response: ${response.statusCode}');
         throw Exception('Failed to create item');
@@ -38,8 +41,10 @@ class ShopService {
     }
   }
 
+  // Read item list from server (서버로부터 아이템 목록 조회)
   Future<List<Map<String, dynamic>>> itemRead() async {
     try {
+      // Send read request (조회 요청 전송)
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: {'Content-Type': 'application/json'},
@@ -47,6 +52,8 @@ class ShopService {
       );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+
+        // Deserialize response into list of maps (응답을 Map 리스트로 디코딩)
         return (data as List)
             .map((item) => {
                   'itemId': item['itemId'],
@@ -69,6 +76,7 @@ class ShopService {
     }
   }
 
+  // Update item via HTTP POST (아이템 수정 요청)
   Future<void> itemUpdate(String itemId, String userId, String itemTitle,
       String itemContents, double itemPrice, XFile? imageFile) async {
     try {
@@ -77,7 +85,7 @@ class ShopService {
         final imageBytes = await imageFile.readAsBytes();
         base64Image = base64Encode(imageBytes);
       }
-
+      // Send update request (수정 요청 전송)
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: {'Content-Type': 'application/json'},
@@ -101,8 +109,10 @@ class ShopService {
     }
   }
 
+  // Delete item via HTTP POST (아이템 삭제 요청)
   Future<void> itemDelete(String itemId, String userId) async {
     try {
+      // Send delete request (삭제 요청 전송)
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: {'Content-Type': 'application/json'},

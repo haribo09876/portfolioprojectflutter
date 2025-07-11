@@ -14,20 +14,24 @@ class VPNService with ChangeNotifier {
   bool _isConnected = false;
   final LoginService _loginService;
 
+  // Constructor initializes OpenVPN engine and sets up callbacks (OpenVPN 엔진 초기화 및 콜백 설정)
   VPNService(this._loginService) {
     _engine = OpenVPN(
       onVpnStatusChanged: (data) {
         _status = data;
+        // Log VPN status changes (VPN 상태 변경 로그)
         print("VPN Status: $data");
         notifyListeners();
       },
       onVpnStageChanged: (data, raw) {
         _stage = raw;
+        // Log VPN connection stage changes (VPN 연결 단계 변경 로그)
         print("VPN Stage: $raw");
         notifyListeners();
       },
     );
 
+    // Initialize OpenVPN engine with platform-specific identifiers and descriptions (플랫폼 식별자 및 설명과 함께 OpenVPN 초기화)
     _engine.initialize(
       groupIdentifier: "group.com.laskarmedia.vpn",
       providerBundleIdentifier:
@@ -40,13 +44,18 @@ class VPNService with ChangeNotifier {
         _status = status;
       },
     );
+    // Delay IP update until user logs in (사용자 로그인 후 IP 업데이트 지연)
     _initializeAfterLogin();
   }
 
+  // Expose VPN connection state (VPN 연결 상태 공개)
   bool get isConnected => _isConnected;
+  // Expose current VPN status (현재 VPN 상태 공개)
   VpnStatus? get status => _status;
 
+  // Establish VPN connection and update backend with connection info (VPN 연결 수립 및 백엔드 정보 업데이트)
   Future<void> connect() async {
+    // Notify backend of IP update before connecting (연결 전 IP 업데이트 백엔드 알림)
     await _sendLambdaUpdateRequest();
     await _engine.connect(
       _config,
@@ -57,19 +66,23 @@ class VPNService with ChangeNotifier {
     );
     _isConnected = true;
     notifyListeners();
+    // Update user's current IP address after connection (연결 후 사용자 IP 주소 업데이트)
     await _handleIpAddressUpdate();
   }
 
+  // Disconnect VPN and update connection state (VPN 연결 종료 및 상태 업데이트)
   void disconnect() {
     _engine.disconnect();
     _isConnected = false;
     notifyListeners();
   }
 
+  // Request VPN permission on Android devices (Android 기기에서 VPN 권한 요청)
   Future<void> requestPermission() async {
     await _engine.requestPermissionAndroid();
   }
 
+  // Waits for user login before initializing IP updates (사용자 로그인 대기 후 IP 업데이트 초기화)
   Future<void> _initializeAfterLogin() async {
     while (!_loginService.isLoggedIn) {
       await Future.delayed(Duration(milliseconds: 500));
@@ -77,6 +90,7 @@ class VPNService with ChangeNotifier {
     await _handleIpAddressUpdate();
   }
 
+  // Retrieves current external IP and stores it via backend API (현재 외부 IP를 조회하여 백엔드 API로 저장)
   Future<void> _handleIpAddressUpdate() async {
     final ipAddress = await _getCurrentIpAddress();
     final userId = _loginService.userInfo?['id'];
@@ -110,6 +124,7 @@ class VPNService with ChangeNotifier {
     }
   }
 
+  // Sends updated remote server IP to backend lambda function (백엔드 람다 함수에 원격 서버 IP 업데이트 전송)
   Future<void> _sendLambdaUpdateRequest() async {
     final userId = _loginService.userInfo?['id'];
     final ipFuncUrl = dotenv.env['IP_FUNC_URL']!;
@@ -145,6 +160,7 @@ class VPNService with ChangeNotifier {
     }
   }
 
+  // Fetch current public IP address using external API (외부 API를 통해 현재 공인 IP 주소 조회)
   Future<String?> _getCurrentIpAddress() async {
     try {
       var ipAddress = IpAddress(type: RequestType.json);
@@ -157,8 +173,12 @@ class VPNService with ChangeNotifier {
   }
 }
 
+// Default VPN auth username (기본 VPN 인증 사용자명)
 const String _defaultVpnUsername = "vpn";
+// Default VPN auth password (기본 VPN 인증 비밀번호)
 const String _defaultVpnPassword = "vpn";
+
+// OpenVPN client configuration in inline format (인라인 형식의 OpenVPN 클라이언트 설정)
 String get _config => """
 dev tun
 proto tcp

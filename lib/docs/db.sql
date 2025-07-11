@@ -1,4 +1,4 @@
--- Users 테이블 생성
+-- Create Users table (사용자 테이블 생성)
 CREATE TABLE Users (
     userId VARCHAR(36) PRIMARY KEY,
     userEmail VARCHAR(255) NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE Users (
     modifiedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Locations 테이블 생성
+-- Create Locations table (위치 테이블 생성)
 CREATE TABLE Locations (
     locationId VARCHAR(36) PRIMARY KEY,
     userId VARCHAR(36) NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE Locations (
     FOREIGN KEY (userId) REFERENCES Users(userId)
 );
 
--- Ips 테이블 생성
+-- Create Ips table (IP 테이블 생성)
 CREATE TABLE Ips (
     ipId VARCHAR(36) PRIMARY KEY,
     userId VARCHAR(36) NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE Ips (
     FOREIGN KEY (userId) REFERENCES Users(userId)
 );
 
--- Instas 테이블 생성
+-- Create Instas table (인스타 테이블 생성)
 CREATE TABLE Instas (
     instaId VARCHAR(36) PRIMARY KEY,
     userId VARCHAR(36) NOT NULL,
@@ -46,7 +46,7 @@ CREATE TABLE Instas (
     FOREIGN KEY (userId) REFERENCES Users(userId)
 );
 
--- Tweets 테이블 생성
+-- Create Tweets table (트윗 테이블 생성)
 CREATE TABLE Tweets (
     tweetId VARCHAR(36) PRIMARY KEY,
     userId VARCHAR(36) NOT NULL,
@@ -57,7 +57,7 @@ CREATE TABLE Tweets (
     FOREIGN KEY (userId) REFERENCES Users(userId)
 );
 
--- Items 테이블 생성
+-- Create Items table (아이템 테이블 생성)
 CREATE TABLE Items (
     itemId VARCHAR(36) PRIMARY KEY,
     userId VARCHAR(36) NOT NULL,
@@ -70,7 +70,7 @@ CREATE TABLE Items (
     FOREIGN KEY (userId) REFERENCES Users(userId)
 );
 
--- Purchases 테이블 생성
+-- Create Purchases table (구매 테이블 생성)
 CREATE TABLE Purchases (
     purchaseId VARCHAR(36) PRIMARY KEY,
     userId VARCHAR(36) NOT NULL,
