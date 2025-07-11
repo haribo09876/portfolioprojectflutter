@@ -10,7 +10,9 @@ class DashboardSalesPage extends StatefulWidget {
 }
 
 class _DashboardSalesPageState extends State<DashboardSalesPage> {
+  // Date picker controller for range selection (날짜 범위 선택용 컨트롤러)
   DateRangePickerController _datePickerController = DateRangePickerController();
+  // Text controllers for displaying selected start and end dates (선택된 시작일과 종료일 표시용)
   TextEditingController _startDateController = TextEditingController();
   TextEditingController _endDateController = TextEditingController();
 
@@ -26,9 +28,11 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
   @override
   void initState() {
     super.initState();
+    // Load most recent analysis/prediction results (최신 이미지 로드)
     _loadLatestImages();
   }
 
+  // Fetch latest image URLs and timestamps from backend (백엔드에서 최신 이미지 데이터 가져오기)
   void _loadLatestImages() async {
     setState(() {
       _isLoading = true;
@@ -49,6 +53,7 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
     } catch (e) {
       setState(() {
         _isLoading = false;
+        // (이미지 불러오기 실패)
         _statusMessage = 'Failed to load images: $e';
       });
     }
@@ -56,10 +61,12 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
 
   @override
   void dispose() {
+    // Cancel timer on widget dispose (위젯 종료 시 타이머 제거)
     _waitingTimer?.cancel();
     super.dispose();
   }
 
+  // Update date input fields when user selects a range (사용자 범위 선택 시 날짜 입력 필드 갱신)
   void _onDateRangeChanged(DateRangePickerSelectionChangedArgs args) {
     if (args.value is PickerDateRange) {
       PickerDateRange range = args.value;
@@ -72,15 +79,19 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
     }
   }
 
+  // Trigger validation and start processing job (유효성 검사 후 처리 시작)
   void _onSearch() {
     if (_startDateController.text.isEmpty || _endDateController.text.isEmpty) {
       _showAlertDialog(context, '\nSet the date range');
     } else {
+      // Prevent duplicate submissions (중복 요청 방지)
       if (_isProcessing) return;
+      // Start backend sales processing job (매출 처리 작업 시작)
       _startSalesProcessing();
     }
   }
 
+  // Send processing request to backend and fetch results after 5 minutes (처리 요청 후 5분 후 결과 수신)
   void _startSalesProcessing() async {
     final startDate = DateFormat('yyyy/MM/dd').parse(_startDateController.text);
     final endDate = DateFormat('yyyy/MM/dd').parse(_endDateController.text);
@@ -94,6 +105,7 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
     try {
       await DashboardService().startSalesProcessingJob(startDate, endDate);
 
+      // Delayed polling after 5 minutes (5분 뒤 결과 요청)
       _waitingTimer = Timer(Duration(minutes: 5), () async {
         try {
           final response = await DashboardService().fetchLatestSalesImages();
@@ -128,6 +140,7 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
     }
   }
 
+  // Display alert dialog with message (메시지 포함 경고창 표시)
   void _showAlertDialog(BuildContext context, String message) {
     showDialog(
       context: context,
@@ -184,6 +197,7 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
     );
   }
 
+  // Show date range picker dialog (날짜 범위 선택 다이얼로그 표시)
   void _showDateRangePicker() {
     showDialog(
       context: context,
@@ -296,6 +310,7 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Date selection UI (날짜 선택 UI)
               _buildDateInputSection(),
               SizedBox(height: 30),
               if (_statusMessage.isNotEmpty)
@@ -305,6 +320,7 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
                     SizedBox(height: 30),
                     Center(
                       child: Text(
+                        // Processing/loading message (처리/로딩 메시지)
                         _statusMessage,
                         style: TextStyle(
                             fontSize: 20,
@@ -315,12 +331,14 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
                     SizedBox(height: 30),
                   ],
                 ),
+              // Analysis image section (분석 결과 섹션)
               _buildSection('Analysis'),
               DashboardSalesAnalysis(
                   imageUrl: _analysisImageUrl,
                   imageDate: _analysisImageDate,
                   isLoading: _isLoading),
               SizedBox(height: 30),
+              // Prediction image section (예측 결과 섹션)
               _buildSection('Prediction'),
               DashboardSalesPrediction(
                   imageUrl: _predictionImageUrl,
@@ -333,6 +351,7 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
     );
   }
 
+  // Builds date input and action buttons section (날짜 입력 및 동작 버튼 섹션 구성)
   Widget _buildDateInputSection() {
     return Column(
       children: [
@@ -405,6 +424,7 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
     );
   }
 
+  // Input decoration generator (입력 필드 스타일 정의)
   InputDecoration _inputDecoration(String hint) => InputDecoration(
         hintText: hint,
         enabledBorder: OutlineInputBorder(
@@ -423,6 +443,7 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
         ),
       );
 
+  // Button style generator (버튼 스타일 정의)
   ButtonStyle _btnStyle(Color color) => ElevatedButton.styleFrom(
         backgroundColor: color,
         elevation: 0,
@@ -431,6 +452,7 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
         ),
       );
 
+  // Section title builder (섹션 제목 빌더)
   Widget _buildSection(String title) => Text(
         title,
         style: TextStyle(
@@ -441,6 +463,7 @@ class _DashboardSalesPageState extends State<DashboardSalesPage> {
       );
 }
 
+// Widget for displaying sales analysis image (매출 분석 이미지 표시 위젯)
 class DashboardSalesAnalysis extends StatelessWidget {
   final String? imageUrl;
   final String? imageDate;
@@ -480,6 +503,7 @@ class DashboardSalesAnalysis extends StatelessWidget {
   }
 }
 
+// Widget for displaying sales prediction image (매출 예측 이미지 표시 위젯)
 class DashboardSalesPrediction extends StatelessWidget {
   final String? imageUrl;
   final String? imageDate;
