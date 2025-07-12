@@ -28,13 +28,18 @@ class _UserPageState extends State<UserPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
+    // Retrieve userId from arguments or fallback to login info (인자 또는 로그인 정보에서 사용자 ID 설정)
     final loginService = Provider.of<LoginService>(context);
     final args =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
     userId = args?['userId'] ?? loginService.userInfo?['id'] ?? '';
+
+    // Trigger data fetching (데이터 가져오기 실행)
     _fetchData();
   }
 
+  // Fetch user, tweet, insta, and purchase data asynchronously (비동기적으로 사용자 관련 모든 데이터 가져오기)
   void _fetchData() {
     setState(() {
       allData = Future.wait([
@@ -53,6 +58,7 @@ class _UserPageState extends State<UserPage> {
     });
   }
 
+  // Show error dialog with a custom message (에러 메시지를 포함한 다이얼로그 표시)
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
@@ -111,6 +117,7 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
+  // Update user profile with optional image (선택 이미지 포함 사용자 정보 업데이트)
   Future<void> userUpdate(
     String userPassword,
     String userName,
@@ -120,6 +127,8 @@ class _UserPageState extends State<UserPage> {
     String? existingImageUrl,
   ) async {
     XFile? finalImageFile = imageFile;
+
+    // If no new image is provided, download the existing one (새 이미지가 없으면 기존 이미지 다운로드)
     if (finalImageFile == null &&
         existingImageUrl != null &&
         existingImageUrl.isNotEmpty) {
@@ -130,10 +139,12 @@ class _UserPageState extends State<UserPage> {
         await tempFile.writeAsBytes(response.bodyBytes);
         finalImageFile = XFile(tempFile.path);
       } catch (e) {
-        _showErrorDialog('Failed to load existing image.');
+        _showErrorDialog('Failed to load existing image.'); // 기존 이미지 불러오기 실패
         return;
       }
     }
+
+    // If still no image, show error (이미지가 없으면 에러 표시)
     if (finalImageFile == null) {
       _showErrorDialog('Please select an image.');
       return;
@@ -150,11 +161,13 @@ class _UserPageState extends State<UserPage> {
     Navigator.of(context).pop();
   }
 
+  // Delete user account (사용자 계정 삭제)
   Future<void> userDelete() async {
     await UserService().userDelete(userId);
     Navigator.pushReplacementNamed(context, AppRoutes.intro);
   }
 
+  // Update tweet with new content and optional image (내용 및 이미지로 트윗 업데이트)
   Future<void> tweetUpdate(
     String tweetId,
     String tweetContents,
@@ -169,6 +182,7 @@ class _UserPageState extends State<UserPage> {
     _fetchData();
   }
 
+  // Delete tweet (트윗 삭제)
   Future<void> tweetDelete(
     String tweetId,
   ) async {
@@ -179,6 +193,7 @@ class _UserPageState extends State<UserPage> {
     _fetchData();
   }
 
+  // Update Instagram post (인스타그램 게시물 수정)
   Future<void> instaUpdate(
     String instaId,
     String instaContents,
@@ -193,6 +208,7 @@ class _UserPageState extends State<UserPage> {
     _fetchData();
   }
 
+  // Delete Instagram post (인스타그램 게시물 삭제)
   Future<void> instaDelete(
     String instaId,
   ) async {
@@ -203,6 +219,7 @@ class _UserPageState extends State<UserPage> {
     _fetchData();
   }
 
+  // Update purchase status (구매 정보 업데이트)
   Future<void> purchaseUpdate(
     String purchaseId,
     dynamic itemPrice,
@@ -216,6 +233,7 @@ class _UserPageState extends State<UserPage> {
     _fetchData();
   }
 
+  // Show detailed tweet modal with edit/delete (트윗 상세 모달 및 수정/삭제 버튼)
   void tweetDetailDialog(BuildContext context, String tweetContents,
       String tweetImgURL, String tweetId) {
     showDialog(
@@ -338,6 +356,7 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
+  // Show Instagram post details with edit/delete (인스타 상세 다이얼로그)
   void instaDetailDialog(BuildContext context, String instaId,
       String instaContents, String instaImgURL) {
     showDialog(
@@ -394,6 +413,7 @@ class _UserPageState extends State<UserPage> {
                           SizedBox(
                             height: 20,
                           ),
+                          // Edit Instagram post (인스타 수정)
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
@@ -422,6 +442,7 @@ class _UserPageState extends State<UserPage> {
                             ),
                           ),
                           SizedBox(height: 5),
+                          // Delete Instagram post (삭제)
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Color(0xFFF04452),
@@ -460,6 +481,7 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
+  // Display purchase details and refund option (구매 상세 정보 및 환불 처리)
   void purchaseDetailDialog(
     BuildContext context,
     String itemTitle,
@@ -544,6 +566,7 @@ class _UserPageState extends State<UserPage> {
                           ),
                         ),
                         SizedBox(height: 30),
+                        // Refund button shown only for active purchases (활성 구매에만 환불 표시)
                         if (purchaseStatus == 1)
                           SizedBox(
                             width: double.infinity,
@@ -591,22 +614,27 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
+  // Show user profile update dialog (사용자 프로필 수정 다이얼로그 표시)
   void userUpdateDialog(String userPassword, String userName, String userGender,
       dynamic userAge, String userImgURL) {
+    // Initialize controllers with current user info (현재 사용자 정보로 입력 컨트롤러 초기화)
     TextEditingController nameController =
         TextEditingController(text: userName);
     TextEditingController passwordController =
         TextEditingController(text: userPassword);
     TextEditingController ageController =
         TextEditingController(text: userAge.toString());
-
+    // New selected image file (새로 선택된 이미지 파일)
     XFile? _newImageFile;
+    // Existing user image URL (기존 사용자 이미지 URL)
     String? existingImageUrl = userImgURL;
 
+    // Refresh UI by calling setState (UI 갱신을 위한 상태 업데이트 함수)
     void refreshState() {
       if (mounted) setState(() {});
     }
 
+    // Open image picker and update image file (이미지 선택기 열기 및 이미지 상태 갱신)
     Future<void> _pickImage() async {
       final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
@@ -616,11 +644,13 @@ class _UserPageState extends State<UserPage> {
       }
     }
 
+    // Gender options for dropdown (성별 선택 드롭다운 옵션)
     final Map<String, String> _genderOptions = {
       'Male': '남성',
       'Female': '여성',
     };
 
+    // Default gender (기본 성별 설정)
     String? selectedGender = userGender ?? 'Male';
 
     showDialog(
@@ -647,6 +677,7 @@ class _UserPageState extends State<UserPage> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      // Profile image with cancel option (프로필 이미지 및 제거 버튼)
                       Stack(
                         children: [
                           ClipOval(
@@ -675,6 +706,7 @@ class _UserPageState extends State<UserPage> {
                                         ),
                                       ),
                           ),
+                          // Cancel image button (이미지 제거 버튼)
                           if (_newImageFile != null || existingImageUrl != null)
                             Positioned(
                               top: 67,
@@ -698,6 +730,7 @@ class _UserPageState extends State<UserPage> {
                         ],
                       ),
                       SizedBox(height: 10),
+                      // Nickname input field (닉네임 입력 필드)
                       TextField(
                         controller: nameController,
                         decoration: InputDecoration(
@@ -721,6 +754,7 @@ class _UserPageState extends State<UserPage> {
                         keyboardType: TextInputType.multiline,
                       ),
                       SizedBox(height: 10),
+                      // Password input field (비밀번호 입력 필드)
                       TextField(
                         controller: passwordController,
                         decoration: InputDecoration(
@@ -744,6 +778,7 @@ class _UserPageState extends State<UserPage> {
                         keyboardType: TextInputType.multiline,
                       ),
                       SizedBox(height: 10),
+                      // Gender dropdown (성별 선택 드롭다운)
                       DropdownButtonFormField<String>(
                         decoration: InputDecoration(
                           hintText: 'Update your gender',
@@ -776,6 +811,7 @@ class _UserPageState extends State<UserPage> {
                             .toList(),
                       ),
                       SizedBox(height: 10),
+                      // Age input field (나이 입력 필드)
                       TextField(
                         controller: ageController,
                         decoration: InputDecoration(
@@ -799,6 +835,7 @@ class _UserPageState extends State<UserPage> {
                         keyboardType: TextInputType.multiline,
                       ),
                       SizedBox(height: 10),
+                      // Image picker button (이미지 선택 버튼)
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color.fromARGB(242, 242, 242, 242),
@@ -826,6 +863,7 @@ class _UserPageState extends State<UserPage> {
                         ),
                       ),
                       SizedBox(height: 5),
+                      // Submit update button (업데이트 제출 버튼)
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xFF4558C8),
@@ -897,16 +935,20 @@ class _UserPageState extends State<UserPage> {
 
   void tweetUpdateDialog(
       String tweetId, String tweetContents, String tweetImgURL) {
+    // Initialize TextEditingController with existing tweet content (기존 트윗 내용을 포함하여 텍스트 컨트롤러 초기화)
     final TextEditingController _controller =
         TextEditingController(text: tweetContents);
 
+    // Variables for managing new image selection and existing image URL (새 이미지 선택 및 기존 이미지 URL 관리를 위한 변수)
     XFile? _newImageFile = null;
     String? existingImageUrl = tweetImgURL;
 
+    // Refresh widget state safely if mounted (마운트 여부 확인 후 안전하게 상태 갱신)
     void refreshState() {
       if (mounted) setState(() {});
     }
 
+    // Pick image from gallery asynchronously (갤러리에서 비동기로 이미지 선택)
     Future<void> _pickImage() async {
       final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
@@ -916,6 +958,7 @@ class _UserPageState extends State<UserPage> {
       }
     }
 
+    // Show modal dialog with stateful builder for dynamic UI updates (동적 UI 업데이트를 위한 StatefulBuilder가 포함된 모달 다이얼로그 표시)
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -940,6 +983,7 @@ class _UserPageState extends State<UserPage> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      // Editable multiline TextField with input decoration (입력 데코레이션이 적용된 다중 행 텍스트 필드)
                       TextField(
                         controller: _controller,
                         decoration: InputDecoration(
@@ -963,6 +1007,7 @@ class _UserPageState extends State<UserPage> {
                         keyboardType: TextInputType.multiline,
                       ),
                       SizedBox(height: 10),
+                      // Display selected or existing image with dismiss option (선택된 이미지 또는 기존 이미지를 표시하고 닫기 옵션 제공)
                       if (_newImageFile != null || existingImageUrl != null)
                         Stack(
                           children: [
@@ -996,6 +1041,7 @@ class _UserPageState extends State<UserPage> {
                                   size: 30,
                                 ),
                                 onPressed: () {
+                                  // Clear selected and existing images on cancel (취소 시 선택된 이미지 및 기존 이미지 삭제)
                                   setModalState(() {
                                     _newImageFile = null;
                                     existingImageUrl = null;
@@ -1005,6 +1051,7 @@ class _UserPageState extends State<UserPage> {
                             ),
                           ],
                         ),
+                      // Button to add/select new image from gallery (갤러리에서 새 이미지 선택 버튼)
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color.fromARGB(242, 242, 242, 242),
@@ -1015,7 +1062,8 @@ class _UserPageState extends State<UserPage> {
                         ),
                         onPressed: () async {
                           await _pickImage();
-                          setModalState(() {});
+                          setModalState(
+                              () {}); // Trigger UI update on image pick
                         },
                         child: SizedBox(
                           width: double.infinity,
@@ -1032,6 +1080,7 @@ class _UserPageState extends State<UserPage> {
                         ),
                       ),
                       SizedBox(height: 5),
+                      // Button to confirm and update the tweet (트윗 업데이트 확인 버튼)
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xFF4558C8),
@@ -1061,6 +1110,7 @@ class _UserPageState extends State<UserPage> {
                         ),
                       ),
                       SizedBox(height: 5),
+                      // Cancel button to close dialog without changes (변경 없이 다이얼로그 닫기 버튼)
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color.fromARGB(242, 242, 242, 242),
@@ -1099,25 +1149,30 @@ class _UserPageState extends State<UserPage> {
 
   void instaUpdateDialog(
       String instaId, String instaContents, String instaImgURL) {
+    // Initialize TextEditingController with existing insta content (기존 인스타 내용으로 텍스트 컨트롤러 초기화)
     final TextEditingController _controller =
         TextEditingController(text: instaContents);
 
+    // Variables for new image file and existing image URL management (새 이미지 파일 및 기존 이미지 URL 관리 변수)
     XFile? _newImageFile = null;
     String? existingImageUrl = instaImgURL;
 
+    // Safe state refresh method (안전한 상태 갱신 함수)
     void refreshState() {
       if (mounted) setState(() {});
     }
 
+    // Async image picker from gallery (갤러리에서 비동기 이미지 선택)
     Future<void> _pickImage() async {
       final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
         _newImageFile = pickedFile;
-        existingImageUrl = null;
+        existingImageUrl = null; // Remove old image URL after new pick
         refreshState();
       }
     }
 
+    // Stateful dialog for editing insta post (인스타 포스트 수정을 위한 Stateful 다이얼로그)
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -1130,7 +1185,7 @@ class _UserPageState extends State<UserPage> {
                 borderRadius: BorderRadius.circular(20),
               ),
               title: Text(
-                'Edit tweet',
+                'Edit insta',
                 style: TextStyle(
                   fontSize: 20,
                 ),
@@ -1142,6 +1197,7 @@ class _UserPageState extends State<UserPage> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      // Display image preview if any (선택된 이미지 또는 기존 이미지 미리보기)
                       if (_newImageFile != null || existingImageUrl != null)
                         Stack(
                           children: [
@@ -1185,6 +1241,7 @@ class _UserPageState extends State<UserPage> {
                           ],
                         ),
                       SizedBox(height: 10),
+                      // Multiline TextField for editing insta content (인스타 내용 편집을 위한 다중 행 텍스트 필드)
                       TextField(
                         controller: _controller,
                         decoration: InputDecoration(
@@ -1208,6 +1265,7 @@ class _UserPageState extends State<UserPage> {
                         keyboardType: TextInputType.multiline,
                       ),
                       SizedBox(height: 10),
+                      // Button to pick an image (이미지 선택 버튼)
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color.fromARGB(242, 242, 242, 242),
@@ -1235,6 +1293,7 @@ class _UserPageState extends State<UserPage> {
                         ),
                       ),
                       SizedBox(height: 5),
+                      // Confirm update button invoking instaUpdate method (instaUpdate 메서드를 호출하는 업데이트 확인 버튼)
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xFF4558C8),
@@ -1264,6 +1323,7 @@ class _UserPageState extends State<UserPage> {
                         ),
                       ),
                       SizedBox(height: 5),
+                      // Cancel button to close without saving (저장하지 않고 닫기 버튼)
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color.fromARGB(242, 242, 242, 242),
@@ -1301,6 +1361,7 @@ class _UserPageState extends State<UserPage> {
   }
 
   void purchaseUpdateDialog(String purchaseId, dynamic itemPrice) {
+    // Confirmation dialog for refund action (환불 작업을 위한 확인 다이얼로그)
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -1327,6 +1388,7 @@ class _UserPageState extends State<UserPage> {
             ),
           ),
           actions: [
+            // Confirm refund button triggering purchaseUpdate method (purchaseUpdate 메서드를 실행하는 환불 확인 버튼)
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF44558C8),
@@ -1355,6 +1417,7 @@ class _UserPageState extends State<UserPage> {
               ),
             ),
             SizedBox(height: 5),
+            // Cancel button to abort refund process (환불 프로세스 중단 취소 버튼)
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color.fromARGB(242, 242, 242, 242),
@@ -1423,7 +1486,7 @@ class _UserPageState extends State<UserPage> {
                 ),
               ),
               onPressed: () async {
-                userDelete();
+                userDelete(); // Trigger user account deletion API call (사용자 계정 삭제 API 호출)
                 Navigator.of(context).pop();
               },
               child: SizedBox(
@@ -1508,7 +1571,8 @@ class _UserPageState extends State<UserPage> {
                 ),
               ),
               onPressed: () async {
-                tweetDelete(tweetId);
+                tweetDelete(
+                    tweetId); // Call tweet deletion API with tweetId (tweetId로 트윗 삭제 API 호출)
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
@@ -1595,7 +1659,8 @@ class _UserPageState extends State<UserPage> {
                 ),
               ),
               onPressed: () async {
-                instaDelete(instaId);
+                instaDelete(
+                    instaId); // Call Instagram deletion API with instaId (instaId로 인스타 삭제 API 호출)
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
@@ -1657,30 +1722,38 @@ class _UserPageState extends State<UserPage> {
             fontSize: 20,
           ),
         ),
-        centerTitle: true,
+        centerTitle: true, // Center the app bar title (앱바 타이틀 중앙 정렬)
       ),
       body: FutureBuilder<Map<String, dynamic>>(
-        future: allData,
+        future:
+            allData, // Fetch aggregated user-related data asynchronously (비동기 사용자 관련 데이터 로드)
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return Center(
+                child:
+                    CircularProgressIndicator()); // Show loading indicator while waiting (로딩 인디케이터 표시)
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(
+                child: Text(
+                    'Error: ${snapshot.error}')); // Show error message on failure (오류 메시지 표시)
           } else if (!snapshot.hasData) {
-            return Center(child: Text('데이터가 없습니다'));
+            return Center(
+                child: Text(
+                    '데이터가 없습니다')); // Show empty state if no data (데이터 없음 상태 표시)
           }
-          final userData =
-              snapshot.data!['userData'] as List<Map<String, dynamic>>;
-          final tweetData =
-              snapshot.data!['tweetData'] as List<Map<String, dynamic>>;
-          final instaData =
-              snapshot.data!['instaData'] as List<Map<String, dynamic>>;
-          final purchaseData =
-              snapshot.data!['purchaseData'] as List<Map<String, dynamic>>;
+          final userData = snapshot.data!['userData']
+              as List<Map<String, dynamic>>; // Extract user data (사용자 데이터 추출)
+          final tweetData = snapshot.data!['tweetData']
+              as List<Map<String, dynamic>>; // Extract tweet data (트윗 데이터 추출)
+          final instaData = snapshot.data!['instaData'] as List<
+              Map<String, dynamic>>; // Extract Instagram data (인스타 데이터 추출)
+          final purchaseData = snapshot.data!['purchaseData'] as List<
+              Map<String, dynamic>>; // Extract purchase data (구매 데이터 추출)
           if (userData.isEmpty) {
             return Center(child: Text('User 내역이 없습니다'));
           }
-          return _buildContent(userData, tweetData, instaData, purchaseData);
+          return _buildContent(userData, tweetData, instaData,
+              purchaseData); // Build UI with loaded data (로딩된 데이터로 UI 빌드)
         },
       ),
     );
@@ -1721,14 +1794,16 @@ class _UserPageState extends State<UserPage> {
                       child: user['userImgURL'] != null
                           ? ClipOval(
                               child: Image.network(
-                                user['userImgURL']!,
+                                user[
+                                    'userImgURL']!, // Display user profile image (사용자 프로필 이미지 표시)
                                 width: 100,
                                 height: 100,
                                 fit: BoxFit.cover,
                               ),
                             )
                           : Icon(
-                              Icons.account_circle,
+                              Icons
+                                  .account_circle, // Default user icon fallback (기본 사용자 아이콘)
                               size: 60,
                               color: Colors.white,
                             ),
@@ -1770,18 +1845,20 @@ class _UserPageState extends State<UserPage> {
               SizedBox(width: 10),
             ],
           ),
-          sectionTweet(tweetData),
+          sectionTweet(tweetData), // Render tweets section (트윗 섹션 렌더링)
           SizedBox(height: 20),
-          sectionInsta(instaData),
+          sectionInsta(
+              instaData), // Render Instagram posts section (인스타 섹션 렌더링)
           SizedBox(height: 20),
-          sectionPurchase(purchaseData),
+          sectionPurchase(
+              purchaseData), // Render purchase history section (구매 내역 섹션 렌더링)
           SizedBox(height: 30),
           SizedBox(
             width: 360,
             child: ElevatedButton(
               onPressed: () {
-                userUpdateDialog(
-                    userPassword, userName, userGender, userAge, userImgURL);
+                userUpdateDialog(userPassword, userName, userGender, userAge,
+                    userImgURL); // Trigger user info update dialog (사용자 정보 수정 다이얼로그 호출)
               },
               child: Text(
                 'Edit account',
@@ -1806,7 +1883,7 @@ class _UserPageState extends State<UserPage> {
             width: 360,
             child: ElevatedButton(
               onPressed: () {
-                userDeleteDialog();
+                userDeleteDialog(); // Trigger account deletion confirmation dialog (계정 삭제 확인 다이얼로그 호출)
               },
               child: Text(
                 'Delete account',
@@ -1830,10 +1907,12 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
+  // Render tweet section with horizontal scrollable cards (트윗 섹션을 수평 스크롤 카드로 렌더링)
   Widget sectionTweet(List<Map<String, dynamic>> tweetData) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Header with section title and tweet count (섹션 제목과 트윗 개수 출력)
         Padding(
           padding: EdgeInsets.symmetric(vertical: 10),
           child: Row(
@@ -1857,6 +1936,7 @@ class _UserPageState extends State<UserPage> {
             ],
           ),
         ),
+        // Horizontal scroll list of tweet cards (트윗 카드 리스트 - 수평 스크롤)
         Container(
           height: 230,
           child: ListView.builder(
@@ -1865,12 +1945,14 @@ class _UserPageState extends State<UserPage> {
             itemBuilder: (context, index) {
               final tweet = tweetData[index];
               final tweetId = tweet['tweetId'];
+              // Add cache-busting query param to image URL (이미지 캐시 방지용 타임스탬프 추가)
               final tweetImgURL =
                   '${tweet['tweetImgURL']}?${DateTime.now().millisecondsSinceEpoch}';
               final tweetContents = tweet['tweetContents'];
               final userId = tweet['userId'];
 
               return GestureDetector(
+                // Open tweet detail dialog on tap (탭 시 상세 트윗 다이얼로그 표시)
                 onTap: () {
                   tweetDetailDialog(
                       context, tweetContents, tweetImgURL, tweetId);
@@ -1891,6 +1973,7 @@ class _UserPageState extends State<UserPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(height: 10),
+                          // Display tweet content with ellipsis overflow (트윗 내용 표시 - 최대 2줄)
                           Text(
                             tweetContents ?? '',
                             style: TextStyle(
@@ -1900,6 +1983,7 @@ class _UserPageState extends State<UserPage> {
                             overflow: TextOverflow.ellipsis,
                           ),
                           SizedBox(height: 10),
+                          // Conditional rendering of tweet image (이미지 존재 시 표시)
                           if (tweetImgURL != null && tweetImgURL.isNotEmpty)
                             ClipRRect(
                               borderRadius: BorderRadius.circular(15),
@@ -1923,10 +2007,12 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
+  // Render Instagram section with thumbnails (인스타그램 섹션 - 썸네일 목록)
   Widget sectionInsta(List<Map<String, dynamic>> instaData) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Section header with count (섹션 헤더와 데이터 개수)
         Padding(
           padding: EdgeInsets.symmetric(vertical: 10),
           child: Row(
@@ -1950,6 +2036,7 @@ class _UserPageState extends State<UserPage> {
             ],
           ),
         ),
+        // Horizontal scrollable Instagram preview list (수평 스크롤 가능한 인스타 미리보기)
         Container(
           height: 100,
           child: ListView.builder(
@@ -1958,10 +2045,12 @@ class _UserPageState extends State<UserPage> {
             itemBuilder: (context, index) {
               final insta = instaData[index];
               final instaContents = insta['instaContents'];
+              // Cache-busting image URL (이미지 캐시 방지)
               final instaImgURL =
                   '${insta['instaImgURL']}?${DateTime.now().millisecondsSinceEpoch}';
               final instaId = insta['instaId'];
               return GestureDetector(
+                // Open Instagram detail dialog (탭 시 상세 보기)
                 onTap: () {
                   instaDetailDialog(
                       context, instaId, instaContents, instaImgURL);
@@ -1971,6 +2060,7 @@ class _UserPageState extends State<UserPage> {
                   height: 100,
                   margin: EdgeInsets.only(right: 3),
                   color: Colors.grey,
+                  // Conditional image display (이미지 존재 여부에 따른 조건부 렌더링)
                   child: instaImgURL != null
                       ? Image.network(
                           instaImgURL,
@@ -1986,10 +2076,12 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
+  // Render purchase history section with product thumbnails (구매 내역 섹션 - 썸네일 표시)
   Widget sectionPurchase(List<Map<String, dynamic>> purchaseData) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Header with section title and item count (섹션 제목과 항목 개수 표시)
         Padding(
           padding: EdgeInsets.symmetric(vertical: 10),
           child: Row(
@@ -2013,6 +2105,7 @@ class _UserPageState extends State<UserPage> {
             ],
           ),
         ),
+        // Horizontal scrollable purchase list (수평 스크롤 구매 목록)
         Container(
           height: 150,
           child: ListView.builder(
@@ -2027,6 +2120,7 @@ class _UserPageState extends State<UserPage> {
               final itemPrice = purchase['itemPrice'];
               final purchaseStatus = purchase['purchaseStatus'];
               return GestureDetector(
+                // Show detailed purchase dialog on tap (탭 시 구매 상세 다이얼로그 표시)
                 onTap: () {
                   purchaseDetailDialog(context, itemTitle, itemImgURL,
                       itemContents, purchaseId, itemPrice, purchaseStatus);
@@ -2038,6 +2132,7 @@ class _UserPageState extends State<UserPage> {
                     height: 150,
                     margin: EdgeInsets.only(right: 3),
                     color: Colors.grey,
+                    // Display image if available (이미지가 있으면 표시)
                     child: purchase['itemImgURL'] != null
                         ? Image.network(
                             purchase['itemImgURL'],

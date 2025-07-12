@@ -28,7 +28,7 @@ class DashboardUsersPage extends StatelessWidget {
                   ),
                 ),
               ),
-              DashboardUsersInfo(),
+              DashboardUsersInfo(), // User summary widget (사용자 요약 위젯)
               SizedBox(height: 30),
               Container(
                 child: Text(
@@ -42,7 +42,8 @@ class DashboardUsersPage extends StatelessWidget {
               ),
               Container(
                 height: 250,
-                child: DashboardUsersLocation(),
+                child:
+                    DashboardUsersLocation(), // User location map widget (사용자 위치 지도 위젯)
               ),
               SizedBox(height: 30),
               Container(
@@ -55,7 +56,7 @@ class DashboardUsersPage extends StatelessWidget {
                   ),
                 ),
               ),
-              DashboardUsersSearch(),
+              DashboardUsersSearch(), // Search widget placeholder (검색 위젯 자리 표시자)
             ],
           ),
         ),
@@ -71,7 +72,8 @@ class DashboardUsersInfo extends StatefulWidget {
 
 class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
   List<dynamic> users = [];
-  late DashboardService _dashboardService;
+  late DashboardService
+      _dashboardService; // Service for data fetching (데이터 페칭용 서비스)
   int _locationsCount = 0;
   int _todayLocationsCount = 0;
   bool isLoading = true;
@@ -82,7 +84,7 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
   void initState() {
     super.initState();
     _dashboardService = DashboardService();
-    _loadUsers();
+    _loadUsers(); // Fetch user list from API (사용자 목록 API 호출)
     _fetchLocationsCount();
     _fetchTodayLocationsCount();
   }
@@ -106,7 +108,8 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
     try {
       final locations = await _dashboardService.fetchLocationsAll();
       setState(() {
-        _locationsCount = locations.length;
+        _locationsCount =
+            locations.length; // Update total locations count (전체 위치 개수 갱신)
       });
     } catch (e) {
       print('Error fetching locations: $e');
@@ -124,7 +127,8 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
             createdAt.day == now.day;
       }).length;
       setState(() {
-        _todayLocationsCount = todayCount;
+        _todayLocationsCount =
+            todayCount; // Update today's location count (오늘 위치 개수 갱신)
       });
     } catch (e) {
       print('Error fetching today locations: $e');
@@ -151,7 +155,7 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
     '40대': 0,
     '50대': 0,
     '60세 이상': 0,
-  };
+  }; // Age groups bucket (연령대 구간)
 
   void _countAgeGroups() {
     for (var user in users) {
@@ -175,14 +179,17 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
 
   List<_AgeData> _getAgeData() {
     return ageGroupCounts.entries.map((entry) {
-      return _AgeData(entry.key, entry.value);
+      return _AgeData(entry.key,
+          entry.value); // Map age group counts to chart data (차트용 연령대 데이터 변환)
     }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return isLoading
-        ? Center(child: CircularProgressIndicator())
+        ? Center(
+            child:
+                CircularProgressIndicator()) // Show loading spinner (로딩 스피너 표시)
         : Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -210,6 +217,7 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
                                   textAlign: TextAlign.center,
                                 ),
                                 SizedBox(height: 10),
+                                // Location counts summary (위치 개수 요약)
                                 Text(
                                   'Today $_todayLocationsCount',
                                   style: TextStyle(
@@ -227,6 +235,7 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
                             child: SfCircularChart(
                               tooltipBehavior: TooltipBehavior(enable: true),
                               series: <CircularSeries>[
+                                // Gender distribution donut chart (성별 분포 도넛 차트)
                                 DoughnutSeries<_GenderData, String>(
                                   dataSource: [
                                     _GenderData('Female', femaleCount),
@@ -274,6 +283,7 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
                             height: 100,
                             child: SfPyramidChart(
                               tooltipBehavior: TooltipBehavior(enable: true),
+                              // Age group pyramid chart visualization (연령대 피라미드 차트 시각화)
                               series: PyramidSeries<_AgeData, String>(
                                 dataSource: _getAgeData(),
                                 xValueMapper: (_AgeData data, _) =>
@@ -320,7 +330,7 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
                                 fontWeight: FontWeight.w400,
                               ),
                               textAlign: TextAlign.center,
-                            ),
+                            ), // Label for visits (방문 레이블)
                           ),
                         ),
                         Expanded(
@@ -332,7 +342,7 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
                                 fontWeight: FontWeight.w400,
                               ),
                               textAlign: TextAlign.center,
-                            ),
+                            ), // Label for gender (성별 레이블)
                           ),
                         ),
                         Expanded(
@@ -344,7 +354,7 @@ class _DashboardUsersInfoState extends State<DashboardUsersInfo> {
                                 fontWeight: FontWeight.w400,
                               ),
                               textAlign: TextAlign.center,
-                            ),
+                            ), // Label for age (연령 레이블)
                           ),
                         ),
                       ],
@@ -375,45 +385,53 @@ class DashboardUsersLocation extends StatefulWidget {
 }
 
 class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
-  final MapController _mapController = MapController();
+  final MapController _mapController =
+      MapController(); // Controller for flutter_map (flutter_map 컨트롤러)
   List<Marker> _markers = [];
-  LatLng _center = LatLng(37.5665, 126.9780);
-  double _zoom = 12.0;
+  LatLng _center =
+      LatLng(37.5665, 126.9780); // Default center coordinates (기본 중심 좌표)
+  double _zoom = 12.0; // Default zoom level (기본 줌 레벨)
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _initializeLocation();
+    _initializeLocation(); // Initialize GPS and load map markers (GPS 초기화 및 마커 로드)
   }
 
   Future<void> _initializeLocation() async {
     try {
       final serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) throw Exception('Location services are disabled.');
+      if (!serviceEnabled)
+        throw Exception(
+            'Location services are disabled.'); // Location services check (위치 서비스 활성화 여부 확인)
 
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
+        permission = await Geolocator
+            .requestPermission(); // Request location permission (위치 권한 요청)
       }
       if (permission == LocationPermission.deniedForever) {
-        throw Exception('Location permission permanently denied.');
+        throw Exception(
+            'Location permission permanently denied.'); // Permanent denial handling (영구 권한 거부 처리)
       }
       final position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
-      );
+      ); // Acquire current GPS position (현재 GPS 위치 획득)
       if (!mounted) return;
 
       final currentLatLng = LatLng(position.latitude, position.longitude);
       setState(() {
-        _center = currentLatLng;
+        _center =
+            currentLatLng; // Update map center with current position (현재 위치로 지도 중심 갱신)
       });
-      await _loadMarkers();
+      await _loadMarkers(); // Load map markers after location fix (위치 고정 후 마커 로드)
     } catch (e) {
       print('Location error: $e');
     } finally {
       if (mounted) {
-        setState(() => _isLoading = false);
+        setState(() => _isLoading =
+            false); // Set loading false after init (초기화 후 로딩 상태 해제)
       }
     }
   }
@@ -421,6 +439,7 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
   Future<void> _loadMarkers() async {
     try {
       final dashboardService = DashboardService();
+      // Fetch all location data (위치 데이터 모두 가져오기)
       final locations = await dashboardService.fetchLocationsAll();
       final markers = <Marker>[];
 
@@ -428,6 +447,7 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
         final lat = double.tryParse(loc['latitude'].toString());
         final lng = double.tryParse(loc['longitude'].toString());
 
+        // Validate and parse lat/lng before adding markers (위도/경도 유효성 검사 후 마커 추가)
         if (lat != null && lng != null) {
           markers.add(
             Marker(
@@ -441,6 +461,7 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
           );
         }
       }
+      // Add center marker with distinct color for current focus (현재 중심 좌표 마커 추가)
       markers.add(
         Marker(
           point: _center,
@@ -452,9 +473,11 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
         ),
       );
       if (mounted) {
+        // Update state with new markers if widget is still mounted (위젯이 활성화되어 있으면 상태 업데이트)
         setState(() => _markers = markers);
       }
     } catch (e) {
+      // Log marker loading errors for debugging (마커 로드 오류 로그)
       print('Marker load error: $e');
     }
   }
@@ -462,6 +485,7 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
   void _zoomIn() {
     setState(() {
       _zoom += 1;
+      // Move map camera with updated zoom level (줌 레벨 변경 후 지도 이동)
       _mapController.move(_center, _zoom);
     });
   }
@@ -469,6 +493,7 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
   void _zoomOut() {
     setState(() {
       _zoom -= 1;
+      // Move map camera with updated zoom level (줌 레벨 변경 후 지도 이동)
       _mapController.move(_center, _zoom);
     });
   }
@@ -476,7 +501,9 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
   @override
   Widget build(BuildContext context) {
     return _isLoading
-        ? Center(child: CircularProgressIndicator())
+        ? Center(
+            child:
+                CircularProgressIndicator()) // Show loading indicator while fetching (데이터 로딩 중 로딩 인디케이터 표시)
         : Padding(
             padding: EdgeInsets.symmetric(vertical: 10),
             child: ClipRRect(
@@ -486,8 +513,9 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
                   FlutterMap(
                     mapController: _mapController,
                     options: MapOptions(
-                      initialCenter: _center,
-                      initialZoom: _zoom,
+                      initialCenter:
+                          _center, // Initial map center coordinate (초기 지도 중심 좌표)
+                      initialZoom: _zoom, // Initial zoom level (초기 줌 레벨)
                       minZoom: 3,
                       maxZoom: 19,
                     ),
@@ -497,7 +525,9 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
                             'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                         userAgentPackageName: 'com.example.app',
                       ),
-                      MarkerLayer(markers: _markers),
+                      MarkerLayer(
+                          markers:
+                              _markers), // Render markers on the map (맵에 마커 렌더링)
                     ],
                   ),
                   Positioned(
@@ -553,16 +583,18 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
   @override
   void initState() {
     super.initState();
-    _loadUsers();
+    _loadUsers(); // Fetch user data on widget initialization (위젯 초기화 시 사용자 데이터 로드)
   }
 
   Future<void> _loadUsers() async {
     try {
       DashboardService dashboardService = DashboardService();
+      // Fetch all users (사용자 데이터 모두 가져오기)
       List<dynamic> fetchedUsers = await dashboardService.fetchUsersAll();
       setState(() {
         users = fetchedUsers;
-        filteredUsers = users;
+        filteredUsers =
+            users; // Initialize filtered list with all users (필터링된 리스트 초기화)
         isLoading = false;
       });
     } catch (e) {
@@ -574,15 +606,18 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
     final results = users.where((user) {
       final userName = user['userName'].toLowerCase();
       final input = query.toLowerCase();
-      return userName.contains(input);
+      return userName
+          .contains(input); // Case-insensitive substring search (대소문자 구분 없는 검색)
     }).toList();
 
     setState(() {
-      filteredUsers = results;
+      filteredUsers =
+          results; // Update filtered users based on query (검색 결과로 필터링 업데이트)
     });
   }
 
   void _showUserDetails(BuildContext context, dynamic user) {
+    // Show user detail dialog with userId (사용자 상세 정보 다이얼로그 표시)
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -610,7 +645,8 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
         children: [
           TextField(
             onChanged: (query) {
-              _searchUsers(query);
+              _searchUsers(
+                  query); // Update filtered user list on search input (검색 입력 시 필터링 업데이트)
             },
             decoration: InputDecoration(
               hintText: 'Search by name',
@@ -635,7 +671,7 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
           ),
           SizedBox(height: 10),
           isLoading
-              ? CircularProgressIndicator()
+              ? CircularProgressIndicator() // Show loading spinner while fetching users (사용자 로딩 중 스피너 표시)
               : SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Container(
@@ -693,6 +729,7 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
                             children: [
                               TableCell(
                                 child: GestureDetector(
+                                  // Navigate to user page on avatar tap (아바타 클릭 시 사용자 페이지 이동)
                                   onTap: () {
                                     Navigator.pushNamed(context, AppRoutes.user,
                                         arguments: {'userId': user['userId']});
@@ -713,6 +750,7 @@ class _DashboardUsersSearchState extends State<DashboardUsersSearch> {
                               ),
                               TableCell(
                                 child: GestureDetector(
+                                  // Navigate to user page on name tap (이름 클릭 시 사용자 페이지 이동)
                                   onTap: () {
                                     Navigator.pushNamed(context, AppRoutes.user,
                                         arguments: {'userId': user['userId']});

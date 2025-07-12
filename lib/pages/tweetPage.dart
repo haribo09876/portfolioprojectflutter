@@ -13,6 +13,7 @@ class TweetPage extends StatefulWidget {
 }
 
 class _TweetPageState extends State<TweetPage> {
+  // Tweet input controller (트윗 입력 컨트롤러)
   final TextEditingController _tweetController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
   String? adminId = dotenv.env['ADMIN_ID'];
@@ -23,6 +24,7 @@ class _TweetPageState extends State<TweetPage> {
   @override
   void initState() {
     super.initState();
+    // Load tweets on init (초기화 시 트윗 로드)
     fetchTweets();
   }
 
@@ -31,6 +33,7 @@ class _TweetPageState extends State<TweetPage> {
       loading = true;
     });
     final tweetService = TweetService();
+    // Fetch tweets from API (API로부터 트윗 가져오기)
     final fetchedTweets = await tweetService.tweetRead();
     setState(() {
       tweets = fetchedTweets;
@@ -39,6 +42,7 @@ class _TweetPageState extends State<TweetPage> {
   }
 
   Future<void> _postTweet() async {
+    // Skip if empty (입력값이 없으면 종료)
     if (_tweetController.text.isEmpty) return;
     final loginService = Provider.of<LoginService>(context, listen: false);
     final userId = loginService.userInfo?['id'] ?? '';
@@ -46,26 +50,32 @@ class _TweetPageState extends State<TweetPage> {
       await TweetService().tweetCreate(
         userId,
         _tweetController.text,
-        _imageFile != null ? XFile(_imageFile!.path) : null,
+        _imageFile != null
+            ? XFile(_imageFile!.path)
+            : null, // Optional image upload (이미지 첨부 가능)
       );
       print('Tweet posted successfully');
     } catch (error) {
       print('Error posting tweet: $error');
     }
     setState(() {
+      // Clear input (입력창 초기화)
       _tweetController.clear();
       _imageFile = null;
     });
+    // Refresh tweet list (트윗 목록 갱신)
     fetchTweets();
   }
 
   Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    final pickedFile = await _picker.pickImage(
+        source: ImageSource.gallery); // Open gallery (갤러리 열기)
     if (pickedFile != null) {
       setState(() {
         _imageFile = File(pickedFile.path);
       });
       Navigator.of(context).pop();
+      // Reopen tweet dialog (트윗 작성 다이얼로그 다시 열기)
       _showTweetDialog();
     }
   }
@@ -114,6 +124,7 @@ class _TweetPageState extends State<TweetPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  // Tweet input box (트윗 입력 상자)
                   Container(
                     height: 120,
                     child: SingleChildScrollView(
@@ -142,6 +153,7 @@ class _TweetPageState extends State<TweetPage> {
                     ),
                   ),
                   SizedBox(height: 20),
+                  // Preview attached image (이미지 미리보기)
                   if (_imageFile != null)
                     Stack(
                       children: [
@@ -239,10 +251,12 @@ class _TweetPageState extends State<TweetPage> {
         tweetId,
         userId,
         tweetContents,
-        imageFile != null ? XFile(imageFile.path) : null,
+        imageFile != null
+            ? XFile(imageFile.path)
+            : null, // Update with optional image (선택적 이미지 포함 업데이트)
       );
       print('Tweet updated successfully');
-      fetchTweets();
+      fetchTweets(); // Refresh after update (업데이트 후 새로고침)
     } catch (error) {
       print('Error updating tweet: $error');
     }
@@ -253,7 +267,8 @@ class _TweetPageState extends State<TweetPage> {
     final userId = loginService.userInfo?['id'] ?? '';
 
     try {
-      await TweetService().tweetDelete(tweetId, userId);
+      await TweetService()
+          .tweetDelete(tweetId, userId); // Delete tweet via API (API를 통한 트윗 삭제)
       print('Tweet deleted successfully');
       fetchTweets();
     } catch (error) {
@@ -277,6 +292,7 @@ class _TweetPageState extends State<TweetPage> {
             child: Container(
               child: Column(
                 children: [
+                  // Header with user info and close icon (사용자 정보와 닫기 버튼)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -331,7 +347,7 @@ class _TweetPageState extends State<TweetPage> {
                           Text(
                             tweet['tweet'],
                             style: TextStyle(fontSize: 15),
-                          ),
+                          ), // Tweet text (트윗 본문)
                           SizedBox(
                             height: 15,
                           ),
@@ -340,7 +356,7 @@ class _TweetPageState extends State<TweetPage> {
                               child: Image.network(
                                 tweet['photo'],
                                 fit: BoxFit.contain,
-                              ),
+                              ), // Display image (이미지 표시)
                             ),
                           SizedBox(height: 10),
                           Row(
@@ -361,6 +377,7 @@ class _TweetPageState extends State<TweetPage> {
                           SizedBox(
                             height: 15,
                           ),
+                          // Edit/Delete only for owner or admin (작성자 또는 관리자만 편집/삭제 가능)
                           if (tweet['userId'] ==
                                   Provider.of<LoginService>(context,
                                           listen: false)
@@ -434,15 +451,18 @@ class _TweetPageState extends State<TweetPage> {
     );
   }
 
+  // Trigger tweet editing dialog with pre-filled data (기존 트윗 데이터를 기반으로 편집 다이얼로그 호출)
   void _showEditTweetDialog(Map<String, dynamic> tweet) {
     final controller = TextEditingController(text: tweet['tweet']);
     File? _newImageFile = null;
     String? existingImageUrl = tweet['photo'];
 
+    // Refresh widget state if still mounted (위젯이 활성 상태일 때 상태 갱신)
     void refreshState() {
       if (mounted) setState(() {});
     }
 
+    // Pick image from gallery using ImagePicker (갤러리에서 이미지 선택)
     Future<void> _pickImage() async {
       final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
@@ -452,6 +472,7 @@ class _TweetPageState extends State<TweetPage> {
       }
     }
 
+    // Render edit tweet modal with image support (이미지 포함 편집 모달 UI 렌더링)
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -475,6 +496,7 @@ class _TweetPageState extends State<TweetPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    // Tweet text field (트윗 텍스트 입력 필드)
                     TextField(
                       controller: controller,
                       decoration: InputDecoration(
@@ -498,6 +520,7 @@ class _TweetPageState extends State<TweetPage> {
                       keyboardType: TextInputType.multiline,
                     ),
                     SizedBox(height: 10),
+                    // Display selected or existing image with removable icon (선택 또는 기존 이미지 표시 및 제거 버튼)
                     if (_newImageFile != null || existingImageUrl != null)
                       Stack(
                         children: [
@@ -541,6 +564,7 @@ class _TweetPageState extends State<TweetPage> {
                         ],
                       ),
                     SizedBox(height: 10),
+                    // Image picker button (이미지 선택 버튼)
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color.fromARGB(242, 242, 242, 242),
@@ -568,6 +592,7 @@ class _TweetPageState extends State<TweetPage> {
                       ),
                     ),
                     SizedBox(height: 5),
+                    // Submit tweet update (트윗 업데이트 실행)
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xFF4558C8),
@@ -632,6 +657,7 @@ class _TweetPageState extends State<TweetPage> {
     );
   }
 
+  // Show confirmation dialog for tweet deletion (트윗 삭제 확인 다이얼로그)
   void _showDeleteConfirmationDialog(String tweetId) {
     showDialog(
       context: context,
@@ -659,6 +685,7 @@ class _TweetPageState extends State<TweetPage> {
             ),
           ),
           actions: [
+            // Confirm deletion (삭제 확정)
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF44558C8),
@@ -726,9 +753,10 @@ class _TweetPageState extends State<TweetPage> {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 255, 255, 255),
       body: loading
-          ? Center(child: CircularProgressIndicator())
+          ? Center(
+              child: CircularProgressIndicator()) // Loading spinner (로딩 중 표시)
           : RefreshIndicator(
-              onRefresh: fetchTweets,
+              onRefresh: fetchTweets, // Pull-to-refresh handler (당겨서 새로고침)
               child: ListView.builder(
                 itemCount: tweets.length,
                 itemBuilder: (context, index) {
@@ -747,6 +775,7 @@ class _TweetPageState extends State<TweetPage> {
                         ),
                         child: Column(
                           children: [
+                            // Tweet tile with tap to detail (트윗 항목 클릭 시 상세 보기)
                             GestureDetector(
                               onTap: () => _showTweetDetailDialog(tweet),
                               child: ListTile(
@@ -756,6 +785,7 @@ class _TweetPageState extends State<TweetPage> {
                                   children: [
                                     Row(
                                       children: [
+                                        // Display profile image or default icon (프로필 이미지 또는 기본 아이콘 표시)
                                         tweet['userImgURL'] != null &&
                                                 tweet['userImgURL'] != ''
                                             ? CircleAvatar(
@@ -813,6 +843,7 @@ class _TweetPageState extends State<TweetPage> {
                                     Row(
                                       children: [
                                         Spacer(),
+                                        // Display local timestamp (로컬 시간 기준 트윗 생성 시각 표시)
                                         Text(
                                           DateFormat('MMM d, yyyy, h:mm a')
                                               .format(
@@ -849,6 +880,7 @@ class _TweetPageState extends State<TweetPage> {
                 },
               ),
             ),
+      // FAB for adding new tweet (새 트윗 추가용 FloatingActionButton)
       floatingActionButton: FloatingActionButton(
         onPressed: _showTweetDialog,
         backgroundColor: Color(0xFF44558C8),

@@ -27,7 +27,7 @@ class _ShopPageState extends State<ShopPage> {
   @override
   void initState() {
     super.initState();
-    fetchItems();
+    fetchItems(); // Fetch shop items on widget init (위젯 초기화 시 아이템 목록 조회)
   }
 
   Future<void> fetchItems() async {
@@ -36,25 +36,28 @@ class _ShopPageState extends State<ShopPage> {
     });
 
     final shopService = ShopService();
-    final fetchedItems = await shopService.itemRead();
+    final fetchedItems =
+        await shopService.itemRead(); // Fetch items from backend (백엔드에서 아이템 조회)
 
     setState(() {
-      items = fetchedItems;
+      items = fetchedItems; // Update item list state (아이템 목록 상태 업데이트)
       loading = false;
     });
   }
 
   Future<void> _refresh() async {
-    await fetchItems();
+    await fetchItems(); // Pull-to-refresh handler to reload items (아이템 새로고침 핸들러)
   }
 
   Future<void> _postItem() async {
     if (_itemTitleController.text.isEmpty ||
         _itemController.text.isEmpty ||
-        _itemPriceController.text.isEmpty) return;
+        _itemPriceController.text.isEmpty)
+      return; // Input validation check (입력 유효성 검사)
 
     final loginService = Provider.of<LoginService>(context, listen: false);
-    final userId = loginService.userInfo?['id'] ?? '';
+    final userId = loginService.userInfo?['id'] ??
+        ''; // Get current user ID (현재 사용자 ID 획득)
 
     try {
       final itemPrice = double.tryParse(_itemPriceController.text) ?? 0.0;
@@ -70,19 +73,21 @@ class _ShopPageState extends State<ShopPage> {
       print('Error posting item: $error');
     }
     setState(() {
-      _itemTitleController.clear();
+      _itemTitleController.clear(); // Clear input fields (입력 필드 초기화)
       _itemController.clear();
       _itemPriceController.clear();
       _imageFile = null;
     });
-    fetchItems();
+    fetchItems(); // Refresh item list after posting (게시 후 아이템 목록 갱신)
   }
 
   Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    final pickedFile = await _picker.pickImage(
+        source: ImageSource.gallery); // Launch image picker (갤러리에서 이미지 선택)
     if (pickedFile != null) {
       setState(() {
-        _imageFile = File(pickedFile.path);
+        _imageFile =
+            File(pickedFile.path); // Store picked image file (선택한 이미지 파일 저장)
       });
       Navigator.of(context).pop();
       _showItemDialog();
@@ -91,7 +96,7 @@ class _ShopPageState extends State<ShopPage> {
 
   void _cancelImageAttachment() {
     setState(() {
-      _imageFile = null;
+      _imageFile = null; // Remove attached image (첨부 이미지 제거)
     });
   }
 
@@ -156,7 +161,8 @@ class _ShopPageState extends State<ShopPage> {
                             ),
                           ),
                           maxLines: 2,
-                          keyboardType: TextInputType.multiline,
+                          keyboardType: TextInputType
+                              .multiline, // Multiline input for title (제목 다중행 입력)
                         ),
                         SizedBox(height: 10),
                         TextField(
@@ -179,7 +185,8 @@ class _ShopPageState extends State<ShopPage> {
                             ),
                           ),
                           maxLines: 1,
-                          keyboardType: TextInputType.multiline,
+                          keyboardType: TextInputType
+                              .multiline, // Price input with keyboard type (가격 입력 필드)
                         ),
                         SizedBox(height: 10),
                         TextField(
@@ -202,13 +209,15 @@ class _ShopPageState extends State<ShopPage> {
                             ),
                           ),
                           maxLines: 5,
-                          keyboardType: TextInputType.multiline,
+                          keyboardType: TextInputType
+                              .multiline, // Multiline contents input (내용 다중행 입력)
                         ),
                       ],
                     ),
                   ),
                   SizedBox(height: 20),
-                  if (_imageFile != null)
+                  if (_imageFile !=
+                      null) // Display attached image preview (첨부 이미지 미리보기 표시)
                     Stack(
                       children: [
                         ClipRRect(
@@ -222,14 +231,15 @@ class _ShopPageState extends State<ShopPage> {
                           right: 5,
                           top: 5,
                           child: IconButton(
-                            icon:
-                                Icon(Icons.cancel, color: Colors.red, size: 30),
+                            icon: Icon(Icons.cancel,
+                                color: Colors.red,
+                                size: 30), // Cancel image button (이미지 취소 버튼)
                             onPressed: () {
                               setState(() {
                                 _imageFile = null;
                               });
                               Navigator.of(context).pop();
-                              _showItemDialog();
+                              _showItemDialog(); // Refresh dialog to update UI (UI 갱신을 위한 다이얼로그 재호출)
                             },
                           ),
                         ),
@@ -247,7 +257,7 @@ class _ShopPageState extends State<ShopPage> {
                     onPressed: () async {
                       await _pickImage();
                       Navigator.of(context).pop();
-                      _showItemDialog();
+                      _showItemDialog(); // Refresh dialog after picking image (이미지 선택 후 다이얼로그 재오픈)
                     },
                     child: SizedBox(
                       width: double.infinity,
@@ -273,7 +283,7 @@ class _ShopPageState extends State<ShopPage> {
                       ),
                     ),
                     onPressed: () {
-                      _postItem();
+                      _postItem(); // Trigger item post API call (아이템 등록 API 호출)
                       Navigator.of(context).pop();
                     },
                     child: SizedBox(
@@ -314,7 +324,7 @@ class _ShopPageState extends State<ShopPage> {
         _newImageFile != null ? XFile(_newImageFile!.path) : null,
       );
       print('Item updated successfully');
-      fetchItems();
+      fetchItems(); // Refresh item list after update (업데이트 후 목록 갱신)
     } catch (error) {
       print('Error updating item: $error');
     }
@@ -325,9 +335,10 @@ class _ShopPageState extends State<ShopPage> {
     final userId = loginService.userInfo?['id'] ?? '';
 
     try {
-      await ShopService().itemDelete(itemId, userId);
+      await ShopService()
+          .itemDelete(itemId, userId); // Call delete API (삭제 API 호출)
       print('Item deleted successfully');
-      fetchItems();
+      fetchItems(); // Refresh list after deletion (삭제 후 목록 갱신)
     } catch (error) {
       print('Error deleting item: $error');
     }
@@ -385,13 +396,17 @@ class _ShopPageState extends State<ShopPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         if (item['photo'] != null)
-                          Image.network(item['photo'], fit: BoxFit.cover)
+                          Image.network(item['photo'],
+                              fit: BoxFit
+                                  .cover) // Display item image from URL (URL로부터 이미지 표시)
                         else
                           Container(
                             color: Colors.grey[200],
                             height: 200,
                             width: double.infinity,
-                            child: Center(child: Text('No image')),
+                            child: Center(
+                                child: Text(
+                                    'No image')), // Placeholder if no image (이미지 없을 시 플레이스홀더)
                           ),
                         SizedBox(
                           height: 10,
@@ -422,8 +437,9 @@ class _ShopPageState extends State<ShopPage> {
                               ),
                             ),
                             onPressed: () async {
-                              await _purchaseItem(item);
-                              _showPurchaseConfirmationDialog();
+                              await _purchaseItem(
+                                  item); // Trigger purchase process (구매 처리 트리거)
+                              _showPurchaseConfirmationDialog(); // Show confirmation UI (구매 확인 UI 표시)
                             },
                             child: Text(
                               'Purchase',
@@ -434,6 +450,7 @@ class _ShopPageState extends State<ShopPage> {
                             ),
                           ),
                         ),
+                        // Admin-only controls (관리자 전용 기능)
                         if (userId == adminId) ...[
                           SizedBox(
                             height: 5,
@@ -509,10 +526,12 @@ class _ShopPageState extends State<ShopPage> {
     );
   }
 
+  // Displays an edit item dialog with image picker and form fields (아이템 편집 다이얼로그 표시 및 이미지 선택 및 폼 입력 처리)
   void _showEditDialog(Map<String, dynamic> item, String itemId) {
     File? _newImageFile;
     String? existingImageUrl = item['photo'];
 
+    // Triggers UI rebuild if widget is mounted (위젯이 마운트된 경우 UI 갱신)
     void refreshState() {
       if (mounted) setState(() {});
     }
@@ -549,6 +568,7 @@ class _ShopPageState extends State<ShopPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    // Text input for item title (아이템 제목 입력 필드)
                     TextField(
                       controller: _itemTitleController,
                       decoration: InputDecoration(
@@ -572,6 +592,7 @@ class _ShopPageState extends State<ShopPage> {
                       keyboardType: TextInputType.multiline,
                     ),
                     SizedBox(height: 10),
+                    // Text input for item price (아이템 가격 입력 필드)
                     TextField(
                       controller: _itemPriceController,
                       decoration: InputDecoration(
@@ -595,6 +616,7 @@ class _ShopPageState extends State<ShopPage> {
                       keyboardType: TextInputType.multiline,
                     ),
                     SizedBox(height: 10),
+                    // Text input for item description (아이템 설명 입력 필드)
                     TextField(
                       controller: _itemController,
                       decoration: InputDecoration(
@@ -618,6 +640,7 @@ class _ShopPageState extends State<ShopPage> {
                       keyboardType: TextInputType.multiline,
                     ),
                     SizedBox(height: 10),
+                    // Display selected or existing image (선택된 또는 기존 이미지 표시)
                     if (_newImageFile != null || existingImageUrl != null)
                       Stack(
                         children: [
@@ -661,6 +684,7 @@ class _ShopPageState extends State<ShopPage> {
                         ],
                       ),
                     SizedBox(height: 10),
+                    // Button to pick a new image (새 이미지 선택 버튼)
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color.fromARGB(242, 242, 242, 242),
@@ -688,6 +712,7 @@ class _ShopPageState extends State<ShopPage> {
                       ),
                     ),
                     SizedBox(height: 5),
+                    // Button to update item (아이템 업데이트 버튼)
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xFF4558C8),
@@ -757,6 +782,7 @@ class _ShopPageState extends State<ShopPage> {
     );
   }
 
+  // Handles item purchase by logged-in user (로그인된 사용자의 아이템 구매 처리)
   Future<void> _purchaseItem(Map<String, dynamic> item) async {
     final loginService = Provider.of<LoginService>(context, listen: false);
     final userId = loginService.userInfo?['id'] ?? '';
@@ -770,12 +796,13 @@ class _ShopPageState extends State<ShopPage> {
         userId,
         itemId,
       );
-      fetchItems();
+      fetchItems(); // Refresh item list after purchase (구매 후 아이템 목록 갱신)
     } catch (error) {
       print('Error processing purchase: $error');
     }
   }
 
+  // Shows confirmation dialog for item deletion (아이템 삭제 확인 다이얼로그 표시)
   void _showDeleteConfirmationDialog(String itemId) {
     showDialog(
       context: context,
@@ -803,6 +830,7 @@ class _ShopPageState extends State<ShopPage> {
             ),
           ),
           actions: [
+            // Confirm deletion button (삭제 확정 버튼)
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF44558C8),
@@ -862,6 +890,7 @@ class _ShopPageState extends State<ShopPage> {
     );
   }
 
+  // Displays confirmation message after purchase (구매 완료 후 확인 메시지 표시)
   void _showPurchaseConfirmationDialog() {
     showDialog(
       context: context,
@@ -922,6 +951,7 @@ class _ShopPageState extends State<ShopPage> {
     );
   }
 
+  // Renders the main shop UI (메인 상점 UI 렌더링)
   @override
   Widget build(BuildContext context) {
     final loginService = Provider.of<LoginService>(context, listen: false);
@@ -933,6 +963,7 @@ class _ShopPageState extends State<ShopPage> {
           width: 360,
           child: Column(
             children: [
+              // Displays item list in grid view (그리드 형태로 아이템 목록 표시)
               Expanded(
                 child: RefreshIndicator(
                   onRefresh: _refresh,
@@ -1036,6 +1067,7 @@ class _ShopPageState extends State<ShopPage> {
           ),
         ),
       ),
+      // FAB for admin to add item (관리자 전용 아이템 추가 버튼)
       floatingActionButton: (userId == adminId)
           ? FloatingActionButton(
               onPressed: () {
