@@ -1766,12 +1766,14 @@ class _UserPageState extends State<UserPage> {
     List<Map<String, dynamic>> purchaseData,
   ) {
     final user = userData[0];
+    // Cache-busting image URL (유저 이미지 캐시 방지)
+    final userImgURL =
+        '${user['userImgURL']}?${DateTime.now().millisecondsSinceEpoch}';
     final userEmail = user['userEmail'];
     final userPassword = user['userPassword'];
     final userName = user['userName'];
     final userGender = user['userGender'];
     final userAge = user['userAge'];
-    final userImgURL = user['userImgURL'];
 
     return SingleChildScrollView(
       padding: EdgeInsets.all(20),
@@ -1791,11 +1793,10 @@ class _UserPageState extends State<UserPage> {
                         color: Colors.grey,
                         borderRadius: BorderRadius.circular(60),
                       ),
-                      child: user['userImgURL'] != null
+                      child: userImgURL != null
                           ? ClipOval(
                               child: Image.network(
-                                user[
-                                    'userImgURL']!, // Display user profile image (사용자 프로필 이미지 표시)
+                                userImgURL!, // Display user profile image (사용자 프로필 이미지 표시)
                                 width: 100,
                                 height: 100,
                                 fit: BoxFit.cover,
