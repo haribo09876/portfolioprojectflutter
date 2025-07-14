@@ -523,7 +523,8 @@ class _DashboardUsersLocationState extends State<DashboardUsersLocation> {
                       TileLayer(
                         urlTemplate:
                             'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                        userAgentPackageName: 'com.example.app',
+                        userAgentPackageName:
+                            'com.example.portfolioprojectflutter',
                       ),
                       MarkerLayer(
                           markers:

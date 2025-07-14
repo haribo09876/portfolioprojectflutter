@@ -163,8 +163,14 @@ class _UserPageState extends State<UserPage> {
 
   // Delete user account (사용자 계정 삭제)
   Future<void> userDelete() async {
+    final loginService = Provider.of<LoginService>(context, listen: false);
     await UserService().userDelete(userId);
-    Navigator.pushReplacementNamed(context, AppRoutes.intro);
+    await loginService.logoutUser();
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      AppRoutes.intro,
+      (Route<dynamic> route) => false,
+    );
   }
 
   // Update tweet with new content and optional image (내용 및 이미지로 트윗 업데이트)
