@@ -1,6 +1,4 @@
-# 📱 PPF
-
-## Portfolio Project with Flutter & AWS
+# 📱 PPF (Portfolio Project with Flutter & AWS)
 
 ---
 
@@ -151,7 +149,7 @@
 
 ## 🖼 Screen Shots
 
-![Screen Shots](lib/docs/erd.png)
+![Screen Shots](lib/docs/screenShots.png)
 
 ---
 
