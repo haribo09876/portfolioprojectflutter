@@ -26,29 +26,37 @@
 
 ## ⚙️ Tech Stack
 
-### OS
-- Windows 11
+### OS : Windows 11
 
-### IDE
-- Visual Studio Code, Android Studio
+### IDE : Visual Studio Code, Android Studio
 
-### Target Platform
-- Android (Samsung Galaxy S22)
+### Target Platform : Android (Samsung Galaxy S22)
 
-### Framework
-- Flutter (3.29.1)
+### Framework : Flutter (3.29.1)
 
-### Languages
-- Dart (3.7.0), Python (3.10), Java (17.0.11), JavaScript, SQL
+### Languages : Dart (3.7.0), Python (3.10), Java (17.0.11), JavaScript, SQL
 
-### Backend (AWS)
-- API Gateway, Lambda, RDS (MySQL), S3, SageMaker AI (ProcessingJob)
+### Backend (AWS) : API Gateway, Lambda, RDS (MySQL), S3, SageMaker AI (ProcessingJob)
 
-### Version Control
-- Git, GitHub
+### Version Control : Git, GitHub
 
-### Others
-- Figma, Photoshop, Canva
+### Others : Figma, Photoshop, Canva
+
+- OS : Windows 11
+
+- IDE : Visual Studio Code, Android Studio
+
+- Target Platform : Android (Samsung Galaxy S22)
+
+- Framework : Flutter (3.29.1)
+
+- Languages : Dart (3.7.0), Python (3.10), Java (17.0.11), JavaScript, SQL
+
+- Backend (AWS) : API Gateway, Lambda, RDS (MySQL), S3, SageMaker AI (ProcessingJob)
+
+- Version Control : Git, GitHub
+
+- Others : Figma, Photoshop, Canva
 
 ---
 
