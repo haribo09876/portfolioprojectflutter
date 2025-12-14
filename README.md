@@ -1,6 +1,8 @@
-📱 PPF
+# 📱 PPF
 
-Portfolio Project with Flutter & AWS
+- Portfolio Project with Flutter & AWS
+
+---
 
 ## 📌 Overview
 
@@ -24,34 +26,64 @@ Portfolio Project with Flutter & AWS
 
 ## ⚙️ Tech Stack
 
-- OS : Windows 11
-- IDE : Visual Studio Code, Android Studio
-- Target Platform : Android (Samsung Galaxy S22)
-- Framework : Flutter (3.29.1)
-- Languages : Dart (3.7.0), Python (3.10), Java (17.0.11), JavaScript, SQL
-- Backend (AWS) : API Gateway, Lambda, RDS (MySQL), S3, SageMaker AI (ProcessingJob)
-- Version Control : Git, GitHub
-- Others : Figma, Photoshop, Canva
+### OS
+- Windows 11
+
+### IDE
+- Visual Studio Code, Android Studio
+
+### Target Platform
+- Android (Samsung Galaxy S22)
+
+### Framework
+- Flutter (3.29.1)
+
+### Languages
+- Dart (3.7.0), Python (3.10), Java (17.0.11), JavaScript, SQL
+
+### Backend (AWS)
+- API Gateway, Lambda, RDS (MySQL), S3, SageMaker AI (ProcessingJob)
+
+### Version Control
+- Git, GitHub
+
+### Others
+- Figma, Photoshop, Canva
 
 ---
 
 ## 🔍 Rationale for Key Technology & Feature Choices
 
-- Flutter : Adopted to minimize development and maintenance costs through a single codebase while accelerating feature updates across mobile platforms.
+### Flutter
+- Adopted to minimize development and maintenance costs through a single codebase while accelerating feature updates across mobile platforms.
 (단일 코드베이스로 Android·iOS 동시 대응이 가능하여 개발·운영 비용을 최소화하고 업데이트 속도를 향상시키기 위해 선택)
-- AWS Serverless (API Gateway & Lambda) : Chosen to enable flexible service expansion, stable traffic handling, and cost-efficient scaling without infrastructure management overhead.
+
+### AWS Serverless (API Gateway & Lambda)
+- Chosen to enable flexible service expansion, stable traffic handling, and cost-efficient scaling without infrastructure management overhead.
 (서버리스 기반으로 인프라 운영 부담을 줄이고 트래픽 변화에 유연하게 대응하며 비용 최적화를 달성하기 위해 채택)
-- Amazon RDS (MySQL) : Utilized to reliably manage structured user, content, and commerce data with strong relational integrity.
+
+### Amazon RDS (MySQL)
+- Utilized to reliably manage structured user, content, and commerce data with strong relational integrity.
 (사용자·콘텐츠·상품·주문 데이터를 안정적으로 관리하기 위해 관계형 데이터베이스 선택)
-- Amazon S3 : Implemented for high-availability storage and efficient delivery of image and media content in large-scale content environments.
+
+### Amazon S3
+- Implemented for high-availability storage and efficient delivery of image and media content in large-scale content environments.
 (이미지 및 미디어 콘텐츠의 고가용성 저장과 효율적인 전송을 위해 적용)
-- Amazon SageMaker : Integrated to automate machine learning workflows and support scalable analytics and recommendation processing with optimized latency and cost.
+
+### Amazon SageMaker
+- Integrated to automate machine learning workflows and support scalable analytics and recommendation processing with optimized latency and cost.
 (ML 모델 학습·분석·확장을 자동화하고 Processing Job 기반 분석으로 지연 시간과 비용을 최적화하기 위해 도입)
-- Authentication (Signup/Login) : Established as a foundation for secure user identity management and session-based service architecture.
+
+### Authentication (Signup/Login)
+- Established as a foundation for secure user identity management and session-based service architecture.
 (안정적인 유저 인증 및 세션 관리 기반의 서비스 구조 확립)
-- SNS & Commerce Modules : Designed to replicate real-world social interaction and e-commerce flows, enabling end-to-end content and transaction management.
+
+### SNS & Commerce Modules
+- Designed to replicate real-world social interaction and e-commerce flows, enabling end-to-end content and transaction management.
 (SNS 및 커머스의 실제 서비스 흐름을 반영한 엔드투엔드 콘텐츠·트랜잭션 구조 구현)
-- Analytics Dashboards : Built to aggregate and visualize user behavior, content performance, and sales data, supporting data-driven operational and revenue strategies.
+
+### Analytics Dashboards
+- Built to aggregate and visualize user behavior, content performance, and sales data, supporting data-driven operational and revenue strategies.
 (사용자·콘텐츠·매출 데이터를 시각화하여 운영 인사이트 도출 및 매출 성장 전략 수립을 지원)
 
 ---
@@ -76,15 +108,32 @@ Portfolio Project with Flutter & AWS
 
 ## 🖥 Main Features
 
-- Signup / Login : User registration, authentication, and session management (회원가입, 로그인 및 세션 관리 기능)
-- Weather / VPN : Location-based weather forecasting and VPN functionality (위치 기반 일기 예보 기능 및 VPN 기능)
-- Tweet : Twitter-style SNS with full CRUD operations (트위터 스타일 SNS의 CRUD 기능)
-- Insta : Instagram-style SNS with image-based CRUD operations (인스타그램 스타일 SNS의 CRUD 기능)
-- Shop : Product management, purchase, and transaction processing (쇼핑 채널의 CRUD 및 구매 기능)
-- User Info : User information management (RUD) and order cancellation (유저 페이지의 유저 RUD 및 구매 취소 기능)
-- Dashboard Users : Analysis of user profiles and behavioral patterns (유저 정보 및 행동 특성 분석)
-- Dashboard Contents : Content analysis using word clouds and image overlays (워드클라우드 및 이미지 오버레이로 컨텐츠 분석)
-- Dashboard Sales : Revenue analysis using similarity heatmaps and Top-N recommendation graphs (유사도 히트맵 및 Top-N 추천 그래프로 매출 관리 및 분석)
+### Signup / Login
+- User registration, authentication, and session management (회원가입, 로그인 및 세션 관리 기능)
+
+### Weather / VPN
+- Location-based weather forecasting and VPN functionality (위치 기반 일기 예보 기능 및 VPN 기능)
+
+### Tweet
+- Twitter-style SNS with full CRUD operations (트위터 스타일 SNS의 CRUD 기능)
+
+### Insta
+- Instagram-style SNS with image-based CRUD operations (인스타그램 스타일 SNS의 CRUD 기능)
+
+### Shop
+- Product management, purchase, and transaction processing (쇼핑 채널의 CRUD 및 구매 기능)
+
+### User Info
+- User information management (RUD) and order cancellation (유저 페이지의 유저 RUD 및 구매 취소 기능)
+
+### Dashboard Users
+- Analysis of user profiles and behavioral patterns (유저 정보 및 행동 특성 분석)
+
+### Dashboard Contents
+- Content analysis using word clouds and image overlays (워드클라우드 및 이미지 오버레이로 컨텐츠 분석)
+
+### Dashboard Sales
+- Revenue analysis using similarity heatmaps and Top-N recommendation graphs (유사도 히트맵 및 Top-N 추천 그래프로 매출 관리 및 분석)
 
 ---
 
@@ -109,8 +158,11 @@ Portfolio Project with Flutter & AWS
 
 ## 🔗 External Resources
 
-- Wireframe (Figma) : https://www.figma.com/design/qokFuaMidfvWIZtHE8pn3o/Portfolio-Projects?node-id=2-2&t=Tf7gzTz6iSkaWlHf-1
-- Demo Video (YouTube) : https://youtu.be/jz8e4Ejg8G0
+### Wireframe (Figma)
+- https://www.figma.com/design/qokFuaMidfvWIZtHE8pn3o/Portfolio-Projects?node-id=2-2&t=Tf7gzTz6iSkaWlHf-1
+
+### Demo Video (YouTube)
+- https://youtu.be/jz8e4Ejg8G0
 
 ---
 
