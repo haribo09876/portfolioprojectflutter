@@ -10,18 +10,16 @@
 .svn/
 migrate_working_dir/
 
-# IntelliJ related
+# IntelliJ / Android Studio
 *.iml
 *.ipr
 *.iws
 .idea/
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
+# VS Code
 #.vscode/
 
-# Flutter/Dart/Pub related
+# Flutter / Dart / Pub
 **/doc/api/
 **/ios/Flutter/.last_build_id
 .dart_tool/
@@ -31,14 +29,27 @@ migrate_working_dir/
 .pub/
 /build/
 
-# Symbolication related
-app.*.symbols
-
-# Obfuscation related
-app.*.map.json
-
-# Android Studio will place build artifacts here
+# Android Build Artifacts
+/android/.gradle/
+/android/local.properties
+/android/app/build/
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Android Signing (CRITICAL)
+# 앱 서명 키 (절대 Git에 업로드 금지)
+*.jks
+*.keystore
+
+# 서명 정보 파일 (비밀번호 포함 가능)
+key.properties
+
+# Environment / Secrets
 .env
+.env.*
+*.env
+
+# Symbolication / Obfuscation
+app.*.symbols
+app.*.map.json
