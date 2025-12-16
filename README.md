@@ -9,7 +9,7 @@
 - As digital services expand, there is a growing demand for a super-app platform that integrates user-facing services (such as social networking and e-commerce) with enterprise-level capabilities, including data management, analytics, and operational dashboards.  
   (SNS, 쇼핑 등 사용자 중심 서비스와 데이터 관리·분석 및 운영 대시보드와 같은 기업 기능을 하나의 플랫폼에서 통합할 필요성이 증가하고 있음)
 
-### Solution & Expected Impact (솔루션 및 기대효과)
+### Solution & Impact (솔루션 및 기대효과)
 
 - PPF is a scalable super-app platform that unifies consumer features and enterprise management tools within a single mobile application. The platform is designed to support future service expansion and enable data-driven decision-making through integrated analytics and AI features.  
   (PPF는 사용자 기능과 관리자 기능을 단일 앱에 통합한 확장 가능한 슈퍼앱으로, 향후 서비스 확장과 데이터 기반 의사결정을 지원하는 범용 플랫폼을 목표로 함)
