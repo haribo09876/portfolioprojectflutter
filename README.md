@@ -6,13 +6,13 @@
 
 ### Problem & Needs (문제 및 니즈)
 
-- As digital services expand, there is a growing demand for a super-app platform that integrates user-facing services (such as social networking and e-commerce) with enterprise-level capabilities, including data management, analytics, and operational dashboards.  
-  (SNS, 쇼핑 등 사용자 중심 서비스와 데이터 관리·분석 및 운영 대시보드와 같은 기업 기능을 하나의 플랫폼에서 통합할 필요성이 증가하고 있음)
+- Need for a Super App : Integration of user services and enterprise data capabilities into a single platform.  
+  (SNS·쇼핑 등 유저 기능과 데이터 관리·분석 등 기업 기능을 통합한 슈퍼앱 플랫폼의 필요)
 
 ### Solution & Impact (솔루션 및 기대효과)
 
-- PPF is a scalable super-app platform that unifies consumer features and enterprise management tools within a single mobile application. The platform is designed to support future service expansion and enable data-driven decision-making through integrated analytics and AI features.  
-  (PPF는 사용자 기능과 관리자 기능을 단일 앱에 통합한 확장 가능한 슈퍼앱으로, 향후 서비스 확장과 데이터 기반 의사결정을 지원하는 범용 플랫폼을 목표로 함)
+- A Super App Integrating User and Enterprise Functions : A versatile, multi-functional platform designed for scalable future service expansion.  
+  (유저 기능과 기업 기능을 통합한 슈퍼앱 : 향후 서비스 확장도 가능한 다기능 범용 플랫폼)
 
 ---
 
@@ -49,43 +49,78 @@
 
 ### Flutter
 
-- Adopted to minimize development and maintenance costs through a single codebase while accelerating feature updates across mobile platforms.  
-  (단일 코드베이스로 Android·iOS 동시 대응이 가능하여 개발·운영 비용을 최소화하고 업데이트 속도를 향상시키기 위해 선택)
+- Single codebase for Android & iOS enables reduced development and operational costs, and faster updates.  
+  (단일 코드베이스로 Android·iOS 동시 대응으로 개발·운영 비용 최소화 및 업데이트 속도 향상)
 
-### AWS Serverless (API Gateway & Lambda)
+### API
 
-- Chosen to enable flexible service expansion, stable traffic handling, and cost-efficient scaling without infrastructure management overhead.  
-  (서버리스 기반으로 인프라 운영 부담을 줄이고 트래픽 변화에 유연하게 대응하며 비용 최적화를 달성하기 위해 채택)
+- Flexible interfaces for internal and external services minimize costs for future feature expansion.  
+  (내부·외부 서비스 확장에 대비한 유연한 인터페이스 설계로 기능 확장 비용 절감)
 
-### Amazon RDS (MySQL)
+### AWS Lambda
 
-- Utilized to reliably manage structured user, content, and commerce data with strong relational integrity.  
-  (사용자·콘텐츠·상품·주문 데이터를 안정적으로 관리하기 위해 관계형 데이터베이스 선택)
+- Serverless architecture ensures fast response, automatic scaling, stable traffic handling, and cost optimization.  
+  (서버리스 기반의 빠른 응답 속도 및 자동 확장으로 안정적 트래픽 처리 및 비용 최적화 가능)
 
-### Amazon S3
+### AWS RDS
 
-- Implemented for high-availability storage and efficient delivery of image and media content in large-scale content environments.  
-  (이미지 및 미디어 콘텐츠의 고가용성 저장과 효율적인 전송을 위해 적용)
+- Relational DB chosen for reliable management of structured user, content, and product data.  
+  (구조화된 사용자·콘텐츠·상품 데이터를 안정적으로 운영하기 위한 관계형 DB 선택)
 
-### Amazon SageMaker
+### AWS S3
 
-- Integrated to automate machine learning workflows and support scalable analytics and recommendation processing with optimized latency and cost.  
-  (ML 모델 학습·분석·확장을 자동화하고 Processing Job 기반 분석으로 지연 시간과 비용을 최적화하기 위해 도입)
+- High-availability storage and CDN-based delivery optimize large-scale content handling.  
+  (이미지·콘텐츠의 고가용성 저장 및 CDN 기반 전송으로 대용량 콘텐츠 환경 최적화)
 
-### Authentication (Signup/Login)
+### AWS SageMaker
 
-- Established as a foundation for secure user identity management and session-based service architecture.  
-  (안정적인 유저 인증 및 세션 관리 기반의 서비스 구조 확립)
+- Automates ML model training and inference; Processing Job-based analytics reduce latency and costs.  
+  (머신러닝 모델 학습·추론 환경의 자동화 및 Processing Job 기반 분석 확장, 대기시간 및 비용 최적화)
 
-### SNS & Commerce Modules
+### Signup / Login
 
-- Designed to replicate real-world social interaction and e-commerce flows, enabling end-to-end content and transaction management.  
-  (SNS 및 커머스의 실제 서비스 흐름을 반영한 엔드투엔드 콘텐츠·트랜잭션 구조 구현)
+- Structured user authentication and session management establish a robust service framework.  
+  (유저 인증 및 세션 관리 기능을 통한 체계화된 서비스 기반 구조 확립)
 
-### Analytics Dashboards
+### Weather
 
-- Built to aggregate and visualize user behavior, content performance, and sales data, supporting data-driven operational and revenue strategies.  
-  (사용자·콘텐츠·매출 데이터를 시각화하여 운영 인사이트 도출 및 매출 성장 전략 수립을 지원)
+- Location-based information enhances user engagement and return rate.  
+  (위치 기반 정보 제공을 통한 사용자 체류 시간 및 재방문율 향상)
+
+### VPN
+
+- Security and utility features reinforce DAU and revisit incentives.  
+  (보안·유틸리티 제공을 통한 DAU 및 재방문 동기 강화)
+
+### Tweet / Insta
+
+- Implements content-driven service interactions including posts, feeds, and image uploads for major SNS.  
+  (업계 주요 SNS들의 게시·피드·이미지 업로드 등 콘텐츠 기반 서비스 인터랙션 구조를 구현)
+
+### Shop
+
+- End-to-end e-commerce flow : product registration, modification, deletion, purchase, and refunds.  
+  (상품 등록·수정·삭제·구매·환불 등 e커머스 엔드투엔드 흐름 구현)
+
+### User Info
+
+- Provides CRUD for user profiles and activity data, enhancing service experience and overall completeness.  
+  (사용자 프로필 및 활동 데이터 RUD 기능 제공으로 서비스 경험을 강화하고 서비스 완성도를 높이기 위해 적용)
+
+### Dashboard Users
+
+- Aggregates and visualizes overall user data on a single screen to derive actionable insights.  
+  (사용자 전체 데이터를 단일 화면에서 집계·분석하고 인사이트 도출을 위한 시각화 구현)
+
+### Dashboard Contents
+
+- Visualizes text and image data using word clouds and image overlays for advanced analysis.  
+  (텍스트·이미지 데이터를 워드클라우드∙이미지 오버레이 방식으로 시각화하여 콘텐츠 소비 행태 분석 고도화)
+
+### Dashboard Sales
+
+- SageMaker-based user and sales analytics for growth strategies and personalized recommendations.  
+  (SageMaker Processing Job 기반 분석을 통해 사용자·매출 통합 분석 및 개인화 추천을 통한 매출 성장 전략 설계)
 
 ---
 
@@ -98,7 +133,7 @@
 
 ---
 
-## 🗂 Database Design (ERD)
+## 🗂 Database (ERD)
 
 ![Database ERD](lib/docs/erd.png)
 
@@ -121,12 +156,12 @@
 
 ### Tweet
 
-- Twitter-style SNS with full CRUD operations  
+- Twitter style SNS with full CRUD operations  
   (트위터 스타일 SNS의 CRUD 기능)
 
 ### Insta
 
-- Instagram-style SNS with image-based CRUD operations  
+- Instagram style SNS with image-based CRUD operations  
   (인스타그램 스타일 SNS의 CRUD 기능)
 
 ### Shop
@@ -164,14 +199,14 @@
 
 ## 📅 Timeline
 
-| 기간              | 주요 작업                                                            |
-| ----------------- | -------------------------------------------------------------------- |
-| 2024.06 - 2024.07 | Planning & System Design (기획 및 설계)                              |
-| 2024.07 - 2024.08 | Core App Development & Environment Setup (기본 앱 개발 및 환경 세팅) |
-| 2024.08 - 2024.09 | Feature Expansion & Cloud Integration (기능 확장 및 클라우드 연동)   |
-| 2024.10 - 2024.12 | Service Enhancement & Stabilization (서비스 고도화 및 안정화)        |
-| 2025.01 - 2025.04 | Machine Learning Feature Integration (ML 기능 통합)                  |
-| 2025.05 - 2025.08 | Operation & Maintenance (운영 및 유지 보수)                          |
+| 기간              | 주요 작업                                       |
+| ----------------- | ----------------------------------------------- |
+| 2024.06 - 2024.07 | Planning & System Design (기획 및 설계)         |
+| 2024.07 - 2024.08 | App Development & Setup (기본 앱 개발 및 세팅)  |
+| 2024.08 - 2024.09 | Feature Expansion (기능 확장)                   |
+| 2024.10 - 2024.12 | Optimization & Stabilization (최적화 및 안정화) |
+| 2025.01 - 2025.04 | ML Feature Integration (ML 기능 통합)           |
+| 2025.05 - 2025.08 | Operations & Maintenance (운영 및 유지 보수)    |
 
 ---
 
