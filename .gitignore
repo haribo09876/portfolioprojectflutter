@@ -38,17 +38,15 @@ migrate_working_dir/
 /android/app/release
 
 # Android Signing (CRITICAL)
-# 앱 서명 키 (절대 Git에 업로드 금지)
-*.jks
 *.keystore
-
-# 서명 정보 파일 (비밀번호 포함 가능)
+*.jks
 key.properties
 
 # Environment / Secrets
 .env
+.env.local
 .env.*
-*.env
+!.env.example
 
 # Symbolication / Obfuscation
 app.*.symbols
