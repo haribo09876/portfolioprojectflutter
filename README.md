@@ -191,7 +191,7 @@
 
 ---
 
-## 🖼 Screen Shots
+## 🖼 Screenshots
 
 ![Screen Shots](lib/docs/screenShots.png)
 
